@@ -15,14 +15,14 @@
   
 /*global Ext, Application */
    
-Ext.BLANK_IMAGE_URL = '../../ext/images/default/s.gif';
 Ext.ns('Transmission');
-
-Transmission.imgRoot = './gearbox/images';
 
 // application main entry point
 Ext.onReady(function()
 {
+    Transmission.imgRoot = './gearbox/images';
+    Ext.BLANK_IMAGE_URL = Transmission.imgRoot + '/s.gif';
+
     Ext.QuickTips.init();
     var config = { };
 
