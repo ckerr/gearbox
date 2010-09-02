@@ -1,4 +1,5 @@
 x mainwin > no progressbar in 'full' view mode
+- no turtle button
 - prefs > torrents > save to location: row is too wide for phone
 - prefs > privacy > encryption mode: row is too wide for phone
 - prefs > speed: page is too tall for phone
