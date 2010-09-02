@@ -1,7 +1,8 @@
-- mainwin > no progressbar
+x mainwin > no progressbar in 'full' view mode
 - prefs > torrents > save to location: row is too wide for phone
 - prefs > privacy > encryption mode: row is too wide for phone
 - prefs > speed: page is too tall for phone
 - details > files: no % done
 - details > options: doesn't exist
 - automatically cat the gearbox source files together and minify it
+- more than one torrent selection in details dialog?
