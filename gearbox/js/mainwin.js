@@ -45,6 +45,11 @@ Ext.namespace( 'Transmission' );
         }
     }
 
+    function onTurtleToggled( btn, pressed )
+    {
+        mySession.set({ 'alt-speed-enabled': pressed });
+    }
+
     function onDeselectAllClicked( )
     {
         torrentView.clearSelections( false );
@@ -289,6 +294,8 @@ Ext.namespace( 'Transmission' );
             { menu: actionMenu, icon: Transmission.imgRoot + '/ActionHover.png' },
             ' ', ' ', // these two buttons are pretty small on a cell phone.. add a little extra space between them
             { text: 'View', menu: viewMenu },
+            ' ', ' ', // these two buttons are pretty small on a cell phone.. add a little extra space between them
+            { xtype: 'button', id:'turtle-button', cls: 'x-btn-icon turtle-btn', enableToggle: true, listeners: { toggle: { scope: this, fn: onTurtleToggled } } }
         ]});
     }
 
@@ -486,6 +493,7 @@ Ext.namespace( 'Transmission' );
     {
         var doSort = false;
         var doFilter = false;
+        var doTurtleTooltip = false;
 
         for( var i=0, n=keys.length; i<n; ++i )
         {
@@ -493,6 +501,16 @@ Ext.namespace( 'Transmission' );
 
             switch( key )
             {
+                case 'alt-speed-up':
+                case 'alt-speed-down':
+                    doTurtleTooltip = true;
+                    break;
+
+                case 'alt-speed-enabled':
+                    doTurtleTooltip = true;
+                    Ext.getCmp('turtle-button').toggle( myPrefs.getBool( key ) );
+                    break;
+
                 case 'show-toolbar':
                     setToolbarVisible( myPrefs.getBool( key ) );
                     break;
@@ -547,9 +565,21 @@ Ext.namespace( 'Transmission' );
 
         if( doSort )
             resort( );
+
         if( doFilter )
             refilter( );
 
+        if( doTurtleTooltip ) {
+            var s;
+            var enabled = myPrefs.getBool( 'alt-speed-enabled' );
+            var up = Transmission.fmt.speed( myPrefs.getNumber( 'alt-speed-up' ) );
+            var dn = Transmission.fmt.speed( myPrefs.getNumber( 'alt-speed-down' ) );
+            if( enabled )
+                s = String.format( "Click to disable Temporary Speed Limits\n({0} down, {1} up)", dn, up );
+            else
+                s = String.format( "Click to enable Temporary Speed Limits\n({0} down, {1} up)", dn, up );
+            Ext.getCmp('turtle-button').setTooltip(s);
+        }
     }
 
     function updateTorrentCount( )
@@ -613,7 +643,8 @@ Ext.namespace( 'Transmission' );
             onPrefsChanged( [ 'show-toolbar', 'show-statusbar',
                               'show-filterbar', 'compact-view',
                               'sort-mode', 'sort-reversed',
-                              'filter-mode', 'filter-tracker' ] );
+                              'filter-mode', 'filter-tracker',
+                              'alt-speed-enabled' ] );
         }
     });
 }());

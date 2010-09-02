@@ -49,20 +49,13 @@ html, body {
 	margin-bottom: 5px;
 	border: 0;
 }
-/*div#torrent-list-view {
-	width: 100%;
-}*/
 
-/*
-.x-list-body {
-    overflow:auto;
-    overflow-x:hidden;
-    overflow-y:auto;
-    zoom:1;
-    float: left;
-    width: 100%;
+.turtle-btn .x-btn-text {
+	background-image: url('../images/turtle-grey.png');
 }
-*/
+.x-btn-pressed.turtle-btn .x-btn-text {
+	background-image: url('../images/turtle-blue.png');
+}
 
 .x-list-body * {
     zoom:1;

@@ -113,7 +113,7 @@ Ext.namespace( 'Transmission' );
             var val = this.get( key );
             if( typeof val == 'boolean' ) return val;
             if( typeof val == 'string' ) { val=val.toLowerCase(); return val=='1' || val=='true'; }
-            throw 'getBool(): key ' + key + ' got unhandled type ' + typeof val;
+            return false;
         },
 
         getNumber: function( key )
@@ -121,7 +121,7 @@ Ext.namespace( 'Transmission' );
             var val = this.get( key );
             if( typeof val == 'number' ) return val;
             if( typeof val == 'string' ) return parseFloat( val );
-            throw 'getNumber(): key ' + key + ' got unhandled type ' + typeof val;
+            return 0;
         },
 
         set: function( o )
