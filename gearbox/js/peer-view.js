@@ -43,13 +43,11 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
 
             newPeers.push( peer.address );
 
-            var recordIndex = peerStore.findExact( 'address', peer.address );
-            if( recordIndex < 0 ) // new peer
-                addme.peers.push( peer );
-            else { // update an existing peers
-                var r = peerStore.getAt( recordIndex );
+            var r = peerStore.getById( peer.address );
+            if( r )
                 Ext.iterate( peer, function(key,value) { r.set( key, value ); } );
-             }
+            else // new peer
+                addme.peers.push( peer );
          }
          Torrent.store.commitChanges();
 

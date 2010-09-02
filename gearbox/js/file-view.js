@@ -152,13 +152,12 @@ FileView = Ext.extend( Ext.Container,
 
     parseFiles: function( id )
     {
-        var recordIndex = Torrent.store.findExact( 'id', this.torrentId );
-        if( recordIndex < 0 )
+        var record = Torrent.store.getById( this.torrentId );
+        if( !record )
             return null;
 
         // parse the files array
         var tmp = { children: [ ] };
-        var record = Torrent.store.getAt( recordIndex );
         var files = record.getFiles( );
         var branchIds = { };
         var data = [ ];
