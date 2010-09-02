@@ -345,12 +345,9 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
             multiSelect: true,
             stripeRows: true,
             autoExpandColumn: 'maincol'
-            //autoFill: true
         } );
 
         TorrentView.superclass.constructor.call( this, config );
-//console.log('a');
-//console.log('b');
         this.addListener( 'resize', function(){this.getView().refresh(false);}, this );
     }
 });

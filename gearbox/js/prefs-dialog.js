@@ -214,7 +214,6 @@ Ext.namespace( 'Transmission' );
                     break;
 
                 default:
-                    //console.log( 'unhandled xtype: ' + e.xtype );
                     break;
             }
         }
