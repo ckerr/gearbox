@@ -80,7 +80,7 @@ Ext.namespace( 'Transmission' );
         return new Ext.FormPanel( {
             title: 'Torrents',
              bodyCssClass: 'hig-body',
-            labelWidth: 120,
+            labelWidth: 100,
             items: [ { xtype: 'fieldset', title: 'Adding', cls: 'hig-fieldset', items: [
                          { id: 'start-added-torrents', xtype: 'checkbox', hideLabel: true, boxLabel: 'Start when added', handler: checkboxHandler },
                          { id: 'rename-partial-files', xtype: 'checkbox', hideLabel: true, boxLabel: 'Append ".part" to incomplete files\' names', handler: checkboxHandler },
@@ -276,11 +276,11 @@ Ext.namespace( 'Transmission' );
             items: [
                     { xtype: 'fieldset', title: 'Blocklist', cls: 'hig-fieldset', items: [
                         { id: 'blocklist-enabled', handler: checkboxHandler, xtype: 'checkbox', hideLabel: true, boxLabel: 'Enable blocklist' },
-                        { xtype: 'button', hideLabel: true, text: 'Update now' },
-                        { xtype: 'checkbox', hideLabel: true, boxLabel: 'Enable automatic updates' }
+                        { xtype: 'checkbox', hideLabel: true, boxLabel: 'Enable automatic updates' },
+                        { xtype: 'button', hideLabel: true, text: 'Update now' }
                     ] },
                     { xtype: 'fieldset', title: 'Privacy', cls: 'hig-fieldset', items: [
-                        Ext.applyIf( { width: 166, id: 'encryption', fieldLabel: 'Encryption mode', store: [
+                        Ext.applyIf( { width: 140, id: 'encryption', fieldLabel: 'Encryption', store: [
                             [ 'tolerated', 'Allow encryption' ], [ 'preferred', 'Prefer encryption' ], [ 'required', 'Reqire encryption' ] ] }, comboDefaults ),
                         { id: 'pex-enabled', handler: checkboxHandler, xtype: 'checkbox', hideLabel: true, boxLabel: 'Use PEX to find more peers' },
                         { id: 'dht-enabled', handler: checkboxHandler, xtype: 'checkbox', hideLabel: true, boxLabel: 'Use DHT to find more peers' },

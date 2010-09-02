@@ -71,8 +71,8 @@ Ext.namespace( 'Transmission' );
             Transmission.Controller.superclass.constructor.call( this, config );
 
             mainwin.addListener( 'onStatsClicked', function() { that.showStats( ); } );
-             mainwin.addListener( 'onPrefsClicked', function() { that.showPrefs( ); } );
-             mainwin.addListener( 'onOpenClicked', function() { that.showOpen( ); } );
+            mainwin.addListener( 'onPrefsClicked', function() { that.showPrefs( ); } );
+            mainwin.addListener( 'onOpenClicked', function() { that.showOpen( ); } );
             mainwin.addListener( 'onDetailsClicked', function(cfg) { that.showDetails(cfg); } );
         }
     });
