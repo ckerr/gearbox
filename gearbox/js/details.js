@@ -24,7 +24,6 @@ Transmission.Details = Ext.extend( Ext.Window, {
 
     refresh: function( record )
     {
-        var e;
         var text;
         var rec = record;
         var na = 'N/A';
@@ -34,15 +33,13 @@ Transmission.Details = Ext.extend( Ext.Window, {
         this.trackerTab.refresh( record );
 
         // SIZE
-        e = Ext.getCmp( 'details-size-label' );
         text = String.format( '{0} ({1} @ {2})',
                 Transmission.fmt.size( rec.totalSize() ),
                 Ext.util.Format.plural( rec.getPieceCount(), 'Piece' ),
                 Transmission.fmt.size( rec.getPieceSize() ) );
-        e.setValue( text );
+        this.sizeLabel.setValue( text );
 
         // HAVE
-        e = Ext.getCmp( 'details-have-label' );
         text = '';
         if( !rec.isMagnet( ) )
         {
@@ -58,20 +55,18 @@ Transmission.Details = Ext.extend( Ext.Window, {
             if( unchecked )
                 text += String.format( '; {0} Unverified', Transmission.fmt.size( unchecked ) );
         }
-        e.setValue( text );
+        this.haveLabel.setValue( text );
 
         // AVAILABILITY
-        e = Ext.getCmp( 'details-availability-label' );
         if( rec.sizeWhenDone() == 0 )
             text = none;
         else {
             var available = rec.sizeWhenDone() - rec.leftUntilDone() + rec.desiredAvailable();
             text = String.format( '{0}%', Transmission.fmt.percentString( ( 100.0 * available ) / rec.sizeWhenDone() ) );
         }
-        e.setValue( text );
+        this.availabilityLabel.setValue( text );
         
         // DOWNLOADED
-        e = Ext.getCmp( 'details-downloaded-label' );
         var d = rec.downloadedEver( );
         var c = rec.corruptEver( );
         var dstr = Transmission.fmt.size( d );
@@ -80,73 +75,93 @@ Transmission.Details = Ext.extend( Ext.Window, {
             text = String.format( '{0} (+{1} corrupt)', dstr, cstr );
         else
             text = dstr;
-        e.setValue( text );
+        this.downloadedLabel.setValue( text );
 
         // UPLOADED
-        e = Ext.getCmp( 'details-uploaded-label' );
         text = Transmission.fmt.size( rec.uploadedEver( ) );
-        e.setValue( text );
+        this.uploadedLabel.setValue( text );
     
         // RATIO    
-        e = Ext.getCmp( 'details-ratio-label' );
         text = Transmission.fmt.ratioString( rec.uploadRatio( ) );
-        e.setValue( text );
+        this.ratioLabel.setValue( text );
 
         // STATE    
-        e = Ext.getCmp( 'details-state-label' );
         text = rec.getActivityString( );
-        e.setValue( text );
+        this.stateLabel.setValue( text );
 
         // RUNNING TIME    
-        e = Ext.getCmp( 'details-running-time-label' );
         if( rec.isPaused( ) )
             text = na;
         else
             text = Transmission.fmt.timeInterval( rec.runningTime( ) );
-        e.setValue( text );
+        this.runningTimeLabel.setValue( text );
 
         // REMAINING TIME    
-        e = Ext.getCmp( 'details-remaining-time-label' );
         if( rec.isDone( ) )
             text = na;
         else if( rec.hasETA( ) )
             text = 'Unknown';
         else
             text = Transmission.fmt.timeInterval( rec.runningTime( ) );
-        e.setValue( text );
+        this.remainingTimeLabel.setValue( text );
 
         // LAST ACTIVITY    
-        e = Ext.getCmp( 'details-last-activity-label' );
         if( !rec.lastActivityAt( ) )
             text = na;
         else
             text = Transmission.fmt.timeInterval( rec.timeSinceLastActivity( ) );
-        e.setValue( text );
+        this.lastActivityLabel.setValue( text );
 
         // ERROR    
-        e = Ext.getCmp( 'details-error-label' );
         if( rec.hasError( ) )
             text = rec.getError( );
         else
             text = none;
-        e.setValue( text );
+        this.errorLabel.setValue( text );
     },
 
     createInfoTab: function( )
     {
-        return new Ext.FormPanel( { title: 'Activity', bodyCssClass: 'hig-body', items: [
-            { xtype: 'displayfield', id: 'details-size-label', fieldLabel: 'Torrent-size' },
-            { xtype: 'displayfield', id: 'details-have-label', fieldLabel: 'Have' },
-            { xtype: 'displayfield', id: 'details-availability-label', fieldLabel: 'Availability' },
-            { xtype: 'displayfield', id: 'details-downloaded-label', fieldLabel: 'Downloaded' },
-            { xtype: 'displayfield', id: 'details-uploaded-label', fieldLabel: 'Uploaded' },
-            { xtype: 'displayfield', id: 'details-ratio-label', fieldLabel: 'Ratio' },
-            { xtype: 'displayfield', id: 'details-state-label', fieldLabel: 'State' },
-            { xtype: 'displayfield', id: 'details-running-time-label', fieldLabel: 'Running Time' },
-            { xtype: 'displayfield', id: 'details-remaining-time-label', fieldLabel: 'Remaining Time' },
-            { xtype: 'displayfield', id: 'details-last-activity-label', fieldLabel: 'Last Activity' },
-            { xtype: 'displayfield', id: 'details-error-label', fieldLabel: 'Error' }
+        var idSuffix = '-' + Math.floor( Math.random() * 10000000 );
+        var sizeLabelId           = 'details-size-label' + idSuffix;
+        var haveLabelId           = 'details-have-label' + idSuffix;
+        var availabilityLabelId   = 'details-availability-label' + idSuffix;
+        var downloadedLabelId     = 'details-downloaded-label' + idSuffix;
+        var uploadedLabelId       = 'details-uploaded-label' + idSuffix;
+        var ratioLabelId          = 'details-ratio-label' + idSuffix;
+        var stateLabelId          = 'details-state-label' + idSuffix;
+        var runningTimeLabelId    = 'details-running-time-label' + idSuffix;
+        var remainingTimeLabelId  = 'details-remaining-time-label' + idSuffix;
+        var lastActivityLabelId   = 'details-last-activity-label' + idSuffix;
+        var errorLabelId          = 'details-error-label' + idSuffix;
+
+        var panel = new Ext.FormPanel( { title: 'Activity', bodyCssClass: 'hig-body', items: [
+            { xtype: 'displayfield', id: sizeLabelId, fieldLabel: 'Torrent-size' },
+            { xtype: 'displayfield', id: haveLabelId, fieldLabel: 'Have' },
+            { xtype: 'displayfield', id: availabilityLabelId, fieldLabel: 'Availability' },
+            { xtype: 'displayfield', id: downloadedLabelId, fieldLabel: 'Downloaded' },
+            { xtype: 'displayfield', id: uploadedLabelId,  fieldLabel: 'Uploaded' },
+            { xtype: 'displayfield', id: ratioLabelId, fieldLabel: 'Ratio' },
+            { xtype: 'displayfield', id: stateLabelId,  fieldLabel: 'State' },
+            { xtype: 'displayfield', id: runningTimeLabelId, fieldLabel: 'Running Time' },
+            { xtype: 'displayfield', id: remainingTimeLabelId, fieldLabel: 'Remaining Time' },
+            { xtype: 'displayfield', id: lastActivityLabelId, fieldLabel: 'Last Activity' },
+            { xtype: 'displayfield', id: errorLabelId, fieldLabel: 'Error' }
         ]});
+
+        this.sizeLabel          = Ext.getCmp( sizeLabelId );
+        this.haveLabel          = Ext.getCmp( haveLabelId );
+        this.availabilityLabel  = Ext.getCmp( availabilityLabelId  );
+        this.downloadedLabel    = Ext.getCmp( downloadedLabelId );
+        this.uploadedLabel      = Ext.getCmp( uploadedLabelId );
+        this.ratioLabel         = Ext.getCmp( ratioLabelId );
+        this.stateLabel         = Ext.getCmp( stateLabelId );
+        this.runningTimeLabel   = Ext.getCmp( runningTimeLabelId );
+        this.remainingTimeLabel = Ext.getCmp( remainingTimeLabelId );
+        this.lastActivityLabel  = Ext.getCmp( lastActivityLabelId );
+        this.errorLabel         = Ext.getCmp( errorLabelId );
+
+        return panel;
     },
 
     createPeerTab: function( rec )
