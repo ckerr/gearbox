@@ -347,9 +347,6 @@ Ext.namespace( 'Transmission' );
     function onRowsAdded( )
     {
         onStoreChanged( );
-        //resort( );
-        //updateActionSensitivity( );
-        //refilter( );
     }
 
     function createTorrentList( )
@@ -611,7 +608,7 @@ Ext.namespace( 'Transmission' );
             mySession.addListener( 'onStatsChanged', onStatsChanged );
 
             onSelectionChanged( );
-            onStoreChangedIdle( );
+            onStoreChanged( );
 
             onPrefsChanged( [ 'show-toolbar', 'show-statusbar',
                               'show-filterbar', 'compact-view',

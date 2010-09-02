@@ -46,22 +46,20 @@ Ext.onReady(function()
         var torrents = args.torrents;
         for( var i=0, n=torrents.length; i<n; ++i ) {
             var torrent = torrents[i];
-            var recordIndex = Torrent.store.findExact( 'id', torrent.id );
-            if( recordIndex < 0 ) { // new torrent
-                if( torrent.name )
-                    torrent.collatedName = Ext.util.Format.lowercase(torrent.name.trim());
-                addme.torrents.push( torrent );
-                newIds.push( torrent.id );
-            } else {
-                var r = Torrent.store.getAt( recordIndex );
+            var r = Torrent.store.getById( torrent.id );
+            if( r ) {
                 Ext.iterate( torrent, function(key,value) {
                     r.set( key, value );
                     if( key == 'name' )
                         r.set( 'collatedName', Ext.util.Format.lowercase(value.trim()) );
                 } );
+            } else { // new torrent
+                if( torrent.name )
+                    torrent.collatedName = Ext.util.Format.lowercase(torrent.name.trim());
+                addme.torrents.push( torrent );
+                newIds.push( torrent.id );
             }
         }
-        Torrent.store.commitChanges();
 
         // added torrents...
         if( addme.torrents.length > 0 )
@@ -73,6 +71,8 @@ Ext.onReady(function()
         var removed = args.removed;
         if( removed )
             for( var i=0, n=removed.length; i<n; ++i )
-                Torrent.store.removeAt( Torrent.store.findExact( 'id', removed[i] ) );
+                Torrent.store.remove( Torrent.store.getById( removed[i] ) );
+
+        Torrent.store.commitChanges();
     });
 });
