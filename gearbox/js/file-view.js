@@ -18,28 +18,12 @@ Ext.namespace( 'Transmission' );
 FileView = Ext.extend( Ext.Container,
 {
     torrentId: -1,
-    fileStore: null,
+    store: null,
     session: null,
 
     compareStringToPropertyPath: function( a, b )
     {
         return a.localeCompare( b.path );
-    },
-
-    /****
-    *****
-    ****/
-
-    findRecordFromFileIndex: function( i )
-    {
-        var index = this.fileStore.findExact( 'fileIndex', i );
-        return index == -1 ? null : this.fileStore.getAt( index );
-    },
-
-    findRecordFromId: function( id )
-    {
-        var index = this.fileStore.findExact( '_id', id );
-        return index == -1 ? null : this.fileStore.getAt( index );
     },
 
     /****
@@ -62,7 +46,7 @@ FileView = Ext.extend( Ext.Container,
         var wanted;
         for( var i=0, n=record.data.children.length; i<n; ++i )
         {
-            var child = this.findRecordFromId( record.data.children[i] );
+            var child = this.store.getById( record.data.children[i] );
             var childWanted = this.isSubtreeWanted( child );
 
             if( i === 0 )
@@ -79,13 +63,13 @@ FileView = Ext.extend( Ext.Container,
     {
         if( record.data._is_leaf )
         {
-            fileIndices.push( record.data.fileIndex );
+            fileIndices.push( record.data._id );
         }
         else
         {
             var children = record.data.children;
             for( var i=0, n=children.length; i<n; ++i )
-                this.getDescendantLeaves( this.findRecordFromId( children[i] ), fileIndices );
+                this.getDescendantLeaves( this.store.getById( children[i] ), fileIndices );
         }
     },
 
@@ -118,7 +102,7 @@ FileView = Ext.extend( Ext.Container,
         var priority;
         for( var i=0, n=record.data.children.length; i<n; ++i )
         {
-            var child = this.findRecordFromId( record.data.children[i] );
+            var child = this.store.getById( record.data.children[i] );
             var childPriority = this.getPriority( child );
 
             if( i === 0 )
@@ -161,7 +145,7 @@ FileView = Ext.extend( Ext.Container,
         var files = record.getFiles( );
         var branchIds = { };
         var data = [ ];
-        var _id = 0;
+        var _id = -1;
         var folderIcon = Transmission.FileIcon.getFolderIcon( Transmission.FileIcon.SMALL );
 
         for( var i=0, n=files.length; i<n; ++i )
@@ -186,8 +170,7 @@ FileView = Ext.extend( Ext.Container,
                                 children: [ ],
                                 bytesCompleted: 0,
                                 collatedName: collatedName,
-                                fileIndex: isLeaf ? i : -1,
-                                _id: _id++,
+                                _id: isLeaf ? i : _id--,
                                 _parent: _parent ? _parent._id : null,
                                 _parentObj: _parent,
                                 _is_leaf: isLeaf,
@@ -213,6 +196,10 @@ FileView = Ext.extend( Ext.Container,
 
     onStoreLoaded: function( store, records, options )
     {
+        var record = Torrent.store.getById( this.torrentId );
+        if( record != null )
+            this.refresh( record );
+
         store.expandNode( store.getAt( 0 ) );
     },
 
@@ -273,7 +260,6 @@ FileView = Ext.extend( Ext.Container,
             {name: 'children', type: 'auto'},
             {name: 'have', type: 'int'},
             {name: 'icon', type: 'string'},
-            {name: 'fileIndex', type: 'int'},
             {name: 'bytesCompleted', type: 'int'},
             {name: 'wanted', type: 'int'},
             {name: 'priority', type: 'int'},
@@ -291,15 +277,15 @@ FileView = Ext.extend( Ext.Container,
             proxy: new Ext.data.MemoryProxy(data)
         });
 
-        this.fileStore = store;
+        this.store = store;
 
         var grid = new Ext.ux.maximgb.tg.EditorGridPanel({
             store: store,
             stripeRows: false,
-            autoExpandColumn: 'name',
-            master_column_id : 'name',
+            autoExpandColumn: 'file-list-column-name',
+            master_column_id : 'file-list-column-name',
             columns: [
-                { header: 'Name', menuDisabled: true, sortable: true, dataIndex: 'name', width: 100, id: 'name', scope: this, renderer: this.nameRenderer },
+                { header: 'Name', menuDisabled: true, sortable: true, dataIndex: 'name', width: 100, id: 'file-list-column-name', scope: this, renderer: this.nameRenderer },
                 { header: 'Want', menuDisabled: true, sortable: true, dataIndex: 'wanted', resizable: false, width: 40, scope: this, renderer: this.wantedRenderer },
                 { header: 'Priority', menuDisabled: true, sortable: true, dataIndex: 'priority', resizable: false, width: 50, scope: this, renderer: this.priorityRenderer } ]
         });
@@ -315,9 +301,11 @@ FileView = Ext.extend( Ext.Container,
     {
         var stats = torrent.getFileStats();
 
-        for( var i=0, n=stats.length; i<n; ++i ) {
-            var record = this.findRecordFromFileIndex( i );
-            if( record != null ) {
+        for( var i=0, n=stats.length; i<n; ++i )
+        {
+            var record = this.store.getById( i );
+            if( record != null )
+            {
                 record.set( 'wanted', stats[i].wanted );
                 record.set( 'priority', stats[i].priority );
                 record.set( 'bytesCompleted', stats[i].bytesCompleted );
@@ -329,7 +317,7 @@ FileView = Ext.extend( Ext.Container,
 
     refreshBranches: function( )
     {
-        var records = this.fileStore.getRange( );
+        var records = this.store.getRange( );
 
         for( var i=0, n=records.length; i<n; ++i )
         {
@@ -341,7 +329,7 @@ FileView = Ext.extend( Ext.Container,
             record.set( 'priority', this.getPriority( record ) );
         }
 
-        this.fileStore.commitChanges( );
+        this.store.commitChanges( );
     }
 });
 

@@ -211,11 +211,11 @@ Transmission.Details = Ext.extend( Ext.Window, {
             this.refresh( record );
     },
 
-    close: function( )
+    destroy: function( )
     {
         clearInterval( this.timer );
         Torrent.store.removeListener( 'update', this.onTorrentUpdated, this );
-        Transmission.Details.superclass.close.call( this );
+        Transmission.Details.superclass.destroy.call( this );
     },
 
     constructor: function( config_in )
