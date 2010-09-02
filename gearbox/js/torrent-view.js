@@ -163,29 +163,29 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         return str;
     },
 
-    getShortStatusString: function( tor )
+    getShortStatusString: function( record, tor )
     {
-        var str;
+        var s = '';
 
         switch( tor.status )
         {
             case Torrent.STATUS_CHECK:
-                str = String.format( 'Verifying local data ({0}% tested)', Transmission.fmt.percentString( tor.recheckProgress * 100.0 ) );
+                s = String.format( 'Verifying local data ({0}% tested)', Transmission.fmt.percentString( tor.recheckProgress * 100.0 ) );
                 break;
 
             case Torrent.STATUS_DOWNLOAD:
             case Torrent.STATUS_SEED:
-                if( !Torrent.isDownloading(tor) )
-                    str = String.format( 'Ratio: {0}, ', Transmission.fmt,ratioString( tor.uploadRatio ) );
-                str += this.shortTransferString( tor );
+                if( !record.isDownloading() )
+                    s = String.format( 'Ratio: {0}, ', Transmission.fmt.ratioString( record.uploadRatio() ) );
+                s += this.shortTransferString( tor );
                 break;
 
             default:
-                str = tor.getActivityString( );
+                s = record.getActivityString( );
                 break;
         }
 
-        return str;
+        return s;
     },
 
     getStatusString: function( rec, tor )
