@@ -242,7 +242,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         return str;
     },
 
-    generateProgressbarHtml: function( percentDone ) // [0...1]
+    generateProgressbarHtml: function( percentDone/*[0..1]*/, showText )
     {
         var widthPct = Math.floor( 100 * percentDone );
         var doneBg = '#228b22'; // forestgreen
@@ -250,31 +250,39 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         var remainBg = 'white';
         var remainFg = 'black';
 
-        return ['<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;">',
+        var text = ['<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;">',
                     '<div style="width:',widthPct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
-                      '<div style="color:',doneFg,'; background-color:',doneBg,'; width:',(widthPct?Math.floor(100*(100.0/widthPct)):0),'%"><span>',widthPct,'%</span></div>',
+                      '<div style="color:',doneFg,'; background-color:',doneBg,'; width:',(widthPct?Math.floor(100*(100.0/widthPct)):0),'%">' ];
+        if( showText )
+                text.push( '<span>',widthPct,'%</span>' );
+        else
+                text.push( '&nbsp;' );
+        text.push( '</div>',
                     '</div>',
-                    '<div style="color:',remainFg,'; background-color:',remainBg,'"><span>',widthPct,'%</span></div>',
-                  '</div>' ].join('');
+                    '<div style="color:',remainFg,'; background-color:',remainBg,'"><span>' );
+        if( showText )
+                text.push( '<span>', widthPct, '%</span>' );
+        else
+                text.push( '&nbsp;' );
+        text.push( '</div>', '</div>' );
+        return text.join('');
     },
 
     renderTorrent: function( value, metadata, record, rowIndex, colIndex, store )
     {
         var tor = record.data;
         var icon = this.getIcon( tor );
-	var isPaused = record.isPaused( );
-
+        var isPaused = record.isPaused( );
         var strings = [];
 
-	if( isPaused )
-		strings.push( '<div style="opacity:0.55">' );
-	
+        if( isPaused )
+                strings.push( '<div style="opacity:0.55">' );
 
         if( this.isCompact )
         {
             var shortStatus = this.getShortStatusString( record, tor );
             var percentDone = Math.floor( 100 * record.percentDone( ) ); // [0..100]
-            var progressbarHtml = this.generateProgressbarHtml( record.percentDone( ) );
+            var progressbarHtml = this.generateProgressbarHtml( record.percentDone( ), true );
 
             strings.push( '<img style="float:left; padding-right:10px;" src="', icon, '"/>',
                           '<div style="float:right;">',
@@ -287,15 +295,20 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         {
             var statusStr = this.getStatusString( record, tor );
             var progressStr = this.getProgressString( record, tor );
-            strings.push( '<img style="padding-top: 3px; padding-right: 10px; float:left;" src="',icon,'"/> ',
-                          '<b>', tor.name, '</b>',
-                          '<br/>',
-                          progressStr,
-                          '<br/>',
-                          statusStr );
+            var progressbarHtml = this.generateProgressbarHtml( record.percentDone( ), false );
+
+            strings.push( '<div style="display:table">',
+                          '<div style="display:table-cell; vertical-align:middle;"><img src="',icon,'"/>&nbsp;</div>',
+                          '<div style="display:table-cell; padding-left:8px; width:100%">',
+                          '<b>',record.getName(),'</b>','<br/>',
+                          progressStr,'</br>',
+                          progressbarHtml,
+                          statusStr,
+                          '</div>',
+                          '</div>' );
         }
-	if( isPaused )
-		strings.push( '</div>' );
+        if( isPaused )
+                strings.push( '</div>' );
 
         return strings.join('');
     },
