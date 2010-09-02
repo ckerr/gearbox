@@ -15,7 +15,7 @@
   
 /*global Ext, Application */
    
-Ext.BLANK_IMAGE_URL = './ext/resources/images/default/s.gif';
+Ext.BLANK_IMAGE_URL = '../../ext/images/default/s.gif';
 Ext.ns('Transmission');
 
 Transmission.imgRoot = './gearbox/images';
