@@ -284,7 +284,8 @@ Ext.namespace( 'Transmission' );
             { id: 'menu-reannounce', text: 'Ask Tracker for More Peers', handler: reannounceSelectedTorrents },
             { id: 'menu-verify', text: 'Verify Local Data', handler: verifySelectedTorrents },
             '-',
-            { text: 'Donate', handler: function(){ window.open('http://www.transmissionbt.com/donate.php'); } },
+            { text: 'Transmission Homepage', handler: function(){ window.open('http://www.transmissionbt.com/'); } },
+            { text: 'Donate', handler: function(){ window.open('http://www.transmissionbt.com/donate.php'); } }
         ]});
 
         return new Ext.Toolbar( { id: 'mainwin-statusbar', items: [
