@@ -77,14 +77,6 @@ function parseUri( sourceUri )
     return uri;
 }
 
-function getReadableDomain( sourceUri )
-{
-    var domain = parseUri(sourceUri).domain;
-    var p = domain.split('.');
-    var s = p.length >= 2 ? p[p.length-2] : domain;
-    return Ext.util.Format.capitalize( s );
-}
-
 function getHost( sourceUri )
 {
     var domain = parseUri(sourceUri).domain;
