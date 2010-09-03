@@ -57,6 +57,24 @@ Ext.namespace( 'Transmission' );
                 o.seedRatioLimit = value;
             }
         }
+        else if( e.id == 'speed-limit-down' )
+        {
+            if( value < 0 )
+                o['speed-limit-down-enabled'] = false;
+            else {
+                o['speed-limit-down-enabled'] = true;
+                o['speed-limit-down'] = value;
+            }
+        }
+        else if( e.id == 'speed-limit-up' )
+        {
+            if( value < 0 )
+                o['speed-limit-up-enabled'] = false;
+            else {
+                o['speed-limit-up-enabled'] = true;
+                o['speed-limit-up'] = value;
+            }
+        }
         else
         {
             o[e.id] = value;
@@ -219,6 +237,7 @@ Ext.namespace( 'Transmission' );
         }
 
         if( updateRatio ) 
+
         {
             var value = myPrefs.getBool('seedRatioLimited') ? myPrefs.getNumber('seedRatioLimit') : -1;
             Ext.getCmp( 'seedRatio').setValue( value );
