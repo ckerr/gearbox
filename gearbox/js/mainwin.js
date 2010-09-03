@@ -239,32 +239,6 @@ Ext.namespace( 'Transmission' );
 
     function createFilterbar( prefs )
     {
-        var filterbarVisible = prefs.getBool( 'show-filterbar' );
-        return new Ext.Toolbar( { hidden: !filterbarVisible, id: 'mainwin-filterbar', items: [
-            { xtype: 'button', id: 'filterbar-status', menu: [
-                { handler: filterStatusHandler, text: 'All',         id: filterStatusPrefix+'all' },
-                { handler: filterStatusHandler, text: 'Active',      id: filterStatusPrefix+'active' },
-                { handler: filterStatusHandler, text: 'Downloading', id: filterStatusPrefix+'downloading' },
-                { handler: filterStatusHandler, text: 'Seeding',     id: filterStatusPrefix+'seeding' },
-                { handler: filterStatusHandler, text: 'Paused',      id: filterStatusPrefix+'paused' },
-                { handler: filterStatusHandler, text: 'Finished',    id: filterStatusPrefix+'finished' },
-                { handler: filterStatusHandler, text: 'Queued',      id: filterStatusPrefix+'queued' },
-                { handler: filterStatusHandler, text: 'Verifying',   id: filterStatusPrefix+'verifying' },
-                { handler: filterStatusHandler, text: 'Error',       id: filterStatusPrefix+'error' } ] },
-            { xtype: 'button', id: 'filterbar-tracker', menu: [
-                { handler: filterTrackerHandler, text: 'All Trackers', id: filterTrackerPrefix+'all' }
-            ]},
-            '->',
-            { id: 'statusbarTorrentCountLabel', xtype: 'label', text: 'No torrents' },
-            ' ', '-', ' ',
-            { id: 'statusbarDownSpeed', xtype: 'label', text: '↓ {0}{1}' },
-            ' ', '-', ' ',
-            { id: 'statusbarUpSpeed', xtype: 'label', text: '↑ {0}{1}' },
-        ]});
-    }
-
-    function createStatusbar( prefs )
-    {
         var viewMenu = new Ext.menu.Menu( { defaultType: 'menucheckitem', items: [
             { text: 'Compact View', id: 'compact-view', listeners: { checkchange: checkboxHandler } },
             '-',
@@ -280,6 +254,29 @@ Ext.namespace( 'Transmission' );
             { text: 'Reverse sort', id: 'sort-reversed', listeners: { checkchange: checkboxHandler } }
         ]});
 
+        var filterbarVisible = prefs.getBool( 'show-filterbar' );
+        return new Ext.Toolbar( { hidden: !filterbarVisible, id: 'mainwin-filterbar', items: [
+            { xtype: 'button', text: 'View', menu: viewMenu },
+            { xtype: 'button', id: 'filterbar-status', menu: [
+                { handler: filterStatusHandler, text: 'All',         id: filterStatusPrefix+'all' },
+                { handler: filterStatusHandler, text: 'Active',      id: filterStatusPrefix+'active' },
+                { handler: filterStatusHandler, text: 'Downloading', id: filterStatusPrefix+'downloading' },
+                { handler: filterStatusHandler, text: 'Seeding',     id: filterStatusPrefix+'seeding' },
+                { handler: filterStatusHandler, text: 'Paused',      id: filterStatusPrefix+'paused' },
+                { handler: filterStatusHandler, text: 'Finished',    id: filterStatusPrefix+'finished' },
+                { handler: filterStatusHandler, text: 'Queued',      id: filterStatusPrefix+'queued' },
+                { handler: filterStatusHandler, text: 'Verifying',   id: filterStatusPrefix+'verifying' },
+                { handler: filterStatusHandler, text: 'Error',       id: filterStatusPrefix+'error' } ] },
+            { xtype: 'button', id: 'filterbar-tracker', menu: [
+                { handler: filterTrackerHandler, text: 'All Trackers', id: filterTrackerPrefix+'all' }
+            ]},
+            '->',
+            { id: 'statusbarTorrentCountLabel', xtype: 'label', text: 'No torrents' }
+        ]});
+    }
+
+    function createStatusbar( prefs )
+    {
         var actionMenu = new Ext.menu.Menu( { items: [
             { text: 'Session Statistics', handler: function(){ that.fireEvent('onStatsClicked') } },
             { text: 'Edit Preferences', handler: function(){ that.fireEvent('onPrefsClicked') } },
@@ -293,9 +290,11 @@ Ext.namespace( 'Transmission' );
         return new Ext.Toolbar( { id: 'mainwin-statusbar', items: [
             { menu: actionMenu, icon: Transmission.imgRoot + '/ActionHover.png' },
             ' ', ' ', // these two buttons are pretty small on a cell phone.. add a little extra space between them
-            { text: 'View', menu: viewMenu },
-            ' ', ' ', // these two buttons are pretty small on a cell phone.. add a little extra space between them
-            { xtype: 'button', id:'turtle-button', cls: 'x-btn-icon turtle-btn', enableToggle: true, listeners: { toggle: { scope: this, fn: onTurtleToggled } } }
+            { xtype: 'button', id:'turtle-button', cls: 'x-btn-icon turtle-btn', enableToggle: true, listeners: { toggle: { scope: this, fn: onTurtleToggled } } },
+            '->',
+            { id: 'statusbarUpSpeed', xtype: 'label', text: '↑ {0}{1}' },
+            ' ', '-', ' ',
+            { id: 'statusbarDownSpeed', xtype: 'label', text: '↓ {0}{1}' }
         ]});
     }
 
