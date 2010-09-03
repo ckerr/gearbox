@@ -591,7 +591,7 @@ Ext.namespace( 'Transmission' );
 
         var str = Ext.util.Format.plural( total, 'Torrent' );
         if( count < total )
-            str = '' + count + ' of ' + str;
+            str = [ count, 'of', str ].join(' ');
 
         var key = 'statusbarTorrentCountLabel';
         Ext.getCmp( key ).setText( str );

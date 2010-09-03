@@ -236,7 +236,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         if( rec.isReadyToTransfer( ) ) {
             var s = this.shortTransferString( tor );
             if( s.length > 0 )
-                str += ' - ' + s;
+                str = [ str, '-', s ].join(' ');
         }
 
         return str;
