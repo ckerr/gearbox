@@ -338,13 +338,13 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
     constructor: function( config_in )
     {
         var config = Ext.apply( {}, config_in, {
-            frame: false,
+            autoExpandColumn: 'maincol',
+            autoExpandMax: 100000,
             columns: [ { 'id': 'maincol', header: 'Id', dataIndex: 'id', renderer: { fn: this.renderTorrent, scope: this } } ],
+            frame: false,
             hideHeaders: true,
             hideLabel: true,
-            multiSelect: true,
-            stripeRows: true,
-            autoExpandColumn: 'maincol'
+            multiSelect: true
         } );
 
         TorrentView.superclass.constructor.call( this, config );
