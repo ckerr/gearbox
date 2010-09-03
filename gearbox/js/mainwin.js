@@ -575,9 +575,9 @@ Ext.namespace( 'Transmission' );
             var up = Transmission.fmt.speed( myPrefs.getNumber( 'alt-speed-up' ) );
             var dn = Transmission.fmt.speed( myPrefs.getNumber( 'alt-speed-down' ) );
             if( enabled )
-                s = String.format( "Click to disable Temporary Speed Limits\n({0} down, {1} up)", dn, up );
+                s = String.format( "Click to disable Temporary Speed Limits<br/>({0} down, {1} up)", dn, up );
             else
-                s = String.format( "Click to enable Temporary Speed Limits\n({0} down, {1} up)", dn, up );
+                s = String.format( "Click to enable Temporary Speed Limits<br/>({0} down, {1} up)", dn, up );
             Ext.getCmp('turtle-button').setTooltip(s);
         }
     }
