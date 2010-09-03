@@ -254,19 +254,21 @@ Ext.namespace( 'Transmission' );
             { text: 'Reverse sort', id: 'sort-reversed', listeners: { checkchange: checkboxHandler } }
         ]});
 
+	var iconPrefix = Transmission.imgRoot+'/16x16';
         var filterbarVisible = prefs.getBool( 'show-filterbar' );
         return new Ext.Toolbar( { hidden: !filterbarVisible, id: 'mainwin-filterbar', items: [
             { xtype: 'button', text: 'View', menu: viewMenu },
             { xtype: 'button', id: 'filterbar-status', menu: [
                 { handler: filterStatusHandler, text: 'All',         id: filterStatusPrefix+'all' },
-                { handler: filterStatusHandler, text: 'Active',      id: filterStatusPrefix+'active' },
-                { handler: filterStatusHandler, text: 'Downloading', id: filterStatusPrefix+'downloading' },
-                { handler: filterStatusHandler, text: 'Seeding',     id: filterStatusPrefix+'seeding' },
-                { handler: filterStatusHandler, text: 'Paused',      id: filterStatusPrefix+'paused' },
+                '-',
+                { handler: filterStatusHandler, text: 'Active',      id: filterStatusPrefix+'active', icon:iconPrefix+'/actions/system-run.png' },
+                { handler: filterStatusHandler, text: 'Downloading', id: filterStatusPrefix+'downloading', icon:iconPrefix+'/actions/go-down.png' },
+                { handler: filterStatusHandler, text: 'Seeding',     id: filterStatusPrefix+'seeding', icon:iconPrefix+'/actions/go-up.png' },
+                { handler: filterStatusHandler, text: 'Paused',      id: filterStatusPrefix+'paused', icon:iconPrefix+'/actions/media-playback-pause.png' },
                 { handler: filterStatusHandler, text: 'Finished',    id: filterStatusPrefix+'finished' },
                 { handler: filterStatusHandler, text: 'Queued',      id: filterStatusPrefix+'queued' },
-                { handler: filterStatusHandler, text: 'Verifying',   id: filterStatusPrefix+'verifying' },
-                { handler: filterStatusHandler, text: 'Error',       id: filterStatusPrefix+'error' } ] },
+                { handler: filterStatusHandler, text: 'Verifying',   id: filterStatusPrefix+'verifying', icon:iconPrefix+'/actions/view-refresh.png' },
+                { handler: filterStatusHandler, text: 'Error',       id: filterStatusPrefix+'error', icon:iconPrefix+'/status/error.png' } ] },
             { xtype: 'button', id: 'filterbar-tracker', menu: [
                 { handler: filterTrackerHandler, text: 'All Trackers', id: filterTrackerPrefix+'all' }
             ]},
@@ -393,14 +395,16 @@ Ext.namespace( 'Transmission' );
         that.doLayout( );
     }
 
+    trackersStr = '';
+
     function rebuildTrackerFilter( )
     {
         var hash = { };
         var allrecs = getAllRecordsUnfiltered();
         for( var i=0; i<allrecs.length; ++i ) {
-            var record = allrecs[i];
-            for( var j=0; j<record.data.trackers.length; ++j ) {
-                var tracker = record.data.trackers[j];
+            var trackers = allrecs[i].data.trackers;
+            for( var j=0; j<trackers.length; ++j ) {
+                var tracker = trackers[j];
                 var host = getHost( tracker.announce );
                 var name = getNameFromHost( host );
                 hash[name] = host;
@@ -412,22 +416,29 @@ Ext.namespace( 'Transmission' );
             keys.push( key );
         keys.sort( );
 
-        var rows = [ ];
-        rows.push( { handler: filterTrackerHandler, text: 'All Trackers', id: filterTrackerPrefix+'all' } );
-        rows.push( '-' );
-        for( var i=0, n=keys.length; i<n; ++i ) {
-            var name = keys[i];
-            var domain = hash[name];
-            rows.push( { handler: filterTrackerHandler,
-                         text: name,
-                         icon: String.format( 'http://{0}/favicon.ico', domain ),
-                         id: filterTrackerPrefix+domain } );
-        }
+        // if the list of trackers has changed update the "trackers" button's menu
+        var trackersStr = keys.toString();
+        if( this.trackersStr != trackersStr )
+        {
+            this.trackersStr = trackersStr;
 
-        var e = Ext.getCmp('filterbar-tracker');
-        var oldMenu = e.menu;
-        e.menu = new Ext.menu.Menu( rows );
-        if( oldMenu ) delete oldMenu;
+            var rows = [ ];
+            rows.push( { handler: filterTrackerHandler, text: 'All Trackers', id: filterTrackerPrefix+'all' } );
+            rows.push( '-' );
+            for( var i=0, n=keys.length; i<n; ++i ) {
+                var name = keys[i];
+                var domain = hash[name];
+                rows.push( { handler: filterTrackerHandler,
+                             text: name,
+                             icon: String.format( 'http://{0}/favicon.ico', domain ),
+                             id: filterTrackerPrefix+domain } );
+            }
+
+            var e = Ext.getCmp('filterbar-tracker');
+            var oldMenu = e.menu;
+            e.menu = new Ext.menu.Menu( rows );
+            if( oldMenu ) delete oldMenu;
+        }
     }
 
     function filterByStatus( rec )
