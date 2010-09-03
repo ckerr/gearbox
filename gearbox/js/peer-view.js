@@ -69,12 +69,12 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
         return '';
     },
 
-    renderSpeed: function( value, metaData, record, rowIndex, colIndex, store )
+    renderSpeedBps: function( bps, metaData, record, rowIndex, colIndex, store )
     {
-        if( value == 0 )
+        if( !bps )
             return '';
         else
-            return Ext.util.Format.number( value, '0.0' );
+            return Ext.util.Format.number( Transmission.fmt.toKBps( bps ), '0.0' );
     },
 
     renderPercent: function( value, metaData, record, rowIndex, colIndex, store )
@@ -112,8 +112,8 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
             defaults: { sortable: true },
             columns: [
                 { dataIndex: 'isEncrypted', width: 14, renderer: this.renderEncrypted },
-                { dataIndex: 'rateToPeer', width: 60, align: 'right', header: 'Up', renderer: this.renderSpeed },
-                { dataIndex: 'rateToClient', width: 60, align: 'right', header: 'Down', renderer: this.renderSpeed },
+                { dataIndex: 'rateToPeer', width: 60, align: 'right', header: 'Up', renderer: this.renderSpeedBps },
+                { dataIndex: 'rateToClient', width: 60, align: 'right', header: 'Down', renderer: this.renderSpeedBps },
                 { dataIndex: 'progress', width: 60, align: 'right', header: '%', renderer: this.renderPercent },
                 { dataIndex: 'flagStr', width: 80, header: 'Status' },
                 { dataIndex: 'address', width: 150, align: 'right', header: 'Address' },

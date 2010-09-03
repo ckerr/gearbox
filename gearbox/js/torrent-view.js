@@ -147,9 +147,9 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         var downStr, upStr;
 
         if( haveDown )
-            downStr = Transmission.fmt.speed( tor.rateDownload );
+            downStr = Transmission.fmt.speedBps( tor.rateDownload );
         if( haveUp )
-            upStr = Transmission.fmt.speed( tor.rateUpload );
+            upStr = Transmission.fmt.speedBps( tor.rateUpload );
 
         if( haveDown && haveUp )
             str = String.format( '&darr; {0}, &uarr; {1}', downStr, upStr );

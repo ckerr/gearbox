@@ -146,14 +146,22 @@ Transmission.fmt = (function()
                                           : convertedSize.toTruncFixed(1) + ' ' + unit;
         },
 
+	speedBps: function( Bps )
+	{
+		return this.speed( this.toKBps( Bps ) );
+	},
+
+	toKBps: function( Bps )
+	{
+		return Math.floor( Bps / speed_K );
+	},
+
         speed: function( KBps )
         {
             var speed = KBps;
 
             if (speed == undefined)
-                return 'None';
-            if (speed < 0.01 )
-                return 'None';
+                speed = 0;
 
             if (speed <= 999.95) // 0 KBps to 999.9 K
                 return speed.toTruncFixed(1) + ' ' + speed_K_str;

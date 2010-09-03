@@ -256,9 +256,9 @@ Ext.namespace( 'Transmission' );
             ]},
             '->',
             { id: 'statusbarTorrentCountLabel', xtype: 'label', text: 'No torrents' },
-            '-',
+            ' ', '-', ' ',
             { id: 'statusbarDownSpeed', xtype: 'label', text: '↓ {0}{1}' },
-            ' ',
+            ' ', '-', ' ',
             { id: 'statusbarUpSpeed', xtype: 'label', text: '↑ {0}{1}' },
         ]});
     }
@@ -600,11 +600,11 @@ Ext.namespace( 'Transmission' );
         updateTorrentCount( );
 
         var key = 'statusbarDownSpeed';
-        var str = Transmission.fmt.speed( o.downloadSpeed ) + ' &darr;';
+        var str = Transmission.fmt.speed( o.downloadSpeed ) + ' Down';
         Ext.getCmp( key ).update( str );
 
         key = 'statusbarUpSpeed';
-        str = Transmission.fmt.speed( o.uploadSpeed ) + ' &uarr;';
+        str = Transmission.fmt.speed( o.uploadSpeed ) + ' Up';
         Ext.getCmp( key ).update( str );
     }
 
