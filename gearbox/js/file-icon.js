@@ -139,7 +139,7 @@ Transmission.FileIcon = (function(){
         getFolderIcon: function( iconSize ) {
             return getIconURL( FILETYPE_FOLDER, iconSize );
         },
-        getGenricIcon: function( iconSize ) {
+        getGenericIcon: function( iconSize ) {
             return getIconURL( FILETYPE_UNKNOWN, iconSize );
         }
     };
