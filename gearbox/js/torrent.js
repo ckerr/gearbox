@@ -57,9 +57,7 @@ Torrent.fields = [
         { name: 'uploadedEver',             type: 'int',      group: Torrent.STAT },
         { name: 'corruptEver',              type: 'int',      group: Torrent.STAT_EXTRA },
         { name: 'trackers',                 type: 'auto',     group: Torrent.STAT }, // array of trackers
-        { name: 'domains',                  type: 'auto',     group: Torrent.DERIVED }, // array of tracker domains
         { name: 'trackerStats',             type: 'auto',     group: Torrent.STAT_EXTRA }, // array of trackerStats
-        { name: 'mime-icon',                type: 'auto',     group: Torrent.DERIVED }, // mime icon
         { name: 'seedRatioLimit',           type: 'float',    group: Torrent.STAT },
         { name: 'seedRatioMode',            type: 'int',      group: Torrent.STAT },
         { name: 'seedIdleLimit',            type: 'int',      group: Torrent.STAT_EXTRA },
