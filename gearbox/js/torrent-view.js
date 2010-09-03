@@ -284,7 +284,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
             var percentDone = Math.floor( 100 * record.percentDone( ) ); // [0..100]
             var progressbarHtml = this.generateProgressbarHtml( record.percentDone( ), true );
 
-            strings.push( '<img style="float:left; padding-right:10px;" src="', icon, '"/>',
+            strings.push( '<img style="float:left; padding-right:10px; width:', this.iconSize, 'px; height:', this.iconSize, 'px;" src="', icon, '"/>',
                           '<div style="float:right;">',
                             '<div style="float:right; margin-left:8px; width:40px;">', progressbarHtml, '</div>',
                             '<span style="margin-left:8px; font-size:smaller">', shortStatus, '</span>',
@@ -298,7 +298,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
             var progressbarHtml = this.generateProgressbarHtml( record.percentDone( ), false );
 
             strings.push( '<div style="display:table">',
-                          '<div style="display:table-cell; vertical-align:middle;"><img src="',icon,'"/>&nbsp;</div>',
+                          '<div style="display:table-cell; vertical-align:middle;"><img style="width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>&nbsp;</div>',
                           '<div style="display:table-cell; padding-left:8px; width:100%">',
                           '<b>',record.getName(),'</b>','<br/>',
                           progressStr,'</br>',
