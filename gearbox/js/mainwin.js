@@ -253,7 +253,7 @@ Ext.namespace( 'Transmission' );
             { text: 'Reverse sort', id: 'sort-reversed', listeners: { checkchange: checkboxHandler } }
         ]});
 
-	var iconPrefix = Transmission.imgRoot+'/16x16';
+        var iconPrefix = Transmission.imgRoot+'/16x16';
         var filterbarVisible = prefs.getBool( 'show-filterbar' );
         return new Ext.Toolbar( { hidden: !filterbarVisible, id: 'mainwin-filterbar', items: [
             { xtype: 'button', text: 'View', menu: viewMenu },
@@ -404,9 +404,9 @@ Ext.namespace( 'Transmission' );
             var trackers = allrecs[i].data.trackers;
             for( var j=0; j<trackers.length; ++j ) {
                 var tracker = trackers[j];
-                var host = getHost( tracker.announce );
-                var name = getNameFromHost( host );
-                hash[name] = host;
+                tracker.host = tracker.host || getHost( tracker.announce );
+                var name = getNameFromHost( tracker.host );
+                hash[name] = tracker.host;
             }
         }
 
