@@ -24,8 +24,9 @@ Torrent.fields = [
         { name: 'id',                       type: 'int',      group: Torrent.INFO },
         { name: 'files',                    type: 'auto',     group: Torrent.INFO },
         { name: 'fileStats',                type: 'auto',     group: Torrent.STAT_EXTRA },
-        { name: 'rateUpload',               type: 'float',    group: Torrent.STAT }, /* KBps */
-        { name: 'rateDownload',             type: 'float',    group: Torrent.STAT }, /* KBps */
+        { name: 'rateUpload',               type: 'float',    group: Torrent.STAT },    /* Bps */
+        { name: 'rateDownload',             type: 'float',    group: Torrent.STAT },    /* Bps */
+        { name: 'rateXfer',                 type: 'float',    group: Torrent.DERIVED }, /* Bps */
         { name: 'downloadDir',              type: 'string',   group: Torrent.STAT },
         { name: 'status',                   type: 'int',      group: Torrent.STAT },
         { name: 'name',                     type: 'string',   group: Torrent.INFO },
