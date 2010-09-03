@@ -306,9 +306,11 @@ FileView = Ext.extend( Ext.Container,
             var record = this.store.getById( i );
             if( record != null )
             {
+                record.beginEdit();
                 record.set( 'wanted', stats[i].wanted );
                 record.set( 'priority', stats[i].priority );
                 record.set( 'bytesCompleted', stats[i].bytesCompleted );
+                record.endEdit();
             }
         }
 
@@ -325,8 +327,10 @@ FileView = Ext.extend( Ext.Container,
             if( record.data._is_leaf )
                 continue;
 
+            record.beginEdit();
             record.set( 'wanted', this.isSubtreeWanted( record ) );
             record.set( 'priority', this.getPriority( record ) );
+            record.endEdit();
         }
 
         this.store.commitChanges( );

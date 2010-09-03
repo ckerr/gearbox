@@ -44,10 +44,13 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
             newPeers.push( peer.address );
 
             var r = peerStore.getById( peer.address );
-            if( r )
-                Ext.iterate( peer, function(key,value) { r.set( key, value ); } );
-            else // new peer
+            if( !r ) // new peer
                 addme.peers.push( peer );
+            else {
+                r.beginEdit();
+                Ext.iterate( peer, function(key,value) { r.set( key, value ); } );
+                r.endEdit();
+            }
          }
          Torrent.store.commitChanges();
 
