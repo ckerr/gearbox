@@ -51,15 +51,15 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
 
         if( isMagnet ) // magnet link with no metadata
         {
-            // %1 is the percentage of torrent metadata downloaded
+            // {0} is the percentage of torrent metadata downloaded
             str = String.format( "Magnetized transfer - retrieving metadata {0}%)",
                                  Transmission.fmt.percentString( tor.metadataPercentDone() * 100.0 ) );
         }
         else if( !isDone ) // downloading
         {
-            // %1 is how much we've got,
-            // %2 is how much we'll have when done,
-            // %3 is a percentage of the two
+            // {0} is how much we've got,
+            // {1} is how much we'll have when done,
+            // {2} is a percentage of the two
             str = String.format( "{0} of {1} ({2}%)",
                     Transmission.fmt.size( rec.haveTotal( ) ),
                     Transmission.fmt.size( rec.sizeWhenDone( ) ),
@@ -69,12 +69,12 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         {
             if( hasSeedRatio )
             {
-                // %1 is how much we've got,
-                // %2 is the torrent's total size,
-                // %3 is a percentage of the two,
-                // %4 is how much we've uploaded,
-                // %5 is our upload-to-download ratio
-                // %6 is the ratio we want to reach before we stop uploading
+                // {0} is how much we've got,
+                // {1} is the torrent's total size,
+                // {2} is a percentage of the two,
+                // {3} is how much we've uploaded,
+                // {4} is our upload-to-download ratio
+                // {5} is the ratio we want to reach before we stop uploading
                 str = String.format( "{0} of {1} ({2}%), uploaded {3} (Ratio: {4} Goal: {5})",
                         Transmission.fmt.size( rec.haveTotal() ),
                         Transmission.fmt.size( rec.totalSize() ),
@@ -85,11 +85,11 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
             }
             else
             {
-                // %1 is how much we've got,
-                // %2 is the torrent's total size,
-                // %3 is a percentage of the two,
-                // %4 is how much we've uploaded,
-                // %5 is our upload-to-download ratio
+                // {0} is how much we've got,
+                // {1} is the torrent's total size,
+                // {2} is a percentage of the two,
+                // {3} is how much we've uploaded,
+                // {4} is our upload-to-download ratio
                 str = String.format( "{0} of {1} ({2}%), uploaded {3} (Ratio: {4})",
                         Transmission.fmt.size( rec.haveTotal ),
                         Transmission.fmt.size( rec.totalSize( ) ),
@@ -102,10 +102,10 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         {
             if( hasSeedRatio )
             {
-                // %1 is the torrent's total size,
-                // %2 is how much we've uploaded,
-                // %3 is our upload-to-download ratio,
-                // %4 is the ratio we want to reach before we stop uploading
+                // {0} is the torrent's total size,
+                // {1} is how much we've uploaded,
+                // {2} is our upload-to-download ratio,
+                // {3} is the ratio we want to reach before we stop uploading
                 str = String.format( "{0}, uploaded {1} (Ratio: {2} Goal {3})",
                         Transmission.fmt.size( rec.haveTotal( ) ),
                         Transmission.fmt.size( rec.uploadedEver( ) ),
@@ -114,9 +114,9 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
             }
             else // seeding w/o a ratio
             {
-                // %1 is the torrent's total size,
-                // %2 is how much we've uploaded,
-                // %3 is our upload-to-download ratio
+                // {0} is the torrent's total size,
+                // {1} is how much we've uploaded,
+                // {2} is our upload-to-download ratio
                 str = String.format( "{0}, uploaded {1} (Ratio: {2})",
                         Transmission.fmt.size( rec.haveTotal( ) ),
                         Transmission.fmt.size( rec.uploadedEver() ),
