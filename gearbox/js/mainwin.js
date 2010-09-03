@@ -191,7 +191,7 @@ Ext.namespace( 'Transmission' );
                 '-',
                 { icon: imgBase+'/actions/edit-select-all.png', tooltip: 'Select all torrents', text: 'Select All', handler: onSelectAllClicked },
                 '->',
-                { id:'toolbar-details-button', icon: imgBase+'/status/dialog-information.png', text: 'Info', tooltip: 'Show/Hide the torrent inspector', handler: function(){ that.fireEvent('onDetailsClicked', { record: torrentView.getSelectionModel().getSelected() }); } },
+                { id:'toolbar-details-button', icon: imgBase+'/status/dialog-information.png', text: 'Info', tooltip: 'Get details about the selected torrent', handler: function(){ that.fireEvent('onDetailsClicked', { record: torrentView.getSelectionModel().getSelected() }); } },
                 { icon: imgBase+'/apps/utilities-system-monitor.png', text: 'Stats', tooltip: 'Statistics dialog', handler: function(){ that.fireEvent('onStatsClicked') } },
                 { icon: imgBase+'/categories/preferences-desktop.png', text: 'Settings', tooltip: 'Settings dialog', handler: function(){ that.fireEvent('onPrefsClicked') } }
                 
@@ -249,7 +249,6 @@ Ext.namespace( 'Transmission' );
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Size',      id: menuSortModePrefix+'size' },
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by State',     id: menuSortModePrefix+'state' },
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Time Left', id: menuSortModePrefix+'time-left' },
-            { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Tracker',   id: menuSortModePrefix+'tracker' },
             '-',
             { text: 'Reverse sort', id: 'sort-reversed', listeners: { checkchange: checkboxHandler } }
         ]});
@@ -484,18 +483,20 @@ Ext.namespace( 'Transmission' );
 
     function resort( )
     {
-        var dir = myPrefs.getBool('sort-reversed') ? 'DESC' : 'ASC';
         var fieldName;
+        var desc = myPrefs.getBool('sort-reversed');
+
         switch( myPrefs.get('sort-mode') ) {
-            case 'age':       fieldName = 'addedDate';    break;
+            case 'age':       fieldName = 'addedDate';    desc=!desc; break;
             case 'progress':  fieldName = 'percentDone';  break;
             case 'ratio':     fieldName = 'uploadRatio';  break;
             case 'size':      fieldName = 'totalSize';    break;
             case 'state':     fieldName = 'state';        break;
             case 'time-left': fieldName = 'eta';          break;
-            case 'tracker':   fieldname = 'trackers';     break; // FIXME
             default:          fieldName = 'collatedName'; break;
         }
+
+        var dir = desc ? 'DESC' : 'ASC';
         Torrent.store.sort( fieldName, dir );
         Torrent.store.setDefaultSort( fieldName, dir );
     }
@@ -543,8 +544,9 @@ Ext.namespace( 'Transmission' );
 
                 case 'sort-mode': {
                     var v = myPrefs.get( key );
-                    if( v == 'undefined' ) v = 'name';
-                    Ext.getCmp(menuSortModePrefix+v).setChecked(true);
+                    var e = Ext.getCmp(menuSortModePrefix+v);
+                    if( !e ) e = Ext.getCmp(menuSortModePrefix+'name');
+                    e.setChecked(true);
                     doSort = true;
                     break;
                 }
