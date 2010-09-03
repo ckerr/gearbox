@@ -48,11 +48,13 @@ Ext.onReady(function()
             var torrent = torrents[i];
             var r = Torrent.store.getById( torrent.id );
             if( r ) {
+                r.beginEdit();
                 Ext.iterate( torrent, function(key,value) {
                     r.set( key, value );
                     if( key == 'name' )
                         r.set( 'collatedName', Ext.util.Format.lowercase(value.trim()) );
                 } );
+                r.endEdit();
             } else { // new torrent
                 if( torrent.name )
                     torrent.collatedName = Ext.util.Format.lowercase(torrent.name.trim());
