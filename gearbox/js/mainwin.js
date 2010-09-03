@@ -242,6 +242,7 @@ Ext.namespace( 'Transmission' );
         var viewMenu = new Ext.menu.Menu( { defaultType: 'menucheckitem', items: [
             { text: 'Compact View', id: 'compact-view', listeners: { checkchange: checkboxHandler } },
             '-',
+            { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Activity',  id: menuSortModePrefix+'activity' },
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Age',       id: menuSortModePrefix+'age' },
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Name',      id: menuSortModePrefix+'name' },
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Progress',  id: menuSortModePrefix+'progress' },
@@ -336,11 +337,17 @@ Ext.namespace( 'Transmission' );
 
     function onStoreChangedIdle( )
     {
+        var store = Torrent.store;
+        store.suspendEvents(false);
+
         updateActionSensitivity( );
         rebuildTrackerFilter( );
         resort( );
         refilter( );
         isStoreUpdatePending = false;
+
+        store.resumeEvents();
+        store.fireEvent('datachanged', store);
     }
 
     function onStoreChanged( )
@@ -368,30 +375,6 @@ Ext.namespace( 'Transmission' );
         Torrent.store.addListener( 'update', onStoreChanged );
         Torrent.store.addListener( 'add', onRowsAdded );
         return torrentView;
-    }
-
-    function setToolbarVisible( b )
-    {
-        //Ext.getCmp( 'show-toolbar' ).setChecked( b );
-        Ext.getCmp( 'mainwin-toolbar' ).setVisible( b );
-        myPrefs.set( { 'show-toolbar': b } );
-        that.doLayout( );
-    }
-
-    function setFilterbarVisible( b )
-    {
-        //Ext.getCmp( 'show-filterbar' ).setChecked( b );
-        Ext.getCmp( 'mainwin-filterbar' ).setVisible( b );
-        myPrefs.set( { 'show-filterbar': b } );
-        that.doLayout( );
-    }
-
-    function setStatusbarVisible( b )
-    {
-        //Ext.getCmp( 'show-statusbar' ).setChecked( b );
-        Ext.getCmp( 'mainwin-statusbar' ).setVisible( b );
-        myPrefs.set( { 'show-statusbar': b } );
-        that.doLayout( );
     }
 
     trackersStr = '';
@@ -487,6 +470,7 @@ Ext.namespace( 'Transmission' );
         var desc = myPrefs.getBool('sort-reversed');
 
         switch( myPrefs.get('sort-mode') ) {
+            case 'activity':  fieldName = 'rateXfer';     desc=!desc; break;
             case 'age':       fieldName = 'addedDate';    desc=!desc; break;
             case 'progress':  fieldName = 'percentDone';  break;
             case 'ratio':     fieldName = 'uploadRatio';  break;
@@ -505,6 +489,7 @@ Ext.namespace( 'Transmission' );
     {
         var doSort = false;
         var doFilter = false;
+        var doLayout = false;
         var doTurtleTooltip = false;
 
         for( var i=0, n=keys.length; i<n; ++i )
@@ -524,15 +509,18 @@ Ext.namespace( 'Transmission' );
                     break;
 
                 case 'show-toolbar':
-                    setToolbarVisible( myPrefs.getBool( key ) );
+                    Ext.getCmp('mainwin-toolbar').setVisible( myPrefs.getBool(key) );
+                    doLayout = true;
                     break;
 
                 case 'show-filterbar':
-                    setFilterbarVisible( myPrefs.getBool( key ) );
+                    Ext.getCmp('mainwin-filterbar').setVisible( myPrefs.getBool(key) );
+                    doLayout = true;
                     break;
 
                 case 'show-statusbar':
-                    setStatusbarVisible( myPrefs.getBool( key ) );
+                    Ext.getCmp('mainwin-statusbar').setVisible( myPrefs.getBool(key) );
+                    doLayout = true;
                     break;
 
                 case 'compact-view': {
@@ -578,9 +566,10 @@ Ext.namespace( 'Transmission' );
 
         if( doSort )
             resort( );
-
         if( doFilter )
             refilter( );
+        if( doLayout )
+            that.doLayout( );
 
         if( doTurtleTooltip ) {
             var s;
