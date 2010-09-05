@@ -120,6 +120,9 @@ Torrent.PRIORITY_LOW     = -1;
 Torrent.PRIORITY_NORMAL  = 0;
 Torrent.PRIORITY_HIGH    = 1;
 
+Torrent.TR_RATIOLIMIT_GLOBAL    = 0;
+Torrent.TR_RATIOLIMIT_SINGLE    = 1;
+Torrent.TR_RATIOLIMIT_UNLIMITED = 2;
 
 Ext.apply( Torrent.Record.prototype, {
 
@@ -168,6 +171,22 @@ Ext.apply( Torrent.Record.prototype, {
     isActive: function( ) { return this.peersSendingToUs()>0 || this.peersGettingFromUs()>0 || this.isVerifying(); },
     haveTotal: function( ) { return this.haveUnchecked() + this.haveValid(); },
     percentComplete: function( ) { return this.haveTotal() * 100.0 / this.sizeWhenDone(); },
+
+    getSeedRatio: function( ) {
+        var ratio;
+        switch( this.data.seedRatioMode ) {
+            case Torrent.TR_RATIOLIMIT_GLOBAL:
+                ratio = Torrent.prefs.getBool('seedRatioLimited') ? Torrent.prefs.getNumber('seedRatioLimit') : -1;
+                break;
+            case Torrent.TR_RATIOLIMIT_SINGLE:
+                ratio = this.data.seedRatioLimit;
+                break;
+            default: /* Torrent.RATIOLIMIT_UNLIMITED */
+                ratio = -1;
+                break;
+        }
+        return ratio;
+    },
 
     getError: function( ) {
         var s = this.data.errorString;

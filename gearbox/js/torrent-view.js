@@ -45,8 +45,8 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         var isMagnet = rec.isMagnet( );
         var isDone = rec.isDone( );
         var isSeed = rec.isSeed( );
-        var seedRatio;
-        var hasSeedRatio = false;//FIXME tor.getSeedRatio( seedRatio );
+        var seedRatio = rec.getSeedRatio( );
+        var hasSeedRatio = seedRatio > 0;
         var str;
 
         if( isMagnet ) // magnet link with no metadata
@@ -106,7 +106,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
                 // {1} is how much we've uploaded,
                 // {2} is our upload-to-download ratio,
                 // {3} is the ratio we want to reach before we stop uploading
-                str = String.format( "{0}, uploaded {1} (Ratio: {2} Goal {3})",
+                str = String.format( "{0}, uploaded {1} (Ratio: {2} Goal: {3})",
                         Transmission.fmt.size( rec.haveTotal( ) ),
                         Transmission.fmt.size( rec.uploadedEver( ) ),
                         Transmission.fmt.ratioString( rec.uploadRatio( ) ),
@@ -293,20 +293,13 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         var strings = [];
         var percentDone;
 
-        if( record.isMagnet( ) )
-            percentDone = tor.metadataPercentComplete;
-        else if( record.isSeeding( ) )
+        if( record.isSeeding( ) )
         {
-            /* FIXME
-            var seedRatio;
-            if( record.getSeedRatio( seedRatio ) )
-                percentDone = Math.min( record.uploadRatio( ) / seedRatio, 1 );
-            else
-            */
-                percentDone = 1;
+            var seedRatio = record.getSeedRatio( );
+            percentDone = seedRatio > 0 ? Math.min( record.uploadRatio( ) / seedRatio, 1 ) : 1;
         }
         else
-            percentDone = record.percentDone( );
+            percentDone = record.isMagnet( ) ? tor.metadataPercentComplete : record.percentDone( );
 
         if( isPaused )
                 strings.push( '<div style="opacity:0.55">' );
