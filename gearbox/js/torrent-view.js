@@ -242,24 +242,41 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         return str;
     },
 
-    generateProgressbarHtml: function( percentDone/*[0..1]*/, showText )
+    generateProgressbarHtml: function( percentDone/*[0..1]*/, showText, record )
     {
+        var tor = record.data;
         var widthPct = Math.floor( 100 * percentDone );
-        var doneBg = '#228b22'; // forestgreen
-        var doneFg = 'white';
-        var remainBg = 'white';
-        var remainFg = 'black';
+        var statusClass;
+
+        switch( record.activity( ) )
+        {
+            case Torrent.STATUS_CHECK:
+            case Torrent.STATUS_DOWNLOAD:
+                if( record.isMagnet( ) )
+                    statusClass = "magnet";
+                else
+                    statusClass = "download";
+                break;
+            case Torrent.STATUS_SEED:
+                statusClass = "seed";
+                break;
+            //case Torrent.STATUS_CHECK_WAIT:
+            //case Torrent.STATUS_STOPPED:
+            default:
+                statusClass = "stopped";
+                break;
+        }
 
         var text = ['<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;">',
                     '<div style="width:',widthPct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
-                      '<div style="color:',doneFg,'; background-color:',doneBg,'; width:',(widthPct?Math.floor(100*(100.0/widthPct)):0),'%">' ];
+                    '<div class="torrent_progress_bar ',statusClass,'"; style="width:',(widthPct?Math.floor(100*(100.0/widthPct)):0),'%">' ];
         if( showText )
                 text.push( '<span>',widthPct,'%</span>' );
         else
                 text.push( '&nbsp;' );
         text.push( '</div>',
                     '</div>',
-                    '<div style="color:',remainFg,'; background-color:',remainBg,'"><span>' );
+                    '<div class="torrent_progress_bar ',statusClass,' remain"><span>' );
         if( showText )
                 text.push( '<span>', widthPct, '%</span>' );
         else
@@ -274,6 +291,22 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         var icon = this.getIcon( tor );
         var isPaused = record.isPaused( );
         var strings = [];
+        var percentDone;
+
+        if( record.isMagnet( ) )
+            percentDone = tor.metadataPercentComplete;
+        else if( record.isSeeding( ) )
+        {
+            /* FIXME
+            var seedRatio;
+            if( record.getSeedRatio( seedRatio ) )
+                percentDone = Math.min( record.uploadRatio( ) / seedRatio, 1 );
+            else
+            */
+                percentDone = 1;
+        }
+        else
+            percentDone = record.percentDone( );
 
         if( isPaused )
                 strings.push( '<div style="opacity:0.55">' );
@@ -281,8 +314,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         if( this.isCompact )
         {
             var shortStatus = this.getShortStatusString( record, tor );
-            var percentDone = Math.floor( 100 * record.percentDone( ) ); // [0..100]
-            var progressbarHtml = this.generateProgressbarHtml( record.percentDone( ), true );
+            var progressbarHtml = this.generateProgressbarHtml( percentDone, true, record );
 
             strings.push( '<img style="float:left; padding-right:10px; width:', this.iconSize, 'px; height:', this.iconSize, 'px;" src="', icon, '"/>',
                           '<div style="float:right;">',
@@ -295,7 +327,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         {
             var statusStr = this.getStatusString( record, tor );
             var progressStr = this.getProgressString( record, tor );
-            var progressbarHtml = this.generateProgressbarHtml( record.percentDone( ), false );
+            var progressbarHtml = this.generateProgressbarHtml( percentDone, false, record );
 
             strings.push( '<div style="display:table">',
                           '<div style="display:table-cell; vertical-align:middle;"><img style="width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>&nbsp;</div>',

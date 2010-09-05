@@ -72,3 +72,28 @@ html, body {
     -moz-user-select: none;
     -khtml-user-select: none;
 }
+
+div.torrent_progress_bar.magnet {
+    background-color: #e58181;
+}
+div.torrent_progress_bar.magnet.remain {
+    background-color: #eee;
+}
+div.torrent_progress_bar.download {
+    background-color: #41a6f6;
+}
+div.torrent_progress_bar.download.remain {
+    background-color: #eee;
+}
+div.torrent_progress_bar.seed {
+    background-color: #3cc350;
+}
+div.torrent_progress_bar.seed.remain {
+    background-color: #45e25d;
+}
+div.torrent_progress_bar.stopped {
+    background-color: #b0b0b0;
+}
+div.torrent_progress_bar.stopped.remain {
+    background-color: #eee;
+}
