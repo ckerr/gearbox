@@ -22,6 +22,7 @@ Ext.onReady(function()
 {
     Transmission.imgRoot = './gearbox/images';
     Ext.BLANK_IMAGE_URL = Transmission.imgRoot + '/s.gif';
+    Ext.USE_NATIVE_JSON = true;
 
     Ext.QuickTips.init();
     var config = { };
