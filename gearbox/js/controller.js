@@ -13,67 +13,74 @@
  * GNU General Public License for more details.
  */
 
-Ext.namespace( 'Transmission' );
-
-(function()
+Transmission.Controller = Ext.extend( Ext.util.Observable,
 {
-    var that;
-    var prefs;
-    var session;
-    var mainwin;
+    prefs : null,
+    session : null,
 
-    function isDisplaySmall( )
-    {
+    isDisplaySmall : function(){
         return Ext.lib.Dom.getViewWidth() <= 480;
-    }
+    },
 
-    function getDialogConfig( )
-    {
-        var config = { };
-        config.session = session;
-        config.prefs = prefs;
-        if( isDisplaySmall( ) )
-        {
+    getDialogConfig : function(){
+        var config = { session: this.session, prefs: this.prefs };
+        if( this.isDisplaySmall() ) {
             config.width = Ext.lib.Dom.getViewWidth();
             config.height = Ext.lib.Dom.getViewHeight();
         }
         return config;
-    }
+    },
 
-    Transmission.Controller = Ext.extend( Ext.util.Observable,
-    {
-        showPrefs: function( )
-        {
-             new Transmission.PrefsDialog( getDialogConfig() ).show();
-        },
-
-        showStats: function( )
-        {
-             new Transmission.StatsDialog( getDialogConfig() ).show();
-        },
-
-        showOpen: function( )
-        {
-            new Transmission.OpenDialog( getDialogConfig() ).show();
-        },
-
-        showDetails: function( cfg )
-        {
-            new Transmission.Details( Ext.apply( getDialogConfig(), cfg ) ).show( );
-        },
-
-        constructor: function( config )
-        {
-            that = this;
-            prefs = config.prefs;
-            session = config.session;
-            mainwin = config.mainwin;
-            Transmission.Controller.superclass.constructor.call( this, config );
-
-            mainwin.addListener( 'onStatsClicked', function() { that.showStats( ); } );
-            mainwin.addListener( 'onPrefsClicked', function() { that.showPrefs( ); } );
-            mainwin.addListener( 'onOpenClicked', function() { that.showOpen( ); } );
-            mainwin.addListener( 'onDetailsClicked', function(cfg) { that.showDetails(cfg); } );
+    showPrefs : function(){
+        var me = this;
+        if(!me.prefsDialog){
+            me.prefsDialog = new Transmission.PrefsDialog(me.getDialogConfig());
+            me.prefsDialog.addListener('close', function(){me.prefsDialog=null;});
         }
-    });
-}());
+        me.prefsDialog.show();
+        me.prefsDialog.focus();
+    },
+
+    showStats : function(){
+        var me = this;
+        if(!me.statsDialog){
+            me.statsDialog = new Transmission.StatsDialog(me.getDialogConfig());
+            me.statsDialog.addListener('close', function(){me.statsDialog=null;});
+        }
+        me.statsDialog.show();
+        me.statsDialog.focus();
+    },
+
+    showOpen : function() {
+        var me = this;
+        if(!me.openDialog){
+            me.openDialog = new Transimssion.OpenDialog(me.getDialogConfig());
+            me.openDialog.addListener('close',function(){me.openDialog=null;});
+        }
+        me.openDialog.show();
+        me.openDialog.focus();
+    },
+
+    showDetails : function(cfg){
+        var me = this;
+        if(me.detailsDialog)
+            me.detailsDialog.close(); // FIXME: reuse the same dialog?
+        me.detailsDialog = new Transmission.Details(Ext.apply(me.getDialogConfig(),cfg));
+        me.detailsDialog.addListener('close',function(){me.detailsDialog=null;});
+        me.detailsDialog.show();
+        me.detailsDialog.focus();
+    },
+
+    constructor : function(config){
+        var me = this;
+        var mainwin = config.mainwin;
+        this.prefs = config.prefs;
+        this.session = config.session;
+        Transmission.Controller.superclass.constructor.call( this, config );
+
+        mainwin.addListener( 'onStatsClicked', this.showStats, this );
+        mainwin.addListener( 'onPrefsClicked', this.showPrefs, this );
+        mainwin.addListener( 'onOpenClicked', this.showOpen, this );
+        mainwin.addListener( 'onDetailsClicked', this.showDetails, this );
+    }
+});
