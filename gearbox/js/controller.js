@@ -54,7 +54,7 @@ Transmission.Controller = Ext.extend( Ext.util.Observable,
     showOpen : function() {
         var me = this;
         if(!me.openDialog){
-            me.openDialog = new Transimssion.OpenDialog(me.getDialogConfig());
+            me.openDialog = new Transmission.OpenDialog(me.getDialogConfig());
             me.openDialog.addListener('close',function(){me.openDialog=null;});
         }
         me.openDialog.show();
