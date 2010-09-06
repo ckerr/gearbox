@@ -81,8 +81,54 @@ Torrent.fields = [
 
 
 Torrent.Record = Ext.data.Record.create( Torrent.fields );
+
+// create the derived fields when necessary
+Torrent.Record.prototype.set = function(key,val){
+    Torrent.Record.superclass.set.call(this, key, val);
+    if(this.isModified(key)){
+        switch(key){
+            case 'name':
+                this.set('collatedName', Ext.util.Format.lowercase(val.trim()));
+                break;
+            case 'rateDownload':
+            case 'rateUpload':
+                this.set('rateXfer', this.data.rateUpload + this.data.rateDownload);
+                break;
+            case 'trackers': {
+                var trackers = this.data.trackers;
+                for(var i=0; i<trackers.length; ++i) {
+                    var t = trackers[i];
+                    t.uri = parseUri(t.announce);
+                    t.host = getHost(t.uri);
+                    t.readableHost = getNameFromHost(t.host);
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+};
+
 Torrent.reader = new Ext.data.JsonReader( { idProperty: 'id', root: 'torrents', fields: Torrent.Record }, Torrent.Record );
+
 Torrent.store = new Ext.data.Store( { reader: Torrent.reader } );
+
+// create the derived fields when necessary
+Torrent.store.addListener( 'add', function( store, records, index ) {
+    for( var i=0, n=records.length; i<n; ++i ) {
+        var d = records[i].data;
+        d.collatedName = Ext.util.Format.lowercase(d.name.trim());
+        d.rateXfer = (d.rateUpload||0) + (d.rateDownload||0);
+        var trackers = d.trackers;
+        for(var j=0; j<trackers.length; ++j) {
+            var t = trackers[j];
+            t.uri = parseUri(t.announce);
+            t.host = getHost(t.uri);
+            t.readableHost = getNameFromHost(t.host);
+        }
+}
+});
 
 Torrent.buildKeyArray = function( mode )
 {

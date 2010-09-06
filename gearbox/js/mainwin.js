@@ -208,13 +208,6 @@ Ext.namespace( 'Transmission' );
 
     var filterTrackerPrefix = 'filter-tracker-';
 
-    function getNameFromHost( domain )
-    {
-        var pos = domain.lastIndexOf('.');
-        var name = pos==-1 ? domain : domain.slice(0,pos);
-        return Ext.util.Format.capitalize( name );
-    }
-
     function updateTrackerMenuButton( )
     {
         var e = Ext.getCmp('filterbar-tracker');
@@ -387,9 +380,7 @@ Ext.namespace( 'Transmission' );
             var trackers = allrecs[i].data.trackers;
             for( var j=0; j<trackers.length; ++j ) {
                 var tracker = trackers[j];
-                tracker.host = tracker.host || getHost( tracker.announce );
-                var name = getNameFromHost( tracker.host );
-                hash[name] = tracker.host;
+                hash[tracker.readableHost] = tracker.host;
             }
         }
 

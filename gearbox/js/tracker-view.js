@@ -58,14 +58,14 @@ TrackerView = Ext.extend( Ext.Container,
         var success_markup_begin = '<span style="color:#008B00">';
         var success_markup_end = '</span>';
 
-        var uri = parseUri( record.data.announce );
         strings.push( '<div style="display:table; margin: 2px;">');
-        strings.push( '<img style="display:table-cell; margin-left: 4px; margin-right: 8px;" src="', uri.protocol, '://', uri.domain, '/favicon.ico" width="16" height="16"/>' );
+
+        strings.push( '<img style="display:table-cell; margin-left: 4px; margin-right: 8px;" src="http://', record.data.host, '/favicon.ico" width="16" height="16"/>' );
         // hostname
         //
         strings.push( '<div style="display:table-cell"/>' );
         strings.push( record.data.isBackup ? '<i>' : '<b>' );
-        strings.push( uri.domain, ':', uri.port );
+        strings.push( record.data.uri.domain, ':', record.data.uri.port );
         strings.push( record.data.isBackup ? '</i>' : '</b>' );
 
         // announce & scrape info
@@ -283,6 +283,16 @@ TrackerView = Ext.extend( Ext.Container,
         this.session.removeTrackers( this.torrentId, urls );
     },
 
+    onRecordsLoaded: function( store, records, options )
+    {
+        for( var i=0, n=records.length; i<n; ++i )
+        {
+            var data = records[i].data;
+            data.uri = data.uri || parseUri(data.announce);
+            data.host = getHost(data.uri);
+        }
+    },
+
     constructor: function( config_in )
     {
         var me = this;
@@ -315,7 +325,8 @@ TrackerView = Ext.extend( Ext.Container,
             {name: 'scrapeState', type: 'int'},
             {name: 'scrape', type: 'string'},
             {name: 'seederCount', type: 'int'},
-            {name: 'tier', type: 'int'}
+            {name: 'tier', type: 'int'},
+            {name: 'uri', type: 'auto'}
         ]);
 
         var reader = new Ext.data.JsonReader({
@@ -324,6 +335,7 @@ TrackerView = Ext.extend( Ext.Container,
                 fields: record }, record );
 
         this.store = new Ext.data.Store({ reader: reader });
+        this.store.addListener( 'load', this.onRecordsLoaded, this );
 
         var imgDir = Transmission.imgRoot + '/16x16/actions';
         var config = Ext.apply( {}, config_in, { layout : 'border', items: [

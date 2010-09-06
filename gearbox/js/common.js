@@ -57,14 +57,21 @@ Number.prototype.toTruncFixed = function( place ) {
         return ret.toFixed( place );
 }
 
-function getHost( sourceUri )
+function getHost( uri )
 {
-    var domain = parseUri(sourceUri).domain;
+    var domain = uri.domain;
     var p = domain.split('.');
     if( p.length >= 2 )
         return p[p.length-2] + '.' + p[p.length-1];
     else
         return domain;
+}
+
+function getNameFromHost( domain )
+{
+    var pos = domain.lastIndexOf('.');
+    var name = pos==-1 ? domain : domain.slice(0,pos);
+    return Ext.util.Format.capitalize( name );
 }
 
 /* parseUri JS v0.1, by Steven Levithan (http://badassery.blogspot.com)

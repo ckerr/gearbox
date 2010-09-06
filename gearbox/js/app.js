@@ -52,17 +52,9 @@ Ext.onReady(function()
             var r = Torrent.store.getById( torrent.id );
             if( r ) {
                 r.beginEdit();
-                Ext.iterate( torrent, function(key,value) {
-                    r.set( key, value );
-                    if( key == 'name' )
-                        r.set( 'collatedName', Ext.util.Format.lowercase(value.trim()) );
-                } );
-                r.set('rateXfer', r.data.rateUpload + r.data.rateDownload );
+                Ext.iterate( torrent, function(key,value) { r.set( key, value ); } );
                 r.endEdit();
             } else { // new torrent
-                if( torrent.name )
-                    torrent.collatedName = Ext.util.Format.lowercase(torrent.name.trim());
-                torrent.rateXfer = torrent.rateUpload + torrent.rateDownload;
                 addme.torrents.push( torrent );
                 newIds.push( torrent.id );
             }
