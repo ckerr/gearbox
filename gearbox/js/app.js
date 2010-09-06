@@ -38,6 +38,8 @@ Ext.onReady(function()
     // get the torrents
     config.session.initTorrents( );
 
+    Transmission.prefs = config.prefs;
+
     config.session.addListener( 'onTorrentsChanged', function( args )
     {
         var newIds = [ ];

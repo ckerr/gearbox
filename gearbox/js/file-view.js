@@ -36,6 +36,8 @@ FileView = Ext.extend( Ext.Container,
     Low: -1,
     Normal: 0,
     High: 1,
+    WantedCol: 2,
+    PriorityCol: 3,
 
     /* return Yes, No, or Mixed */
     isSubtreeWanted: function( record )
@@ -168,8 +170,10 @@ FileView = Ext.extend( Ext.Container,
                     var row = { path: path,
                                 name: name,
                                 children: [ ],
-                                bytesCompleted: 0,
+                                bytesCompleted: files[i].bytesCompleted,
                                 collatedName: collatedName,
+                                size: files[i].length,
+                                progress: files[i].length ? files[i].bytesCompleted / files[i].length : 1,
                                 _id: isLeaf ? i : _id--,
                                 _parent: _parent ? _parent._id : null,
                                 _parentObj: _parent,
@@ -203,9 +207,49 @@ FileView = Ext.extend( Ext.Container,
         store.expandNode( store.getAt( 0 ) );
     },
 
+    getSize: function( record )
+    {
+        var ret = { size:0, bytesCompleted:0 };
+        if( record.data._is_leaf )
+        {
+            ret.size = record.data.size;
+            ret.bytesCompleted = record.data.bytesCompleted;
+        }
+        else
+        {
+            for( var i=0, n=record.data.children.length; i<n; ++i )
+            {
+                var child = this.store.getById( record.data.children[i] );
+                var s = this.getSize( child );
+                ret.size += s.size;
+                ret.bytesCompleted += s.bytesCompleted;
+            }
+        }
+
+        return ret;
+    },
+
+    getProgress: function( record )
+    {
+        var s = this.getSize( record );
+        return s.size > 0 ? s.bytesCompleted / s.size : 1
+    },
+
     nameRenderer: function( value, metaData, record, rowIndex, colIndex, store )
     {
-        return [ '<img src="', record.data.icon, '"/> ', record.data.name ].join('');
+        return [ '<img src="', record.data.icon, '"/> ', record.data.name, ' (', Transmission.fmt.size( this.getSize( record ).size ), ')' ].join('');
+    },
+
+    progressRenderer: function( value, metaData, record, rowIndex, colIndex, store )
+    {
+        var progress = Math.floor( 100 * record.data.progress );
+        var strings = [ '<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;">',
+                        '<div style="width:',progress,'%; overflow:hidden; position:absolute; top:0; left:0;">',
+                        '<div class="torrent_progress_bar download"; style="width:',(progress?Math.floor(100*(100.0/progress)):0),'%">',
+                        '<span>', progress, '%</span>', '</div>', '</div>',
+                        '<div class="torrent_progress_bar download remain"><span>',
+                        '<span>', progress, '%</span>', '</div>', '</div>' ];
+        return strings.join('');
     },
 
     wantedRenderer: function( value, metaData, record, rowIndex, colIndex, store )
@@ -241,8 +285,8 @@ FileView = Ext.extend( Ext.Container,
         var store = grid.getStore();
         var record = store.getAt(rowIndex);
         switch( columnIndex ) {
-            case 1: this.onWantedClicked( store, rowIndex, record ); break;
-            case 2: this.onPriorityClicked( store, rowIndex, record ); break;
+            case this.WantedCol: this.onWantedClicked( store, rowIndex, record ); break;
+            case this.PriorityCol: this.onPriorityClicked( store, rowIndex, record ); break;
             default: break; // nothing interesting to do for the other cols
         }
     },
@@ -263,6 +307,7 @@ FileView = Ext.extend( Ext.Container,
             {name: 'bytesCompleted', type: 'int'},
             {name: 'wanted', type: 'int'},
             {name: 'priority', type: 'int'},
+            {name: 'progress', type: 'float'},
             {name: 'path', type: 'string'},
             {name: '_id', type: 'int'},
             {name: '_parent', type: 'auto'},
@@ -286,6 +331,7 @@ FileView = Ext.extend( Ext.Container,
             master_column_id : 'file-list-column-name',
             columns: [
                 { header: 'Name', menuDisabled: true, sortable: true, dataIndex: 'name', width: 100, id: 'file-list-column-name', scope: this, renderer: this.nameRenderer },
+                { header: 'Progress', menuDisabled: true, sortable: true, dataIndex: 'progress', width: 60, scope: this, renderer: this.progressRenderer },
                 { header: 'Want', menuDisabled: true, sortable: true, dataIndex: 'wanted', resizable: false, width: 40, scope: this, renderer: this.wantedRenderer },
                 { header: 'Priority', menuDisabled: true, sortable: true, dataIndex: 'priority', resizable: false, width: 50, scope: this, renderer: this.priorityRenderer } ]
         });
@@ -330,6 +376,7 @@ FileView = Ext.extend( Ext.Container,
             record.beginEdit();
             record.set( 'wanted', this.isSubtreeWanted( record ) );
             record.set( 'priority', this.getPriority( record ) );
+            record.set( 'progress', this.getProgress( record ) );
             record.endEdit();
         }
 

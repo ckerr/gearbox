@@ -1,4 +1,4 @@
-- details > files: no % done
+x details > files: no % done
 - details > options: doesn't exist
 - automatically cat the gearbox source files together and minify it
 x clicking 'want' seems to not always work right?
