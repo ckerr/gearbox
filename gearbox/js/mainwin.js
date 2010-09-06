@@ -251,7 +251,7 @@ Ext.namespace( 'Transmission' );
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by State',     id: menuSortModePrefix+'state' },
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Time Left', id: menuSortModePrefix+'time-left' },
             '-',
-            { text: 'Reverse sort', id: 'sort-reversed', listeners: { checkchange: checkboxHandler } }
+            { text: 'Reverse Sort Order', id: 'sort-reversed', listeners: { checkchange: checkboxHandler } }
         ]});
 
         var iconPrefix = Transmission.imgRoot+'/16x16';
