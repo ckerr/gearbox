@@ -28,6 +28,13 @@ Ext.namespace( 'Transmission' );
         myPrefs.set( o );
     }
 
+    function spinnerHandler( e )
+    {
+        var o = { };
+        o[e.id] = e.getValue();
+        myPrefs.set( o );
+    }
+
     function checkboxHandler( e )
     {
         var o = { };
@@ -93,6 +100,14 @@ Ext.namespace( 'Transmission' );
                           width: numFieldWidth,
                           xtype: 'combo' };
 
+    var spinnerDefaults = { allowDecimals: false,
+                            incrementValue: 1,
+                            listeners: { 'change': spinnerHandler },
+                            minValue: 0,
+                            maxValue: 2147483647,
+                            width: numFieldWidth,
+                            xtype: 'spinnerfield' };
+
     function createTorrentTab( )
     {
         return new Ext.FormPanel( {
@@ -125,22 +140,6 @@ Ext.namespace( 'Transmission' );
         }
         return a;
     }
-
-    var peerLimitsList = [
-        [ 10, 10 ],
-        [ 20, 20 ],
-        [ 30, 30 ],
-        [ 40, 40 ],
-        [ 50, 50 ],
-        [ 75, 75 ],
-        [ 100, 100 ],
-        [ 150, 150 ],
-        [ 200, 200 ],
-        [ 250, 250 ],
-        [ 300, 300 ],
-        [ 350, 350 ],
-        [ 400, 400 ]
-    ];
 
     var defaultSpeeds = [
         [ 10, Transmission.fmt.speed(10) ],
@@ -227,6 +226,7 @@ Ext.namespace( 'Transmission' );
 
                 case 'combo':
                 case 'numberfield':
+                case 'spinnerfield':
                 case 'textfield':
                     e.setValue( myPrefs.get(key) );
                     break;
@@ -316,12 +316,22 @@ Ext.namespace( 'Transmission' );
             labelWidth: 133,
             items: [
                 { xtype: 'fieldset', title: 'Incoming Peers', cls: 'hig-fieldset', items: [
-                      { xtype: 'numberfield', allowNegative: false, allowDecimals: false, id: 'peer-port', fieldLabel: 'Port for incoming peers', width: numFieldWidth }
+                      Ext.applyIf( { id: 'peer-port',
+                                     fieldLabel: 'Port for incoming peers',
+                                     }, spinnerDefaults )
                     , { xtype: 'checkbox', handler: checkboxHandler, hideLabel: true, id: 'peer-port-random-on-start', boxLabel: 'Pick a random port when Transmission starts' }
                     , { xtype: 'checkbox', handler: checkboxHandler, hideLabel: true, id: 'port-forwarding-enabled', boxLabel: 'Use UPnP or NAT-PMP port forwarding from my router' } ] }
                 , { xtype: 'fieldset', title: 'Limits', cls: 'hig-fieldset', items: [
-                    Ext.applyIf( { id: 'peer-limit-per-torrent', fieldLabel: 'Maximum peers per torrent', store: peerLimitsList }, comboDefaults ),
-                    Ext.applyIf( { id: 'peer-limit-global', fieldLabel: 'Maximum peers overall', store: peerLimitsList }, comboDefaults )
+                      Ext.applyIf( { id: 'peer-limit-per-torrent',
+                                     fieldLabel: 'Maximum peers per torrent',
+                                     maxValue: 300,
+                                     incrementValue: 5,
+                                     }, spinnerDefaults ),
+                      Ext.applyIf( { id: 'peer-limit-global',
+                                     fieldLabel: 'Maximum peers overall',
+                                     maxValue: 3000,
+                                     incrementValue: 5,
+                                     }, spinnerDefaults )
                 ] }
             ]
         } );
