@@ -93,14 +93,11 @@ Ext.namespace( 'Transmission' );
                                     hideLabel: true,
                                     items: [
                                         Ext.applyIf( {
+                                            boxLabel: 'Stop seeding at ratio:',
                                             checked: myPrefs.getBool( 'seedRatioLimited' ),
-                                            id: 'seedRatioLimited'
+                                            id: 'seedRatioLimited',
+                                            width: 200
                                             }, checkboxDefaults ),
-                                        {
-                                            width: 120,
-                                            xtype: 'displayfield',
-                                            value: 'Stop seeding at ratio:'
-                                        },
                                         Ext.applyIf( {
                                             allowDecimals: true,
                                             id: 'seedRatioLimit',
@@ -114,14 +111,11 @@ Ext.namespace( 'Transmission' );
                                     hideLabel: true,
                                     items: [
                                         Ext.applyIf( {
+                                            boxLabel: 'Stop seeding if idle for N minutes:',
                                             checked: myPrefs.getBool( 'idle-seeding-limit-enabled' ),
-                                            id: 'idle-seeding-limit-enabled'
+                                            id: 'idle-seeding-limit-enabled',
+                                            width: 200
                                             }, checkboxDefaults ),
-                                        {
-                                            width: 120,
-                                            xtype: 'displayfield',
-                                            value: 'Stop seeding if idle for N minutes:'
-                                        },
                                         Ext.applyIf( {
                                             id: 'idle-seeding-limit',
                                             incrementValue: 5,
@@ -196,14 +190,11 @@ Ext.namespace( 'Transmission' );
                             hideLabel: true,
                             items: [
                                 Ext.applyIf( {
+                                    boxLabel:[ dnLabel, ':' ].join(''),
                                     checked: myPrefs.getBool( 'speed-limit-down-enabled' ),
                                     id: 'speed-limit-down-enabled',
+                                    width: 180
                                     }, checkboxDefaults ),
-                                {
-                                    width: 160,
-                                    xtype: 'displayfield',
-                                    value: [ dnLabel, ':' ].join('')
-                                },
                                 Ext.applyIf( {
                                     id: 'speed-limit-down',
                                     incrementValue: 5,
@@ -216,14 +207,11 @@ Ext.namespace( 'Transmission' );
                             hideLabel: true,
                             items: [
                                 Ext.applyIf( {
+                                    boxLabel:[ upLabel, ':' ].join(''),
                                     checked: myPrefs.getBool( 'speed-limit-up-enabled' ),
                                     id: 'speed-limit-up-enabled',
+                                    width: 180
                                     }, checkboxDefaults ),
-                                {
-                                    width: 160,
-                                    xtype: 'displayfield',
-                                    value: [ upLabel, ':' ].join('')
-                                },
                                 Ext.applyIf( {
                                     id: 'speed-limit-up',
                                     incrementValue: 5,
