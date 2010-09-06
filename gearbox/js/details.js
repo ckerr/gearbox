@@ -26,6 +26,7 @@ Transmission.Details = Ext.extend( Ext.Window, {
     {
         var text;
         var rec = record;
+        var tor = record.data;
         var na = 'N/A';
         var none = 'None';
 
@@ -118,11 +119,29 @@ Transmission.Details = Ext.extend( Ext.Window, {
         else
             text = none;
         this.errorLabel.setValue( text );
+
+        // LOCATION
+        this.locationLabel.setValue( tor.downloadDir );
+
+        // HASH
+        this.hashLabel.setValue( tor.hashString );
+
+        // PRIVACY
+        text = tor.isPrivate ? 'Private to this tracker -- DHT and PEX disabled' : 'Public torrent';
+        this.privacyLabel.setValue( text );
+
+        // ORIGIN
+        text = [ 'Created by ', tor.creator, ' on ', Transmission.fmt.timestamp( tor.dateCreated ) ].join( '' );
+        this.originLabel.setValue( text );
+
+        // COMMENT
+        this.commentLabel.setValue( tor.comment );
     },
 
     createInfoTab: function( )
     {
         var idSuffix = '-' + Math.floor( Math.random() * 10000000 );
+        var activityLabelId       = 'details-activity-label' + idSuffix;
         var sizeLabelId           = 'details-size-label' + idSuffix;
         var haveLabelId           = 'details-have-label' + idSuffix;
         var availabilityLabelId   = 'details-availability-label' + idSuffix;
@@ -134,8 +153,15 @@ Transmission.Details = Ext.extend( Ext.Window, {
         var remainingTimeLabelId  = 'details-remaining-time-label' + idSuffix;
         var lastActivityLabelId   = 'details-last-activity-label' + idSuffix;
         var errorLabelId          = 'details-error-label' + idSuffix;
+        var detailsLabelId        = 'details-details-label' + idSuffix;
+        var locationLabelId       = 'details-location-label' + idSuffix;
+        var hashLabelId           = 'details-hash-label' + idSuffix;
+        var privacyLabelId        = 'details-privacy-label' + idSuffix;
+        var originLabelId         = 'details-origin-label' + idSuffix;
+        var commentLabelId        = 'details-comment-label' + idSuffix;
 
-        var panel = new Ext.FormPanel( { title: 'Activity', bodyCssClass: 'hig-body', items: [
+        var panel = new Ext.FormPanel( { title: 'Info', bodyCssClass: 'hig-body', autoScroll: true, items: [
+            { xtype: 'displayfield', id: activityLabelId, hideLabel: true, style: 'font-weight:bold;font-size:1.2em;', value: 'Activity' },
             { xtype: 'displayfield', id: sizeLabelId, fieldLabel: 'Torrent-size' },
             { xtype: 'displayfield', id: haveLabelId, fieldLabel: 'Have' },
             { xtype: 'displayfield', id: availabilityLabelId, fieldLabel: 'Availability' },
@@ -146,7 +172,13 @@ Transmission.Details = Ext.extend( Ext.Window, {
             { xtype: 'displayfield', id: runningTimeLabelId, fieldLabel: 'Running Time' },
             { xtype: 'displayfield', id: remainingTimeLabelId, fieldLabel: 'Remaining Time' },
             { xtype: 'displayfield', id: lastActivityLabelId, fieldLabel: 'Last Activity' },
-            { xtype: 'displayfield', id: errorLabelId, fieldLabel: 'Error' }
+            { xtype: 'displayfield', id: errorLabelId, fieldLabel: 'Error' },
+            { xtype: 'displayfield', id: detailsLabelId, hideLabel: true, style: 'font-weight:bold;font-size:1.2em;', value: 'Details' },
+            { xtype: 'displayfield', id: locationLabelId, fieldLabel: 'Location' },
+            { xtype: 'displayfield', id: hashLabelId, fieldLabel: 'Hash' },
+            { xtype: 'displayfield', id: privacyLabelId, fieldLabel: 'Privacy' },
+            { xtype: 'displayfield', id: originLabelId, fieldLabel: 'Origin' },
+            { xtype: 'displayfield', id: commentLabelId, fieldLabel: 'Comment' }
         ]});
 
         this.sizeLabel          = Ext.getCmp( sizeLabelId );
@@ -160,6 +192,11 @@ Transmission.Details = Ext.extend( Ext.Window, {
         this.remainingTimeLabel = Ext.getCmp( remainingTimeLabelId );
         this.lastActivityLabel  = Ext.getCmp( lastActivityLabelId );
         this.errorLabel         = Ext.getCmp( errorLabelId );
+        this.locationLabel      = Ext.getCmp( locationLabelId );
+        this.hashLabel          = Ext.getCmp( hashLabelId );
+        this.privacyLabel       = Ext.getCmp( privacyLabelId );
+        this.originLabel        = Ext.getCmp( originLabelId );
+        this.commentLabel       = Ext.getCmp( commentLabelId );
 
         return panel;
     },
