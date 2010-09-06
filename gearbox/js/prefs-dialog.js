@@ -419,6 +419,7 @@ Ext.namespace( 'Transmission' );
             var config = Ext.apply( { }, config_in, {
                 width: 433,
                 height: 380,
+                layout: 'fit',
                 cls: 'hig-dialog',
                 title: 'Preferences',
                 items: createWorkArea( myPrefs )
