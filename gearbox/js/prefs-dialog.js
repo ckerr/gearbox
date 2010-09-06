@@ -19,7 +19,7 @@ Ext.namespace( 'Transmission' );
 {
     var myPrefs = null;
     var that = null;
-    var numFieldWidth = 80;
+    var numFieldWidth = 100;
 
     function textfieldHandler( e )
     {
@@ -80,9 +80,51 @@ Ext.namespace( 'Transmission' );
              bodyCssClass: 'hig-body',
             labelWidth: 100,
             items: [ { xtype: 'fieldset', title: 'Adding', cls: 'hig-fieldset', items: [
-                         { id: 'start-added-torrents', xtype: 'checkbox', hideLabel: true, boxLabel: 'Start when added', handler: checkboxHandler },
+                         { id: 'start-added-torrents', xtype: 'checkbox', hideLabel: true, boxLabel: 'Start when added', handler: checkboxHandler }
+                         ] },
+                     { xtype: 'fieldset', title: 'Downloading', cls: 'hig-fieldset', items: [
                          { id: 'rename-partial-files', xtype: 'checkbox', hideLabel: true, boxLabel: 'Append ".part" to incomplete files\' names', handler: checkboxHandler },
-                         { id: 'download-dir', xtype: 'textfield', fieldLabel: 'Save to location', width: 150, listeners: { change: textfieldHandler } } ] },
+                         { id: 'download-dir', xtype: 'textfield', fieldLabel: 'Save to location', width: 150, listeners: { change: textfieldHandler } },
+                         {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            width: 320, // FIXME auto width is too wide?
+                            items: [
+                                Ext.applyIf( {
+                                    boxLabel: 'Keep incomplete files in:',
+                                    checked: myPrefs.getBool( 'incomplete-dir-enabled' ),
+                                    id: 'incomplete-dir-enabled',
+                                    width: 160
+                                    }, checkboxDefaults ),
+                                {
+                                    xtype: 'textfield',
+                                    id: 'incomplete-dir',
+                                    listeners: { change: textfieldHandler },
+                                    value: myPrefs.get( 'incomplete-dir' ),
+                                    width: 150
+                                }
+                            ]
+                         },
+                         {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            width: 320, // FIXME auto width is too wide?
+                            items: [
+                                Ext.applyIf( {
+                                    boxLabel: 'Call script when complete:',
+                                    checked: myPrefs.getBool( 'script-torrent-done-enabled' ),
+                                    id: 'script-torrent-done-enabled',
+                                    width: 160
+                                    }, checkboxDefaults ),
+                                {
+                                    xtype: 'textfield',
+                                    id: 'script-torrent-done-filename',
+                                    listeners: { change: textfieldHandler },
+                                    value: myPrefs.get( 'script-torrent-done-filename' ),
+                                    width: 150
+                                }
+                            ]
+                         } ] },
                          {
                             xtype: 'fieldset',
                             title: 'Seeding Limits',
@@ -91,6 +133,7 @@ Ext.namespace( 'Transmission' );
                                 {
                                     xtype: 'compositefield',
                                     hideLabel: true,
+                                    width: 310, // FIXME auto width is too wide?
                                     items: [
                                         Ext.applyIf( {
                                             boxLabel: 'Stop seeding at ratio:',
@@ -109,6 +152,7 @@ Ext.namespace( 'Transmission' );
                                 {
                                     xtype: 'compositefield',
                                     hideLabel: true,
+                                    width: 310, // FIXME auto width is too wide?
                                     items: [
                                         Ext.applyIf( {
                                             boxLabel: 'Stop seeding if idle for N minutes:',
@@ -135,10 +179,7 @@ Ext.namespace( 'Transmission' );
         for( var min=0; min<1440; min+=15 )
         {
             var hr = parseInt( min / 60 );
-            var am = hr < 12;
-            if( hr < 1 ) hr = 12;
-            var str = String.leftPad(hr,2,'0') + ':'
-                     + String.leftPad(min%60,2,'0') + ' ' + (am?'AM':'PM');
+            var str = String.leftPad(hr,2,'0') + ':' + String.leftPad(min%60,2,'0');
             a.push( [ min, str ] );
         }
         return a;
@@ -188,6 +229,7 @@ Ext.namespace( 'Transmission' );
                         {
                             xtype: 'compositefield',
                             hideLabel: true,
+                            width: 300, // FIXME auto width is too wide?
                             items: [
                                 Ext.applyIf( {
                                     boxLabel:[ dnLabel, ':' ].join(''),
@@ -198,13 +240,15 @@ Ext.namespace( 'Transmission' );
                                 Ext.applyIf( {
                                     id: 'speed-limit-down',
                                     incrementValue: 5,
-                                    value: myPrefs.getNumber( 'speed-limit-down' )
+                                    value: myPrefs.getNumber( 'speed-limit-down' ),
+                                    width: 80
                                     }, spinnerDefaults )
                             ]
                         },
                         {
                             xtype: 'compositefield',
                             hideLabel: true,
+                            width: 300, // FIXME auto width is too wide?
                             items: [
                                 Ext.applyIf( {
                                     boxLabel:[ upLabel, ':' ].join(''),
@@ -215,7 +259,8 @@ Ext.namespace( 'Transmission' );
                                 Ext.applyIf( {
                                     id: 'speed-limit-up',
                                     incrementValue: 5,
-                                    value: myPrefs.getNumber( 'speed-limit-up' )
+                                    value: myPrefs.getNumber( 'speed-limit-up' ),
+                                    width: 80
                                     }, spinnerDefaults )
                             ] 
                         }
@@ -226,6 +271,12 @@ Ext.namespace( 'Transmission' );
                     title: 'Temporary Speed Limits',
                     cls: 'hig-fieldset',
                     items: [
+                        {
+                            xtype: 'displayfield',
+                            hideLabel: true,
+                            style: 'font-size:0.85em',
+                            value: 'Override normal speed limits manually or at scheduled times'
+                        },
                         Ext.applyIf( {
                             fieldLabel: dnLabel,
                             id: 'alt-speed-down',
@@ -236,10 +287,36 @@ Ext.namespace( 'Transmission' );
                             id: 'alt-speed-up',
                             incrementValue: 5
                             }, spinnerDefaults ),
-                        { xtype: 'checkbox', hideLabel: true, boxLabel: 'Only at scheduled times', id: 'alt-speed-time-enabled'  },
-                        Ext.applyIf( { store: timeStore, fieldLabel: 'From', id: 'alt-speed-time-begin' }, comboDefaults ),
-                        Ext.applyIf( { store: timeStore, fieldLabel: 'To',   id: 'alt-speed-time-end'   }, comboDefaults ),
-                        Ext.applyIf( { id: 'alt-speed-time-day', xtype: 'combo', fieldLabel: 'On days', width: 100, store: [
+                        {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            width: 300, // FIXME auto width is too wide?
+                            items: [
+                                Ext.applyIf( {
+                                    boxLabel: 'Scheduled times:',
+                                    checked: myPrefs.get( 'alt-speed-time-enabled' ),
+                                    id: 'alt-speed-time-enabled',
+                                    width: 120
+                                    }, checkboxDefaults ),
+                                Ext.applyIf( {
+                                    id: 'alt-speed-time-begin',
+                                    store: timeStore,
+                                    value: myPrefs.get( 'alt-speed-time-begin' ),
+                                    width: 60
+                                    }, comboDefaults ),
+                                {
+                                    xtype: 'displayfield',
+                                    value: 'to'
+                                },
+                                Ext.applyIf( {
+                                    id: 'alt-speed-time-end',
+                                    store: timeStore,
+                                    value: myPrefs.get( 'alt-speed-time-end' ),
+                                    width: 60
+                                    }, comboDefaults )
+                            ]
+                        },
+                        Ext.applyIf( { id: 'alt-speed-time-day', xtype: 'combo', fieldLabel: 'On days', store: [
                             [ 127, 'Everyday' ],
                             [ 62, 'Weekdays' ],
                             [ 65, 'Weekends' ],
@@ -359,6 +436,10 @@ Ext.namespace( 'Transmission' );
                               'speed-limit-down-enabled',
                               'idle-seeding-limit',
                               'idle-seeding-limit-enabled',
+                              'incomplete-dir',
+                              'incomplete-dir-enabled',
+                              'script-torrent-done-enabled',
+                              'script-torrent-done-filename',
                               'alt-speed-up',
                               'alt-speed-down',
                               'alt-speed-time-begin',
