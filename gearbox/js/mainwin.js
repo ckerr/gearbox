@@ -377,7 +377,7 @@ Ext.namespace( 'Transmission' );
         return torrentView;
     }
 
-    trackersStr = '';
+    var trackersStr = '';
 
     function rebuildTrackerFilter( )
     {
