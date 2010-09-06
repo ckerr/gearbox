@@ -32,7 +32,9 @@ Ext.namespace( 'Transmission' );
     {
         var o = { };
         o[e.id] = e.getValue();
-        myPrefs.set( o );
+        if( !e.task )
+            e.task = new Ext.util.DelayedTask( function( o ) { myPrefs.set( o ); }, null, [o] );
+        e.task.delay( 250, null, null, [o] );
     }
 
     function checkboxHandler( e )
