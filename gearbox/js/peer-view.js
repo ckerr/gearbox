@@ -37,7 +37,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
         var peerStore = this.store;
         var peers = record.data.peers;
         var newPeers = [ ];
-         for( var i=0, n=peers.length; i<n; ++i )
+        for( var i=0, n=peers.length; i<n; ++i )
         {
             var peer = peers[i];
 
@@ -52,7 +52,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
                 r.endEdit();
             }
          }
-         Torrent.store.commitChanges();
+         this.store.commitChanges();
 
          // new peers...
          if( addme.peers.length > 0 )
