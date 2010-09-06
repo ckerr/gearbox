@@ -19,7 +19,7 @@ Ext.namespace( 'Transmission' );
 {
     var myPrefs = null;
     var that = null;
-    var numFieldWidth = 100;
+    var numFieldWidth = 80;
 
     function textfieldHandler( e )
     {
@@ -44,48 +44,8 @@ Ext.namespace( 'Transmission' );
 
     function comboHandler( e )
     {
-        var value = e.getValue( );
         var o = { };
-        if( e.id == 'idle' )
-        {
-            if( value < 0 )
-                o['idle-seeding-limit-enabled'] = false;
-            else {
-                o['idle-seeding-limit-enabled'] = true;
-                o['idle-seeding-limit'] = value;
-            }
-        }
-        else if( e.id == 'seedRatio' )
-        {
-            if( value < 0 )
-                o.seedRatioLimited = false;
-            else {
-                o.seedRatioLimited = true;
-                o.seedRatioLimit = value;
-            }
-        }
-        else if( e.id == 'speed-limit-down' )
-        {
-            if( value < 0 )
-                o['speed-limit-down-enabled'] = false;
-            else {
-                o['speed-limit-down-enabled'] = true;
-                o['speed-limit-down'] = value;
-            }
-        }
-        else if( e.id == 'speed-limit-up' )
-        {
-            if( value < 0 )
-                o['speed-limit-up-enabled'] = false;
-            else {
-                o['speed-limit-up-enabled'] = true;
-                o['speed-limit-up'] = value;
-            }
-        }
-        else
-        {
-            o[e.id] = value;
-        }
+        o[e.id] = e.getValue();
         myPrefs.set( o );
     }
 
@@ -100,13 +60,18 @@ Ext.namespace( 'Transmission' );
                           width: numFieldWidth,
                           xtype: 'combo' };
 
-    var spinnerDefaults = { allowDecimals: false,
+    var spinnerDefaults = { allowBlank: false,
+                            allowDecimals: false,
+                            allowNegative: false,
                             incrementValue: 1,
                             listeners: { 'change': spinnerHandler },
                             minValue: 0,
                             maxValue: 2147483647,
                             width: numFieldWidth,
                             xtype: 'spinnerfield' };
+
+    var checkboxDefaults = { handler: checkboxHandler,
+                             xtype: 'checkbox' };
 
     function createTorrentTab( )
     {
@@ -118,11 +83,55 @@ Ext.namespace( 'Transmission' );
                          { id: 'start-added-torrents', xtype: 'checkbox', hideLabel: true, boxLabel: 'Start when added', handler: checkboxHandler },
                          { id: 'rename-partial-files', xtype: 'checkbox', hideLabel: true, boxLabel: 'Append ".part" to incomplete files\' names', handler: checkboxHandler },
                          { id: 'download-dir', xtype: 'textfield', fieldLabel: 'Save to location', width: 150, listeners: { change: textfieldHandler } } ] },
-                     { xtype: 'fieldset', title: 'Stop Seeding a Torrent When', cls: 'hig-fieldset',
-                        defaults: comboDefaults, items: [
-                        { id: 'seedRatio', fieldLabel: 'its Ratio Reaches', store: [ [ -1, 'Unlimited'], [ 0.5, '0.5' ], [ 1, '1' ], [ 2, '2' ], [ 3, '3' ], [ 5, '5' ], [ 10, '10' ], [ 20, '20' ] ] },
-                        { id: 'idle', fieldLabel: 'it\'s idle for', store: [ [ -1, 'Unlimited'], [ 2, '2 minutes' ], [ 5, '5 minutes' ], [ 10, '10 minutes' ], [ 30, '30 minutes' ], [ 60, '1 hour' ], [ 120, '2 hours' ] ] }
-                     ] } ]
+                         {
+                            xtype: 'fieldset',
+                            title: 'Seeding Limits',
+                            cls: 'hig-fieldset',
+                            items: [
+                                {
+                                    xtype: 'compositefield',
+                                    hideLabel: true,
+                                    items: [
+                                        Ext.applyIf( {
+                                            checked: myPrefs.getBool( 'seedRatioLimited' ),
+                                            id: 'seedRatioLimited'
+                                            }, checkboxDefaults ),
+                                        {
+                                            width: 120,
+                                            xtype: 'displayfield',
+                                            value: 'Stop seeding at ratio:'
+                                        },
+                                        Ext.applyIf( {
+                                            allowDecimals: true,
+                                            id: 'seedRatioLimit',
+                                            incrementValue: 0.5,
+                                            value: myPrefs.getNumber( 'seedRatioLimit' )
+                                            }, spinnerDefaults )
+                                    ]
+                                },
+                                {
+                                    xtype: 'compositefield',
+                                    hideLabel: true,
+                                    items: [
+                                        Ext.applyIf( {
+                                            checked: myPrefs.getBool( 'idle-seeding-limit-enabled' ),
+                                            id: 'idle-seeding-limit-enabled'
+                                            }, checkboxDefaults ),
+                                        {
+                                            width: 120,
+                                            xtype: 'displayfield',
+                                            value: 'Stop seeding if idle for N minutes:'
+                                        },
+                                        Ext.applyIf( {
+                                            id: 'idle-seeding-limit',
+                                            incrementValue: 5,
+                                            value: myPrefs.getNumber( 'idle-seeding-limit' )
+                                            }, spinnerDefaults )
+                                    ]
+                                },
+                            ]
+                        }
+            ]
         } );
     }
 
@@ -141,82 +150,11 @@ Ext.namespace( 'Transmission' );
         return a;
     }
 
-    var defaultSpeeds = [
-        [ 10, Transmission.fmt.speed(10) ],
-        [ 25, Transmission.fmt.speed(25) ],
-        [ 40, Transmission.fmt.speed(40) ],
-        [ 50, Transmission.fmt.speed(50) ],
-        [ 75, Transmission.fmt.speed(75) ],
-        [ 100, Transmission.fmt.speed(100) ],
-        [ 125, Transmission.fmt.speed(125) ],
-        [ 150, Transmission.fmt.speed(150) ],
-        [ 175, Transmission.fmt.speed(175) ],
-        [ 200, Transmission.fmt.speed(200) ],
-        [ 250, Transmission.fmt.speed(250) ],
-        [ 300, Transmission.fmt.speed(300) ],
-        [ 500, Transmission.fmt.speed(500) ]
-    ];
-
-    function createSpeedStore( includeUnlimited, currentSpeed )
-    {
-        var speeds = [ ];
-        var currentSpeedStore = [ currentSpeed, Transmission.fmt.speed( currentSpeed ) ];
-
-        if( includeUnlimited )
-            speeds.push( [ -1, 'Unlimited' ] );
-
-        // build the array 'speeds', which is defaultSpeeds + the current speed
-        var added = false;
-        for( var i=0, n=defaultSpeeds.length; i<n; ++i ) {
-            if( !added && ( currentSpeed < defaultSpeeds[i][0] ) ) {
-                speeds.push( currentSpeedStore );
-                added = true;
-            }
-            speeds.push( defaultSpeeds[i] );
-            added |= currentSpeed == defaultSpeeds[i][0];
-        }
-        if( !added )
-            speeds.push( currentSpeedStore );
-      
-        return speeds;
-    }
-
-    function createUpSpeedStore( prefs )
-    {
-        var limit = prefs.get( 'speed-limit-up' ) || 100;
-        return createSpeedStore( true, limit );
-    } 
-
-    function createDownSpeedStore( prefs )
-    {
-        var limit = prefs.get( 'speed-limit-down' ) || 100;
-        return createSpeedStore( true, limit );
-    }
-
-    function createAltUpSpeedStore( prefs )
-    {
-        var limit = prefs.get( 'alt-speed-up' ) || 100;
-        return createSpeedStore( false, limit );
-    }
-
-    function createAltDownSpeedStore( prefs )
-    {
-        var limit = prefs.get( 'alt-speed-down' ) || 100;
-        return createSpeedStore( false, limit );
-    }
-
     function onPrefsChanged( keys )
     {
-        var updateRatio = false;
-        var updateIdle = false;
-
         for( var i=0, n=keys.length; i<n; ++i )
         {
             var key = keys[i];
-
-            updateRatio |= key=='seedRatioLimit' || key=='seedRatioLimited';
-            updateIdle |= key=='idle-seeding-limit' || key=='idle-seeding-limit-enabled';
-
             var e = Ext.getCmp( key );
             if( e != null) switch( e.xtype )
             {
@@ -235,18 +173,6 @@ Ext.namespace( 'Transmission' );
                     break;
             }
         }
-
-        if( updateRatio ) 
-
-        {
-            var value = myPrefs.getBool('seedRatioLimited') ? myPrefs.getNumber('seedRatioLimit') : -1;
-            Ext.getCmp( 'seedRatio').setValue( value );
-        }
-        if( updateIdle )
-        {
-            var value = myPrefs.getBool('idle-seeding-limit-enabled') ? myPrefs.getNumber('idle-seeding-limit') : -1;
-            Ext.getCmp( 'idle' ).setValue( value );
-        }
     }
 
     function createSpeedTab( prefs )
@@ -260,17 +186,72 @@ Ext.namespace( 'Transmission' );
             bodyCssClass: 'hig-body',
             labelWidth: 160,
             items: [
-                    { xtype: 'fieldset', title: 'Speed Limits', cls: 'hig-fieldset',
-                        defaults: comboDefaults,
-                        items: [ { fieldLabel: dnLabel, id: 'speed-limit-down', store: createDownSpeedStore( prefs ) },
-                                 { fieldLabel: upLabel, id: 'speed-limit-up', store: createUpSpeedStore( prefs ) } ] },
-                    { xtype: 'fieldset', title: 'Temporary Speed Limits', cls: 'hig-fieldset', items: [
-                        Ext.apply( { fieldLabel: dnLabel, id: 'alt-speed-down', store: createAltDownSpeedStore( prefs ) }, comboDefaults ),
-                        Ext.apply( { fieldLabel: upLabel, id: 'alt-speed-up', store: createAltUpSpeedStore( prefs ) }, comboDefaults ),
+                {
+                    xtype: 'fieldset',
+                    title: 'Speed Limits',
+                    cls: 'hig-fieldset',
+                    items: [
+                        {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            items: [
+                                Ext.applyIf( {
+                                    checked: myPrefs.getBool( 'speed-limit-down-enabled' ),
+                                    id: 'speed-limit-down-enabled',
+                                    }, checkboxDefaults ),
+                                {
+                                    width: 160,
+                                    xtype: 'displayfield',
+                                    value: [ dnLabel, ':' ].join('')
+                                },
+                                Ext.applyIf( {
+                                    id: 'speed-limit-down',
+                                    incrementValue: 5,
+                                    value: myPrefs.getNumber( 'speed-limit-down' )
+                                    }, spinnerDefaults )
+                            ]
+                        },
+                        {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            items: [
+                                Ext.applyIf( {
+                                    checked: myPrefs.getBool( 'speed-limit-up-enabled' ),
+                                    id: 'speed-limit-up-enabled',
+                                    }, checkboxDefaults ),
+                                {
+                                    width: 160,
+                                    xtype: 'displayfield',
+                                    value: [ upLabel, ':' ].join('')
+                                },
+                                Ext.applyIf( {
+                                    id: 'speed-limit-up',
+                                    incrementValue: 5,
+                                    value: myPrefs.getNumber( 'speed-limit-up' )
+                                    }, spinnerDefaults )
+                            ] 
+                        }
+                    ]
+                },
+                {
+                    xtype: 'fieldset',
+                    title: 'Temporary Speed Limits',
+                    cls: 'hig-fieldset',
+                    items: [
+                        Ext.applyIf( {
+                            fieldLabel: dnLabel,
+                            id: 'alt-speed-down',
+                            incrementValue: 5
+                            }, spinnerDefaults ),
+                        Ext.applyIf( {
+                            fieldLabel: upLabel,
+                            id: 'alt-speed-up',
+                            incrementValue: 5
+                            }, spinnerDefaults ),
                         { xtype: 'checkbox', hideLabel: true, boxLabel: 'Only at scheduled times', id: 'alt-speed-time-enabled'  },
                         Ext.applyIf( { store: timeStore, fieldLabel: 'From', id: 'alt-speed-time-begin' }, comboDefaults ),
                         Ext.applyIf( { store: timeStore, fieldLabel: 'To',   id: 'alt-speed-time-end'   }, comboDefaults ),
-                        Ext.apply( { id: 'alt-speed-time-day', xtype: 'combo', fieldLabel: 'On days', store: [
+                        Ext.applyIf( { id: 'alt-speed-time-day', xtype: 'combo', fieldLabel: 'On days', width: 100, store: [
                             [ 127, 'Everyday' ],
                             [ 62, 'Weekdays' ],
                             [ 65, 'Weekends' ],
@@ -281,7 +262,8 @@ Ext.namespace( 'Transmission' );
                             [ 16, 'Thursday' ],
                             [ 32, 'Friday' ],
                             [ 64, 'Saturday' ] ] }, comboDefaults )
-                    ] }
+                    ]
+                }
             ]
         } );
     }
@@ -313,26 +295,35 @@ Ext.namespace( 'Transmission' );
         return new Ext.FormPanel( {
             title: 'Network',
             bodyCssClass: 'hig-body',
-            labelWidth: 133,
+            labelWidth: 140,
             items: [
                 { xtype: 'fieldset', title: 'Incoming Peers', cls: 'hig-fieldset', items: [
-                      Ext.applyIf( { id: 'peer-port',
-                                     fieldLabel: 'Port for incoming peers',
-                                     }, spinnerDefaults )
+                      Ext.applyIf( { 
+                        id: 'peer-port',
+                        fieldLabel: 'Port for incoming peers'
+                        }, spinnerDefaults )
                     , { xtype: 'checkbox', handler: checkboxHandler, hideLabel: true, id: 'peer-port-random-on-start', boxLabel: 'Pick a random port when Transmission starts' }
                     , { xtype: 'checkbox', handler: checkboxHandler, hideLabel: true, id: 'port-forwarding-enabled', boxLabel: 'Use UPnP or NAT-PMP port forwarding from my router' } ] }
-                , { xtype: 'fieldset', title: 'Limits', cls: 'hig-fieldset', items: [
-                      Ext.applyIf( { id: 'peer-limit-per-torrent',
-                                     fieldLabel: 'Maximum peers per torrent',
-                                     maxValue: 300,
-                                     incrementValue: 5,
-                                     }, spinnerDefaults ),
-                      Ext.applyIf( { id: 'peer-limit-global',
-                                     fieldLabel: 'Maximum peers overall',
-                                     maxValue: 3000,
-                                     incrementValue: 5,
-                                     }, spinnerDefaults )
-                ] }
+                , { 
+                    xtype: 'fieldset',
+                    title: 'Limits',
+                    cls: 'hig-fieldset',
+                    defaults: spinnerDefaults,
+                    items: [
+                        { 
+                            id: 'peer-limit-per-torrent',
+                            incrementValue: 5,
+                            fieldLabel: 'Maximum peers per torrent',
+                            maxValue: 300
+                        },
+                        { 
+                            id: 'peer-limit-global',
+                            incrementValue: 5,
+                            fieldLabel: 'Maximum peers overall',
+                            maxValue: 3000
+                        }
+                    ]
+                }
             ]
         } );
     }
@@ -367,8 +358,7 @@ Ext.namespace( 'Transmission' );
             } );
             Transmission.PrefsDialog.superclass.constructor.call( this, config );
             myPrefs.addListener( 'onPrefsChanged', onPrefsChanged );    
-            onPrefsChanged( [ 'compact-view',
-                              'peer-port-random-on-start',
+            onPrefsChanged( [ 'peer-port-random-on-start',
                               'rename-partial-files',
                               'show-statusbar',
                               'show-filterbar',
@@ -376,7 +366,9 @@ Ext.namespace( 'Transmission' );
                               'sort-mode',
                               'pex-enabled',
                               'speed-limit-up',
+                              'speed-limit-up-enabled',
                               'speed-limit-down',
+                              'speed-limit-down-enabled',
                               'idle-seeding-limit',
                               'idle-seeding-limit-enabled',
                               'alt-speed-up',
