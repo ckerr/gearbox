@@ -242,45 +242,59 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         return str;
     },
 
-    generateProgressbarHtml: function( percentDone/*[0..1]*/, showText, record )
+    generateProgressbarHtml: function( percentDone/*[0..1]*/, compact, record )
     {
         var tor = record.data;
-        var widthPct = Math.floor( 100 * percentDone );
-        var widthPctStr = showText ? [ widthPct, '%' ].join('') : '&nbsp;';
-        var statusClass;
+        var pct = Math.floor( 100 * percentDone );
+        var pctStr = compact ? [ pct, '%' ].join('') : '';
+        var cls = 'torrent_progress_bar ';
+        var text = [];
 
         switch( record.activity( ) )
         {
             case Torrent.STATUS_CHECK:
             case Torrent.STATUS_DOWNLOAD:
-                statusClass = record.isMagnet() ? 'magnet' : 'download';
+                cls += record.isMagnet() ? 'magnet' : 'download';
                 break;
             case Torrent.STATUS_SEED:
-                statusClass = 'seed';
+                cls += 'seed';
+                if( pctStr ) pctStr = '100%';
                 break;
             default:
-                statusClass = 'stopped';
+                cls += 'stopped';
                 break;
+       }
+
+        if( !pctStr ) pctStr = '&nbsp;';
+
+        if( pct == 100 )
+        {
+            text.push( '<div class="',cls,'" style="text-align:center; border:1px solid #ddd; position:relative; ' );
+
+            if( compact )
+                text.push( 'width:40px;float:right; margin-left:8px;">' );
+            else
+                text.push( 'width:100%;">' );
+
+            text.push( pctStr, '</div>' );
+        }
+        else
+        {
+            text.push( '<div style="text-align:center; border:1px solid #ddd; position:relative; ' );
+
+            if( compact )
+                text.push( 'width:40px;float:right; margin-left:8px;">' );
+            else
+                text.push( 'width:100%;">' );
+
+            text.push( '<div style="width:',pct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
+                         '<div class="',cls,'"; style="width:',(pct?Math.floor(100*(100.0/pct)):0),'%">',pctStr,'</div>',
+                       '</div>',
+                       '<div class="',cls,' remain">',pctStr,'</div>',
+                       '</div>' );
         }
 
-        var cls = 'torrent_progress_bar ' + statusClass;
-
-        if( widthPct == 100 )
-            return ['<div class="',cls,'" style="position:relative; width:100%; border:1px solid #ddd; text-align:center;">',widthPctStr,'</div>'].join('');
-
-        return ['<div style="border:1px solid #ddd; position:relative; width:100%;">',
-                  '<div class="',cls,'" style="width:',widthPct,'%; overflow:hidden; position:absolute; top:0; left:0;">&nbsp;</div>',
-                  '<div class="',cls,' remain" style="width:',(100-widthPct),'%; overflow:hidden; position:absolute; top:0; left:',widthPct,'%;">&nbsp;</div>',
-                  '<div style="position:absolute; width:100%; top:0; left:0; text-align:center">',widthPctStr,'</div>',
-                '</div>' ].join('');
-/*
-        return ['<div style="border:1px solid #ddd; position:relative; text-align:center; width:100%;">',
-                  '<div style="width:',widthPct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
-                    '<div class="torrent_progress_bar ',statusClass,'"; style="width:',(widthPct?Math.floor(100*(100.0/widthPct)):0),'%">',widthPctStr,'</div>',
-                  '</div>',
-                  '<div class="torrent_progress_bar ',statusClass,' remain">',widthPctStr,'</div>',
-                '</div>' ].join('');
-*/
+        return text.join('');
     },
 
     renderTorrent: function( value, metadata, record, rowIndex, colIndex, store )
@@ -290,41 +304,40 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         var isPaused = record.isPaused( );
         var strings = [];
         var percentDone;
+        var opacity = isPaused ? '0.55' : '1';
 
-        if( record.isSeeding( ) )
-        {
+        if( !record.isSeeding( ) )
+            percentDone = record.isMagnet( ) ? tor.metadataPercentComplete : record.percentDone( );
+        else {
             var seedRatio = record.getSeedRatio( );
             percentDone = seedRatio > 0 ? Math.min( record.uploadRatio( ) / seedRatio, 1 ) : 1;
         }
-        else
-            percentDone = record.isMagnet( ) ? tor.metadataPercentComplete : record.percentDone( );
 
-        var opacityStyle = isPaused ? 'opacity:0.55; ' : '';
+        var progressbarHtml = this.generateProgressbarHtml( percentDone, this.isCompact, record );
 
         if( this.isCompact )
         {
             var shortStatus = this.getShortStatusString( record, tor );
-            var progressbarHtml = this.generateProgressbarHtml( percentDone, true, record );
 
-            strings.push( '<img style="float:left;',opacityStyle,'padding-right:10px; width:', this.iconSize, 'px; height:', this.iconSize, 'px;" src="', icon, '"/>',
-                          '<div style="float:right;',opacityStyle,'">',
-                            '<div style="float:right; margin-left:8px; width:40px;">', progressbarHtml, '</div>',
+
+            strings.push( '<img style="opacity:',opacity,';float:left; padding-right:10px; width:', this.iconSize, 'px; height:', this.iconSize, 'px;" src="', icon, '"/>',
+                          '<div style="opacity:',opacity,';float:right;">',
+                            progressbarHtml,
                             '<span style="margin-left:8px; font-size:smaller">', shortStatus, '</span>',
                           '</div>',
-                        '<div style="overflow:hidden;',opacityStyle,'">', record.getName(), '</div>' );
+                          '<div style="opacity:',opacity,';overflow:hidden;">', record.getName(), '</div>' );
         }
         else
         {
             var statusStr = this.getStatusString( record, tor );
             var progressStr = this.getProgressString( record, tor );
-            var progressbarHtml = this.generateProgressbarHtml( percentDone, false, record );
 
-            strings.push( '<div style="display:table-cell;',opacityStyle,'vertical-align:middle;"><img style="width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>&nbsp;</div>',
-                          '<div style="display:table-cell;',opacityStyle,'padding-left:8px; width:100%">',
-                          '<b>',record.getName(),'</b>','<br/>',
-                          progressStr,'</br>',
-                          progressbarHtml,
-                          statusStr,
+            strings.push( '<div style="opacity:',opacity,';display:table-cell; vertical-align:middle;"><img style="width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>&nbsp;</div>',
+                          '<div style="opacity:',opacity,';display:table-cell; padding-left:8px; width:100%">',
+                            '<b>',record.getName(),'</b>','<br>',
+                            progressStr,'<br>',
+                            progressbarHtml,
+                            statusStr,
                           '</div>' );
         }
 
