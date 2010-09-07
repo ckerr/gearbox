@@ -246,9 +246,9 @@ FileView = Ext.extend( Ext.Container,
         var strings = [ '<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;">',
                         '<div style="width:',progress,'%; overflow:hidden; position:absolute; top:0; left:0;">',
                         '<div class="torrent_progress_bar download"; style="width:',(progress?Math.floor(100*(100.0/progress)):0),'%">',
-                        '<span>', progress, '%</span>', '</div>', '</div>',
-                        '<div class="torrent_progress_bar download remain"><span>',
-                        '<span>', progress, '%</span>', '</div>', '</div>' ];
+                        progress, '%', '</div>', '</div>',
+                        '<div class="torrent_progress_bar download remain">',
+                        progress, '%', '</div>', '</div>' ];
         return strings.join('');
     },
 
@@ -329,6 +329,7 @@ FileView = Ext.extend( Ext.Container,
             stripeRows: false,
             autoExpandColumn: 'file-list-column-name',
             master_column_id : 'file-list-column-name',
+            selModel: new Ext.grid.RowSelectionModel( ),
             columns: [
                 { header: 'Name', menuDisabled: true, sortable: true, dataIndex: 'name', width: 100, id: 'file-list-column-name', scope: this, renderer: this.nameRenderer },
                 { header: 'Progress', menuDisabled: true, sortable: true, dataIndex: 'progress', width: 60, scope: this, renderer: this.progressRenderer },
