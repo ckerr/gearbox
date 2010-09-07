@@ -74,42 +74,50 @@ html, body {
 }
 
 div.torrent_progress_bar.magnet {
-    background: -webkit-gradient(linear,left top, left bottom,from(#e88),to(#b55));
-    background: -moz-linear-gradient(center top,#e88,#b55);
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0.0,#e88), color-stop(0.5,#faa), color-stop(0.5,#c66), color-stop(1.0,#e88));
+    background: -moz-linear-gradient(top,#e88 0%,#faa 50%,#c66 50%, #e88 100%);
     background-color: #e88;
 }
 div.torrent_progress_bar.magnet.remain {
-    background: -webkit-gradient(linear,left top, left bottom,from(#eee),to(#ccc));
-    background: -moz-linear-gradient(center top,#eee,#ccc);
-    background-color: #eee;
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0.0,#f3f3f3), color-stop(0.5,#f7f7f7), color-stop(0.5,#d0d0d0), color-stop(1.0,#f3f3f3));
+    background: -moz-linear-gradient(top,#f3f3f3 0%,#f7f7f7 50%,#d0d0d0 50%, #f3f3f3 100%);
+    background-color: #f3f3f3;
 }
 div.torrent_progress_bar.download {
-    background: -webkit-gradient(linear,left top, left bottom,from(#5bf),to(#47a));
-    background: -moz-linear-gradient(center top,#5bf,#47a);
-    background-color: #5bf;
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0.0,#6af), color-stop(0.5,#7bf), color-stop(0.5,#49c), color-stop(1.0,#6af));
+    background: -moz-linear-gradient(top,#6af 0%,#7bf 50%,#49c 50%, #6af 100%);
+    background-color: #6af;
 }
 div.torrent_progress_bar.download.remain {
-    background: -webkit-gradient(linear,left top, left bottom,from(#eee),to(#ccc));
-    background: -moz-linear-gradient(center top,#eee,#ccc);
-    background-color: #eee;
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0.0,#f3f3f3), color-stop(0.5,#f7f7f7), color-stop(0.5,#d0d0d0), color-stop(1.0,#f3f3f3));
+    background: -moz-linear-gradient(top,#f3f3f3 0%,#f7f7f7 50%,#d0d0d0 50%, #f3f3f3 100%);
+    background-color: #f3f3f3;
 }
 div.torrent_progress_bar.seed {
-    background: -webkit-gradient(linear,left top, left bottom,from(#4d4),to(#161));
-    background: -moz-linear-gradient(center top,#4d4,#161);
-    background-color: #4d4;
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0.0,#7b7), color-stop(0.5,#8c8), color-stop(0.5,#5a5), color-stop(1.0,#7b7));
+    background: -moz-linear-gradient(top,#7b7 0%,#8c8 50%,#5a5 50%,#7b7 100%);
+    background-color: #7b7;
 }
 div.torrent_progress_bar.seed.remain {
-    background: -webkit-gradient(linear,left top, left bottom,from(#6f6),to(#393));
-    background: -moz-linear-gradient(center top,#6f6,#393);
-    background-color: #6f6;
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0.0,#9f9), color-stop(0.5,#afa), color-stop(0.5,#7d7), color-stop(1.0,#9f9));
+    background: -moz-linear-gradient(top,#9f9 0%,#afa 50%,#7d7 50%,#9f9 100%);
+    background-color: #9f9;
 }
 div.torrent_progress_bar.stopped {
-    background: -webkit-gradient(linear,left top, left bottom,from(#ddd),to(#666));
-    background: -moz-linear-gradient(center top,#ddd,#666);
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0.0,#bbb), color-stop(0.5, #ccc), color-stop(0.5,#aaa), color-stop(1.0,#bbb));
+    background: -moz-linear-gradient(top,#bbb 0%,#ccc 50%,#aaa 50%,#bbb 100%);
     background-color: #ddd;
 }
 div.torrent_progress_bar.stopped.remain {
-    background: -webkit-gradient(linear,left top, left bottom,from(#eee),to(#ccc));
-    background: -moz-linear-gradient(center top,#eee,#ccc);
-    background-color: #eee;
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0.0,#f3f3f3), color-stop(0.5,#f7f7f7), color-stop(0.5,#d0d0d0), color-stop(1.0,#f3f3f3));
+    background: -moz-linear-gradient(top,#f3f3f3 0%,#f7f7f7 50%,#d0d0d0 50%, #f3f3f3 100%);
+    background-color: #f3f3f3;
 }
