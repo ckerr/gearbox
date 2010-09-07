@@ -267,7 +267,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
                 break;
         }
 
-        var text = ['<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;">',
+        var text = ['<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;z-index:-1;">',
                     '<div style="width:',widthPct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
                     '<div class="torrent_progress_bar ',statusClass,'"; style="width:',(widthPct?Math.floor(100*(100.0/widthPct)):0),'%">' ];
         if( showText )
