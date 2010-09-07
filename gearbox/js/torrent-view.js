@@ -246,43 +246,41 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
     {
         var tor = record.data;
         var widthPct = Math.floor( 100 * percentDone );
+        var widthPctStr = showText ? [ widthPct, '%' ].join('') : '&nbsp;';
         var statusClass;
 
         switch( record.activity( ) )
         {
             case Torrent.STATUS_CHECK:
             case Torrent.STATUS_DOWNLOAD:
-                if( record.isMagnet( ) )
-                    statusClass = "magnet";
-                else
-                    statusClass = "download";
+                statusClass = record.isMagnet() ? 'magnet' : 'download';
                 break;
             case Torrent.STATUS_SEED:
-                statusClass = "seed";
+                statusClass = 'seed';
                 break;
-            //case Torrent.STATUS_CHECK_WAIT:
-            //case Torrent.STATUS_STOPPED:
             default:
-                statusClass = "stopped";
+                statusClass = 'stopped';
                 break;
         }
 
-        var text = ['<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;z-index:-1;">',
-                    '<div style="width:',widthPct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
-                    '<div class="torrent_progress_bar ',statusClass,'"; style="width:',(widthPct?Math.floor(100*(100.0/widthPct)):0),'%">' ];
-        if( showText )
-                text.push( '<span>',widthPct,'%</span>' );
-        else
-                text.push( '&nbsp;' );
-        text.push( '</div>',
-                    '</div>',
-                    '<div class="torrent_progress_bar ',statusClass,' remain"><span>' );
-        if( showText )
-                text.push( '<span>', widthPct, '%</span>' );
-        else
-                text.push( '&nbsp;' );
-        text.push( '</div>', '</div>' );
-        return text.join('');
+        var cls = 'torrent_progress_bar ' + statusClass;
+
+        if( widthPct == 100 )
+            return ['<div class="',cls,'" style="position:relative; width:100%; border:1px solid #ddd; text-align:center;">',widthPctStr,'</div>'].join('');
+
+        return ['<div style="border:1px solid #ddd; position:relative; width:100%;">',
+                  '<div class="',cls,'" style="width:',widthPct,'%; overflow:hidden; position:absolute; top:0; left:0;">&nbsp;</div>',
+                  '<div class="',cls,' remain" style="width:',(100-widthPct),'%; overflow:hidden; position:absolute; top:0; left:',widthPct,'%;">&nbsp;</div>',
+                  '<div style="position:absolute; width:100%; top:0; left:0; text-align:center">',widthPctStr,'</div>',
+                '</div>' ].join('');
+/*
+        return ['<div style="border:1px solid #ddd; position:relative; text-align:center; width:100%;">',
+                  '<div style="width:',widthPct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
+                    '<div class="torrent_progress_bar ',statusClass,'"; style="width:',(widthPct?Math.floor(100*(100.0/widthPct)):0),'%">',widthPctStr,'</div>',
+                  '</div>',
+                  '<div class="torrent_progress_bar ',statusClass,' remain">',widthPctStr,'</div>',
+                '</div>' ].join('');
+*/
     },
 
     renderTorrent: function( value, metadata, record, rowIndex, colIndex, store )
@@ -301,20 +299,19 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         else
             percentDone = record.isMagnet( ) ? tor.metadataPercentComplete : record.percentDone( );
 
-        if( isPaused )
-                strings.push( '<div style="opacity:0.55">' );
+        var opacityStyle = isPaused ? 'opacity:0.55; ' : '';
 
         if( this.isCompact )
         {
             var shortStatus = this.getShortStatusString( record, tor );
             var progressbarHtml = this.generateProgressbarHtml( percentDone, true, record );
 
-            strings.push( '<img style="float:left; padding-right:10px; width:', this.iconSize, 'px; height:', this.iconSize, 'px;" src="', icon, '"/>',
-                          '<div style="float:right;">',
+            strings.push( '<img style="float:left;',opacityStyle,'padding-right:10px; width:', this.iconSize, 'px; height:', this.iconSize, 'px;" src="', icon, '"/>',
+                          '<div style="float:right;',opacityStyle,'">',
                             '<div style="float:right; margin-left:8px; width:40px;">', progressbarHtml, '</div>',
                             '<span style="margin-left:8px; font-size:smaller">', shortStatus, '</span>',
                           '</div>',
-                        '<div style="overflow:hidden;">', record.getName(), '</div>' );
+                        '<div style="overflow:hidden;',opacityStyle,'">', record.getName(), '</div>' );
         }
         else
         {
@@ -322,18 +319,14 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
             var progressStr = this.getProgressString( record, tor );
             var progressbarHtml = this.generateProgressbarHtml( percentDone, false, record );
 
-            strings.push( '<div style="display:table">',
-                          '<div style="display:table-cell; vertical-align:middle;"><img style="width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>&nbsp;</div>',
-                          '<div style="display:table-cell; padding-left:8px; width:100%">',
+            strings.push( '<div style="display:table-cell;',opacityStyle,'vertical-align:middle;"><img style="width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>&nbsp;</div>',
+                          '<div style="display:table-cell;',opacityStyle,'padding-left:8px; width:100%">',
                           '<b>',record.getName(),'</b>','<br/>',
                           progressStr,'</br>',
                           progressbarHtml,
                           statusStr,
-                          '</div>',
                           '</div>' );
         }
-        if( isPaused )
-                strings.push( '</div>' );
 
         return strings.join('');
     },
