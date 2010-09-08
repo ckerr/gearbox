@@ -583,7 +583,7 @@ Ext.namespace( 'Transmission' );
     function updateTorrentCount( )
     {
         var count = Torrent.store.getCount();
-        var total = Torrent.store.getTotalCount();
+        var total = Torrent.store.getUnfilteredCount();
 
         var str = Ext.util.Format.plural( total, 'Torrent' );
         if( count < total )

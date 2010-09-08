@@ -110,9 +110,17 @@ Torrent.Record.prototype.set = function(key,val){
     }
 };
 
-Torrent.reader = new Ext.data.JsonReader( { idProperty: 'id', root: 'torrents', fields: Torrent.Record }, Torrent.Record );
+Torrent.reader = new Ext.data.JsonReader({
+    fields: Torrent.Record,
+    idProperty: 'id',
+    root: 'torrents'
+}, Torrent.Record);
 
-Torrent.store = new Ext.data.Store( { reader: Torrent.reader } );
+Torrent.store = new Ext.data.Store({ reader: Torrent.reader });
+
+Torrent.store.getUnfilteredCount = function(){
+    return (this.snapshot || this).getCount();
+}
 
 // create the derived fields when necessary
 Torrent.store.addListener( 'add', function( store, records, index ) {
