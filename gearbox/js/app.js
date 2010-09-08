@@ -44,12 +44,13 @@ Ext.onReady(function()
     {
         var newIds = [ ];
         var addme = { torrents: [ ] };
+        var store = Torrent.store;
 
         // updated torrents...
         var torrents = args.torrents;
         for( var i=0, n=torrents.length; i<n; ++i ) {
             var torrent = torrents[i];
-            var r = Torrent.store.getById( torrent.id );
+            var r = store.getById( torrent.id );
             if( r ) {
                 r.beginEdit();
                 Ext.iterate( torrent, function(key,value) { r.set( key, value ); } );
@@ -62,7 +63,7 @@ Ext.onReady(function()
 
         // added torrents...
         if( addme.torrents.length > 0 )
-            Torrent.store.loadData( addme, true );
+            store.loadData( addme, true );
         if( newIds.length > 0 )
             config.session.initTorrents( newIds );
 
@@ -70,8 +71,10 @@ Ext.onReady(function()
         var removed = args.removed;
         if( removed )
             for( var i=0, n=removed.length; i<n; ++i )
-                Torrent.store.remove( Torrent.store.getById( removed[i] ) );
+                store.remove( store.getById( removed[i] ) );
 
-        Torrent.store.commitChanges();
+        // if the torrent view isn't bound to the store yet, do so now
+        if( Transmission.torrentView.getStore() != store )
+            Transmission.torrentView.bindStore( store );
     });
 });

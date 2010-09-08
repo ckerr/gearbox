@@ -358,7 +358,12 @@ Ext.namespace( 'Transmission' );
 
     function createTorrentList( )
     {
-        var view = new TorrentView( { flex: 1, id:'torrent-list-view', store: Torrent.store, } );
+        // loading Torrent.store initially causes a *lot* of load on TorrentView,
+        // so let's not bind to it until after we get that first batch of torrents
+        // from the server...
+        var dummyStore = new Ext.data.Store({ autoDestroy: true });
+        var view = new TorrentView({ flex: 1, id:'torrent-list-view', store:dummyStore });//, store: Torrent.store, } );
+       
         torrentView = view;
         torrentView.addListener( 'selectionchange', onSelectionChanged );
         torrentView.addListener('rowdblclick', function(grid,index,e){
@@ -366,6 +371,7 @@ Ext.namespace( 'Transmission' );
         });
         Torrent.store.addListener( 'update', onStoreChanged );
         Torrent.store.addListener( 'add', onRowsAdded );
+        Transmission.torrentView = view;
         return torrentView;
     }
 
