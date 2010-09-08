@@ -191,7 +191,7 @@ Ext.namespace( 'Transmission' );
                 '-',
                 { icon: imgBase+'/actions/edit-select-all.png', tooltip: 'Select all torrents', text: 'Select All', handler: onSelectAllClicked },
                 '->',
-                { id:'toolbar-details-button', icon: imgBase+'/status/dialog-information.png', text: 'Info', tooltip: 'Get details about the selected torrent', handler: function(){ that.fireEvent('onDetailsClicked', { record: torrentView.getSelectionModel().getSelected() }); } },
+                { id:'toolbar-details-button', icon: imgBase+'/status/dialog-information.png', text: 'Info', tooltip: 'Get details about the selected torrent', handler: function(){ that.fireEvent('onDetailsClicked', { record: torrentView.getSelectedRecords()[0] }); } },
                 { icon: imgBase+'/apps/utilities-system-monitor.png', text: 'Stats', tooltip: 'Statistics dialog', handler: function(){ that.fireEvent('onStatsClicked') } },
                 { icon: imgBase+'/categories/preferences-desktop.png', text: 'Settings', tooltip: 'Settings dialog', handler: function(){ that.fireEvent('onPrefsClicked') } }
                 
