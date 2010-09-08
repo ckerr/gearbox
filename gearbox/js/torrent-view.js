@@ -25,7 +25,7 @@ Transmission.FILETYPE_AUDIO   = 6;
 Transmission.FILETYPE_APP     = 7;
 Transmission.FILETYPE_FOLDER  = 8;
 
-TorrentView = Ext.extend( Ext.grid.GridPanel,
+TorrentView = Ext.extend( Ext.list.ListView,
 {
     isCompact: false,
     iconSize: Transmission.FileIcon.LARGE,
@@ -297,7 +297,7 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         return text.join('');
     },
 
-    renderTorrent: function( value, metadata, record, rowIndex, colIndex, store )
+    renderTorrent: function( record )
     {
         var tor = record.data;
         var icon = this.getIcon( tor );
@@ -344,42 +344,27 @@ TorrentView = Ext.extend( Ext.grid.GridPanel,
         return strings.join('');
     },
 
-    getSelectionCount: function( )
-    {
-        return this.getSelectionModel().getCount();
-    },
-
-    clearSelections: function( )
-    {
-        return this.getSelectionModel().clearSelections( false );
-    },
-
-    selectRange: function( startRow, endRow )
-    {
-        return this.getSelectionModel().selectRange( startRow, endRow );
-    },
-
     setCompact: function( compact )
     {
         this.isCompact = compact;
         this.iconSize = this.isCompact ? Transmission.FileIcon.SMALL : Transmission.FileIcon.LARGE;
-        this.getView().refresh( false );
+        this.refresh();
     },
 
     constructor: function( config_in )
     {
+        var me = this;
+        var tpl = new Ext.XTemplate( '{id:this.format}', {format:function(id){ return me.renderTorrent( Torrent.store.getById(id) ); } } );
         var config = Ext.apply( {}, config_in, {
-            autoExpandColumn: 'maincol',
-            autoExpandMax: 100000,
-            columns: [ { 'id': 'maincol', header: 'Id', dataIndex: 'id', renderer: { fn: this.renderTorrent, scope: this } } ],
-            frame: false,
+            columns: [ { 'id': 'maincol', dataIndex: 'id', tpl:tpl, width:1 } ],
             hideHeaders: true,
             hideLabel: true,
+            maxColumnWidth: 10000,
             multiSelect: true
         } );
 
         TorrentView.superclass.constructor.call( this, config );
-        this.addListener( 'resize', function(){this.getView().refresh(false);}, this );
+        this.addListener( 'resize', function(){this.refresh();}, this );
     }
 });
 

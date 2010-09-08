@@ -65,7 +65,7 @@ Ext.namespace( 'Transmission' );
     }
     function getSelectedIds( )
     {
-        return getIdsFromRecords( torrentView.getSelectionModel().getSelections( ) );
+        return getIdsFromRecords( torrentView.getSelectedRecords( ) );
     }
     function getAllIds( )
     {
@@ -79,7 +79,7 @@ Ext.namespace( 'Transmission' );
         var primary_text;
         var secondary_text;
 
-        var records = torrentView.getSelectionModel().getSelections( );
+        var records = torrentView.getSelectedRecords( );
         var n = records.length;
         if( !n )
             return;
@@ -298,14 +298,13 @@ Ext.namespace( 'Transmission' );
     {
         // FIXME: this should be on a timer -- it's called too often
 
-        var records = torrentView.getSelectionModel().getSelections( );
+        var records = torrentView.getSelectedRecords();
         var selectedCount = records.length;
         var selectedPausedCount = 0;
         for( var i=0; i<selectedCount; ++i )
             if( records[i].isPaused( ) )
                 ++selectedPausedCount;
 
-        records = torrentView.getStore().getRange();
         var allCount = records.length;
         var pausedCount = 0;
         for( var i=0; i<allCount; ++i )
@@ -361,7 +360,7 @@ Ext.namespace( 'Transmission' );
     {
         var view = new TorrentView( { flex: 1, id:'torrent-list-view', store: Torrent.store, } );
         torrentView = view;
-        torrentView.getSelectionModel().addListener( 'selectionchange', onSelectionChanged );
+        torrentView.addListener( 'selectionchange', onSelectionChanged );
         torrentView.addListener('rowdblclick', function(grid,index,e){
             that.fireEvent('onDetailsClicked', { record: Torrent.store.getAt(index) } );
         });
