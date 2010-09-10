@@ -20,7 +20,7 @@ Ext.namespace( 'Transmission' );
     var myPrefs = null;
     var that = null;
     var pendingSpinners = { };
-    var numFieldWidth = 100;
+    var numFieldWidth = 80;
 
     function textfieldHandler( e )
     {
@@ -76,109 +76,154 @@ Ext.namespace( 'Transmission' );
                             incrementValue: 1,
                             listeners: { 'change': spinnerHandler },
                             minValue: 0,
-                            maxValue: 2147483647,
+                            maxValue: 9999999, // 7 digit maximum
                             width: numFieldWidth,
                             xtype: 'spinnerfield' };
-
-    var checkboxDefaults = { handler: checkboxHandler,
-                             xtype: 'checkbox' };
 
     function createTorrentTab( )
     {
         return new Ext.FormPanel( {
             title: 'Torrents',
-             bodyCssClass: 'hig-body',
+            bodyCssClass: 'hig-body',
             labelWidth: 100,
-            items: [ { xtype: 'fieldset', title: 'Adding', cls: 'hig-fieldset', items: [
-                         { id: 'start-added-torrents', xtype: 'checkbox', hideLabel: true, boxLabel: 'Start when added', handler: checkboxHandler }
-                         ] },
-                     { xtype: 'fieldset', title: 'Downloading', cls: 'hig-fieldset', items: [
-                         { id: 'rename-partial-files', xtype: 'checkbox', hideLabel: true, boxLabel: 'Append ".part" to incomplete files\' names', handler: checkboxHandler },
-                         { id: 'download-dir', xtype: 'textfield', fieldLabel: 'Save to location', width: 150, listeners: { change: textfieldHandler } },
+            items: [
+                {
+                    xtype: 'fieldset',
+                    title: 'Adding',
+                    cls: 'hig-fieldset',
+                    items: [
+                         {
+                            id: 'start-added-torrents',
+                            xtype: 'checkbox',
+                            hideLabel: true,
+                            boxLabel: 'Start when added',
+                            handler: checkboxHandler
+                         }
+                     ]
+                },
+                {
+                    xtype: 'fieldset',
+                    title: 'Downloading',
+                    cls: 'hig-fieldset',
+                    items: [
+                         {
+                            id: 'rename-partial-files',
+                            xtype: 'checkbox',
+                            hideLabel: true,
+                            boxLabel: 'Append ".part" to incomplete files\' names',
+                            handler: checkboxHandler
+                         },
+                         {
+                            id: 'download-dir',
+                            xtype: 'textfield',
+                            fieldLabel: 'Save to location',
+                            width: 170,
+                            listeners: { change: textfieldHandler }
+                         },
+                         {
+                            xtype: 'checkbox',
+                            handler: checkboxHandler,
+                            boxLabel: 'Use incomplete directory',
+                            hideLabel: true,
+                            checked: myPrefs.getBool( 'incomplete-dir-enabled' ),
+                            id: 'incomplete-dir-enabled'
+                         },
                          {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 320, // FIXME auto width is too wide?
+                            width: 300, // FIXME auto width messing up firefox
                             items: [
-                                Ext.applyIf( {
-                                    boxLabel: 'Keep incomplete files in:',
-                                    checked: myPrefs.getBool( 'incomplete-dir-enabled' ),
-                                    id: 'incomplete-dir-enabled',
-                                    width: 160
-                                    }, checkboxDefaults ),
+                                {
+                                    xtype: 'displayfield',
+                                    value: 'Directory:',
+                                    width: 100
+                                },
                                 {
                                     xtype: 'textfield',
                                     id: 'incomplete-dir',
                                     listeners: { change: textfieldHandler },
                                     value: myPrefs.get( 'incomplete-dir' ),
-                                    width: 150
+                                    width: 170
                                 }
                             ]
                          },
                          {
+                            xtype: 'checkbox',
+                            handler: checkboxHandler,
+                            boxLabel: 'Call script when complete',
+                            hideLabel: true,
+                            checked: myPrefs.getBool( 'script-torrent-done-enabled' ),
+                            id: 'script-torrent-done-enabled'
+                         },
+                         {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 320, // FIXME auto width is too wide?
+                            width: 300, // FIXME auto width messing up firefox
                             items: [
-                                Ext.applyIf( {
-                                    boxLabel: 'Call script when complete:',
-                                    checked: myPrefs.getBool( 'script-torrent-done-enabled' ),
-                                    id: 'script-torrent-done-enabled',
-                                    width: 160
-                                    }, checkboxDefaults ),
+                                {
+                                    xtype: 'displayfield',
+                                    value: 'Script:',
+                                    width: 100
+                                },
                                 {
                                     xtype: 'textfield',
                                     id: 'script-torrent-done-filename',
                                     listeners: { change: textfieldHandler },
                                     value: myPrefs.get( 'script-torrent-done-filename' ),
-                                    width: 150
+                                    width: 170
                                 }
                             ]
-                         } ] },
-                         {
-                            xtype: 'fieldset',
-                            title: 'Seeding Limits',
-                            cls: 'hig-fieldset',
+                         }
+                    ]
+                },
+                {
+                    xtype: 'fieldset',
+                    title: 'Seeding Limits',
+                    cls: 'hig-fieldset',
+                    items: [
+                        {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            width: 300, // FIXME auto width messing up firefox
                             items: [
                                 {
-                                    xtype: 'compositefield',
-                                    hideLabel: true,
-                                    width: 310, // FIXME auto width is too wide?
-                                    items: [
-                                        Ext.applyIf( {
-                                            boxLabel: 'Stop seeding at ratio:',
-                                            checked: myPrefs.getBool( 'seedRatioLimited' ),
-                                            id: 'seedRatioLimited',
-                                            width: 200
-                                            }, checkboxDefaults ),
-                                        Ext.applyIf( {
-                                            allowDecimals: true,
-                                            id: 'seedRatioLimit',
-                                            incrementValue: 0.5,
-                                            value: myPrefs.getNumber( 'seedRatioLimit' )
-                                            }, spinnerDefaults )
-                                    ]
+                                    xtype: 'checkbox',
+                                    handler: checkboxHandler,
+                                    boxLabel: 'Stop seeding at ratio:',
+                                    checked: myPrefs.getBool( 'seedRatioLimited' ),
+                                    id: 'seedRatioLimited',
+                                    width: 190
                                 },
-                                {
-                                    xtype: 'compositefield',
-                                    hideLabel: true,
-                                    width: 310, // FIXME auto width is too wide?
-                                    items: [
-                                        Ext.applyIf( {
-                                            boxLabel: 'Stop seeding if idle for N minutes:',
-                                            checked: myPrefs.getBool( 'idle-seeding-limit-enabled' ),
-                                            id: 'idle-seeding-limit-enabled',
-                                            width: 200
-                                            }, checkboxDefaults ),
-                                        Ext.applyIf( {
-                                            id: 'idle-seeding-limit',
-                                            incrementValue: 5,
-                                            value: myPrefs.getNumber( 'idle-seeding-limit' )
-                                            }, spinnerDefaults )
-                                    ]
-                                },
+                                Ext.applyIf( {
+                                    allowDecimals: true,
+                                    id: 'seedRatioLimit',
+                                    incrementValue: 0.5,
+                                    value: myPrefs.getNumber( 'seedRatioLimit' )
+                                    }, spinnerDefaults )
                             ]
-                        }
+                        },
+                        {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            width: 300, // FIXME auto width messing up firefox
+                            items: [
+                                {
+                                    xtype: 'checkbox',
+                                    handler: checkboxHandler,
+                                    boxLabel: 'Stop seeding if idle for N min:',
+                                    checked: myPrefs.getBool( 'idle-seeding-limit-enabled' ),
+                                    id: 'idle-seeding-limit-enabled',
+                                    width: 190
+                                },
+                                Ext.applyIf( {
+                                    id: 'idle-seeding-limit',
+                                    incrementValue: 5,
+                                    value: myPrefs.getNumber( 'idle-seeding-limit' )
+                                    }, spinnerDefaults )
+                            ]
+                        },
+                    ]
+                }
             ]
         } );
     }
@@ -229,7 +274,7 @@ Ext.namespace( 'Transmission' );
         return new Ext.FormPanel( {
             title: 'Speed',
             bodyCssClass: 'hig-body',
-            labelWidth: 160,
+            labelWidth: 165,
             items: [
                 {
                     xtype: 'fieldset',
@@ -239,40 +284,42 @@ Ext.namespace( 'Transmission' );
                         {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 300, // FIXME auto width is too wide?
+                            width: 270, // FIXME auto width messing up firefox
                             items: [
-                                Ext.applyIf( {
+                                {
+                                    xtype: 'checkbox',
+                                    handler: checkboxHandler,
                                     boxLabel:[ dnLabel, ':' ].join(''),
                                     checked: myPrefs.getBool( 'speed-limit-down-enabled' ),
                                     id: 'speed-limit-down-enabled',
-                                    width: 180
-                                    }, checkboxDefaults ),
+                                    width: 185
+                                },
                                 Ext.applyIf( {
                                     id: 'speed-limit-down',
                                     incrementValue: 5,
-                                    value: myPrefs.getNumber( 'speed-limit-down' ),
-                                    width: 80
+                                    value: myPrefs.getNumber( 'speed-limit-down' )
                                     }, spinnerDefaults )
                             ]
                         },
                         {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 300, // FIXME auto width is too wide?
+                            width: 270, // FIXME auto width messing up firefox
                             items: [
-                                Ext.applyIf( {
+                                {
+                                    xtype: 'checkbox',
+                                    handler: checkboxHandler,
                                     boxLabel:[ upLabel, ':' ].join(''),
                                     checked: myPrefs.getBool( 'speed-limit-up-enabled' ),
                                     id: 'speed-limit-up-enabled',
-                                    width: 180
-                                    }, checkboxDefaults ),
+                                    width: 185
+                                },
                                 Ext.applyIf( {
                                     id: 'speed-limit-up',
                                     incrementValue: 5,
-                                    value: myPrefs.getNumber( 'speed-limit-up' ),
-                                    width: 80
+                                    value: myPrefs.getNumber( 'speed-limit-up' )
                                     }, spinnerDefaults )
-                            ] 
+                            ]
                         }
                     ]
                 },
@@ -287,32 +334,60 @@ Ext.namespace( 'Transmission' );
                             style: 'font-size:0.85em',
                             value: 'Override normal speed limits manually or at scheduled times'
                         },
-                        Ext.applyIf( {
-                            fieldLabel: dnLabel,
-                            id: 'alt-speed-down',
-                            incrementValue: 5
-                            }, spinnerDefaults ),
-                        Ext.applyIf( {
-                            fieldLabel: upLabel,
-                            id: 'alt-speed-up',
-                            incrementValue: 5
-                            }, spinnerDefaults ),
                         {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 300, // FIXME auto width is too wide?
+                            width: 270, // FIXME auto width messing up firefox
                             items: [
+                                {
+                                    xtype: 'displayfield',
+                                    hideLabel: true,
+                                    value: dnLabel + ':',
+                                    width: 185
+                                },
                                 Ext.applyIf( {
+                                    id: 'alt-speed-down',
+                                    incrementValue: 5,
+                                    value: myPrefs.getNumber( 'alt-speed-down' )
+                                    }, spinnerDefaults )
+                            ]
+                        },
+                        {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            width: 270, // FIXME auto width messing up firefox
+                            items: [
+                                {
+                                    xtype: 'displayfield',
+                                    hideLabel: true,
+                                    value: upLabel + ':',
+                                    width: 185
+                                },
+                                Ext.applyIf( {
+                                    id: 'alt-speed-up',
+                                    incrementValue: 5,
+                                    value: myPrefs.getNumber( 'alt-speed-up' )
+                                    }, spinnerDefaults )
+                            ]
+                        },
+                        {
+                            xtype: 'compositefield',
+                            hideLabel: true,
+                            width: 270, // FIXME auto width messing up firefox
+                            items: [
+                                {
+                                    xtype: 'checkbox',
+                                    handler: checkboxHandler,
                                     boxLabel: 'Scheduled times:',
                                     checked: myPrefs.get( 'alt-speed-time-enabled' ),
                                     id: 'alt-speed-time-enabled',
                                     width: 120
-                                    }, checkboxDefaults ),
+                                },
                                 Ext.applyIf( {
                                     id: 'alt-speed-time-begin',
                                     store: timeStore,
                                     value: myPrefs.get( 'alt-speed-time-begin' ),
-                                    width: 60
+                                    width: 65
                                     }, comboDefaults ),
                                 {
                                     xtype: 'displayfield',
@@ -326,7 +401,7 @@ Ext.namespace( 'Transmission' );
                                     }, comboDefaults )
                             ]
                         },
-                        Ext.applyIf( { id: 'alt-speed-time-day', xtype: 'combo', fieldLabel: 'On days', store: [
+                        Ext.applyIf( { id: 'alt-speed-time-day', xtype: 'combo', fieldLabel: 'On days', width: 100, store: [
                             [ 127, 'Everyday' ],
                             [ 62, 'Weekdays' ],
                             [ 65, 'Weekends' ],
@@ -373,25 +448,25 @@ Ext.namespace( 'Transmission' );
             labelWidth: 140,
             items: [
                 { xtype: 'fieldset', title: 'Incoming Peers', cls: 'hig-fieldset', items: [
-                      Ext.applyIf( { 
+                      Ext.applyIf( {
                         id: 'peer-port',
                         fieldLabel: 'Port for incoming peers'
                         }, spinnerDefaults )
                     , { xtype: 'checkbox', handler: checkboxHandler, hideLabel: true, id: 'peer-port-random-on-start', boxLabel: 'Pick a random port when Transmission starts' }
                     , { xtype: 'checkbox', handler: checkboxHandler, hideLabel: true, id: 'port-forwarding-enabled', boxLabel: 'Use UPnP or NAT-PMP port forwarding from my router' } ] }
-                , { 
+                , {
                     xtype: 'fieldset',
                     title: 'Limits',
                     cls: 'hig-fieldset',
                     defaults: spinnerDefaults,
                     items: [
-                        { 
+                        {
                             id: 'peer-limit-per-torrent',
                             incrementValue: 5,
                             fieldLabel: 'Maximum peers per torrent',
                             maxValue: 300
                         },
-                        { 
+                        {
                             id: 'peer-limit-global',
                             incrementValue: 5,
                             fieldLabel: 'Maximum peers overall',

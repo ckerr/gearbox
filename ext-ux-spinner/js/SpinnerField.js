@@ -16,7 +16,7 @@ Ext.ux.form.SpinnerField = Ext.extend(Ext.form.NumberField, {
     actionMode: 'wrap',
     deferHeight: true,
     autoSize: Ext.emptyFn,
-    /* broken functionality fixed with patch from http://www.sencha.com/forum/showthread.php?97878-Ext.ux.form.SpinnerField-change-event-does-not-fire */
+    // broken functionality fixed with code from http://www.sencha.com/forum/showthread.php?97878-Ext.ux.form.SpinnerField-change-event-does-not-fire
     onBlur: function(){
         var v = this.getValue();
         if(String(v) !== String(this.startValue)){
@@ -28,7 +28,7 @@ Ext.ux.form.SpinnerField = Ext.extend(Ext.form.NumberField, {
         var val = this.getValue();
         if(String(val) !== String(this.startValue)){
             this.fireEvent('change', this, val, this.startValue);
-        }         
+        }
         return(newVal);
     },
     adjustSize: Ext.BoxComponent.prototype.adjustSize,
