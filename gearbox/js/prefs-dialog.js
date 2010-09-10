@@ -365,25 +365,25 @@ Ext.namespace( 'Transmission' );
             labelWidth: 140,
             items: [
                 { xtype: 'fieldset', title: 'Incoming Peers', cls: 'hig-fieldset', items: [
-                      Ext.applyIf( { 
+                      Ext.applyIf( {
                         id: 'peer-port',
                         fieldLabel: 'Port for incoming peers'
                         }, spinnerDefaults )
                     , { xtype: 'checkbox', handler: checkboxHandler, hideLabel: true, id: 'peer-port-random-on-start', boxLabel: 'Pick a random port when Transmission starts' }
                     , { xtype: 'checkbox', handler: checkboxHandler, hideLabel: true, id: 'port-forwarding-enabled', boxLabel: 'Use UPnP or NAT-PMP port forwarding from my router' } ] }
-                , { 
+                , {
                     xtype: 'fieldset',
                     title: 'Limits',
                     cls: 'hig-fieldset',
                     defaults: spinnerDefaults,
                     items: [
-                        { 
+                        {
                             id: 'peer-limit-per-torrent',
                             incrementValue: 5,
                             fieldLabel: 'Maximum peers per torrent',
                             maxValue: 300
                         },
-                        { 
+                        {
                             id: 'peer-limit-global',
                             incrementValue: 5,
                             fieldLabel: 'Maximum peers overall',
