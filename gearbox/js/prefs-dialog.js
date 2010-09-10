@@ -19,6 +19,7 @@ Ext.namespace( 'Transmission' );
 {
     var myPrefs = null;
     var that = null;
+    var pendingSpinners = { };
     var numFieldWidth = 100;
 
     function textfieldHandler( e )
@@ -28,13 +29,20 @@ Ext.namespace( 'Transmission' );
         myPrefs.set( o );
     }
 
-    function spinnerHandler( e )
+    function spinnerHandlerIdle( e )
     {
         var o = { };
         o[e.id] = e.getValue();
-        if( !e.task )
-            e.task = new Ext.util.DelayedTask( function( o ) { myPrefs.set( o ); }, null, [o] );
-        e.task.delay( 250, null, null, [o] );
+        myPrefs.set(o);
+
+        delete pendingSpinners[e.id];
+    }
+    
+    function spinnerHandler( e )
+    {
+        if( pendingSpinners[e.id] )
+            clearTimeout( pendingSpinners[e.id] );
+        pendingSpinners[e.id] = spinnerHandlerIdle.defer(500,this,[e]);
     }
 
     function checkboxHandler( e )
