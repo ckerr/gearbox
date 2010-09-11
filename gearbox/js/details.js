@@ -100,10 +100,10 @@ Transmission.Details = Ext.extend( Ext.Window, {
         // REMAINING TIME    
         if( rec.isDone( ) )
             text = na;
-        else if( rec.hasETA( ) )
+        else if( !rec.hasETA( ) )
             text = 'Unknown';
         else
-            text = Transmission.fmt.timeInterval( rec.runningTime( ) );
+            text = Transmission.fmt.timeInterval( rec.getETA( ) );
         this.remainingTimeLabel.setValue( text );
 
         // LAST ACTIVITY    
