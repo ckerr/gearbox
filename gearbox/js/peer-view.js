@@ -90,7 +90,12 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
         this.torrentId = config_in.record.getId( );
 
         var record = Ext.data.Record.create([
-            { name: 'address', type: 'string' },
+            { name: 'address', type: 'string', sortType: function( value ) {
+                var a = value.split('.');
+                var r = 0;
+                for( var i = a.length; i > 0; --i )
+                    r += a[i-1] * Math.pow( 10, 3*(4-i) );
+                return r; } },
             { name: 'clientName', type: 'string' },
             { name: 'clientIsChoked', type: 'boolean' },
             { name: 'clientIsInterested', type: 'boolean' },
