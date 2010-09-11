@@ -115,6 +115,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
         var reader = new Ext.data.JsonReader( { idProperty: 'address', root: 'peers', fields: record } );
 
         var store = new Ext.data.Store( { reader: reader } );
+        store.setDefaultSort( 'address' );
 
         var colModel = new Ext.grid.ColumnModel( {
             defaults: { sortable: true },
@@ -124,7 +125,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
                 { dataIndex: 'rateToClient', width: 60, align: 'right', header: 'Down', renderer: this.renderSpeedBps },
                 { dataIndex: 'progress', width: 60, align: 'right', header: '%', renderer: this.renderPercent },
                 { dataIndex: 'flagStr', width: 80, header: 'Status' },
-                { dataIndex: 'address', width: 150, align: 'right', header: 'Address' },
+                { dataIndex: 'address', width: 150, header: 'Address' },
                 { dataIndex: 'clientName', header: 'Client', id: 'client' }
             ]
         });
