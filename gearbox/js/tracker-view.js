@@ -192,7 +192,6 @@ TrackerView = Ext.extend( Ext.Container,
             return;
 
         // FIXME: use reload() instead?
-        this.store.removeAll( );
         this.store.loadData( record.data );
     },
 
