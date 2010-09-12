@@ -390,10 +390,10 @@ Ext.namespace( 'Transmission' );
         keys.sort( );
 
         // if the list of trackers has changed update the "trackers" button's menu
-        var trackersStr = keys.toString();
-        if( this.trackersStr != trackersStr )
+        var str = keys.toString();
+        if( trackersStr != str )
         {
-            this.trackersStr = trackersStr;
+            trackersStr = str;
             var menu = Ext.getCmp('filterbar-tracker').menu;
 
             menu.removeAll();
