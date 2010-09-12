@@ -366,7 +366,7 @@ Ext.namespace( 'Transmission' );
        
         torrentView = view;
         torrentView.addListener( 'selectionchange', onSelectionChanged );
-        torrentView.addListener('rowdblclick', function(grid,index,e){
+        torrentView.addListener('dblclick', function(dataView,index,node,e){
             that.fireEvent('onDetailsClicked', { record: Torrent.store.getAt(index) } );
         });
         Torrent.store.addListener( 'update', onStoreChanged );
