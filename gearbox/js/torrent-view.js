@@ -274,7 +274,7 @@ TorrentView = Ext.extend( Ext.list.ListView,
             if( compact )
                 text.push( 'width:40px;float:right; margin-left:8px;">' );
             else
-                text.push( 'width:100%;">' );
+                text.push( '">' );
 
             text.push( pctStr, '</div>' );
         }
@@ -285,7 +285,7 @@ TorrentView = Ext.extend( Ext.list.ListView,
             if( compact )
                 text.push( 'width:40px;float:right; margin-left:8px;">' );
             else
-                text.push( 'width:100%;">' );
+                text.push( '">' );
 
             text.push( '<div style="width:',pct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
                          '<div class="',cls,'"; style="width:',(pct?Math.floor(100*(100.0/pct)):0),'%">',pctStr,'</div>',
@@ -325,19 +325,19 @@ TorrentView = Ext.extend( Ext.list.ListView,
                             progressbarHtml,
                             '<span style="margin-left:8px; font-size:smaller">', shortStatus, '</span>',
                           '</div>',
-                          '<div style="opacity:',opacity,';overflow:hidden;">', record.getName(), '</div>' );
+                          '<div style="opacity:',opacity,';overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">', record.getName(), '</div>' );
         }
         else
         {
             var statusStr = this.getStatusString( record, tor );
             var progressStr = this.getProgressString( record, tor );
 
-            strings.push( '<div style="opacity:',opacity,';display:table-cell; vertical-align:middle;"><img style="width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>&nbsp;</div>',
-                          '<div style="opacity:',opacity,';display:table-cell; padding-left:8px; width:100%">',
-                            '<b>',record.getName(),'</b>','<br>',
-                            progressStr,'<br>',
+            strings.push( '<img style="opacity:',opacity,';padding-top:10px;float:left;width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>',
+                          '<div style="opacity:',opacity,';padding-left:8px;overflow:hidden;">',
+                            '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;"><b>',record.getName(),'</b></div>',
+                            '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',progressStr,'</div>',
                             progressbarHtml,
-                            statusStr,
+                            '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',statusStr,'</div>',
                           '</div>' );
         }
 
