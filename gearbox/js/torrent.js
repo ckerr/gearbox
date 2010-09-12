@@ -85,7 +85,7 @@ Torrent.Record = Ext.data.Record.create( Torrent.fields );
 
 // create the derived fields when necessary
 Torrent.Record.prototype.set = function(key,val){
-    Torrent.Record.superclass.set.call(this, key, val);
+    this.superclass().set.call(this, key, val);
     if(this.isModified(key)){
         switch(key){
             case 'name':

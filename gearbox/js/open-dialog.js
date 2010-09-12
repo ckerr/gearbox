@@ -69,7 +69,7 @@ Transmission.OpenDialog = Ext.extend( Ext.Window,
             autoHeight: true,
             items: [ myFormPanel ],
             }, config );
-        Transmission.OpenDialog.superclass.constructor.call( this, config );
+        this.superclass().constructor.call( this, config );
         mySession = config.session;
         myPrefs = config.prefs;
     }

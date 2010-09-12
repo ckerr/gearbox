@@ -121,7 +121,7 @@ Ext.namespace( 'Transmission' );
             for( var name in events )
                 this.addEvents( name );
             this.listeners = config.listeners;
-            Transmission.Session.superclass.constructor.call(this, config)
+            this.superclass().constructor.call(this, config)
         },
 
         addListener: function( key, func )
@@ -133,7 +133,7 @@ Ext.namespace( 'Transmission' );
                     toggleRefresh( this, ev, true );
             }
 
-            Transmission.Session.superclass.addListener.call( this, key, func );
+            this.superclass().addListener.call( this, key, func );
         },
 
         removeListener: function( key, func )
@@ -142,7 +142,7 @@ Ext.namespace( 'Transmission' );
             if( !--ev.listenerCount )
                 toggleRefresh( this, ev, false );
 
-            Transmission.Session.superclass.removeListener.call( this, key, func );
+            this.superclass().removeListener.call( this, key, func );
         },
 
         set: function( args )

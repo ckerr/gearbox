@@ -76,7 +76,7 @@ Transmission.Controller = Ext.extend( Ext.util.Observable,
         var mainwin = config.mainwin;
         this.prefs = config.prefs;
         this.session = config.session;
-        Transmission.Controller.superclass.constructor.call( this, config );
+        this.superclass().constructor.call( this, config );
 
         mainwin.addListener( 'onStatsClicked', this.showStats, this );
         mainwin.addListener( 'onPrefsClicked', this.showPrefs, this );

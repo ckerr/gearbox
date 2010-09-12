@@ -341,7 +341,7 @@ FileView = Ext.extend( Ext.Container,
         store.addListener( 'load', this.onStoreLoaded, this );
 
         var config = Ext.apply( {}, config_in, { layout : 'fit', items : grid } );
-        FileView.superclass.constructor.call( this, config );
+        this.superclass().call(this, config);
     },
 
     refresh: function( torrent )

@@ -215,7 +215,7 @@ TrackerView = Ext.extend( Ext.Container,
     destroy: function( )
     {
         this.prefs.removeListener( 'onPrefsChanged', this.onPrefsChanged );
-        TrackerView.superclass.destroy.call( this );
+        this.superclass().destroy.call( this );
     },
 
     filterFunc: function( record, id )
@@ -355,7 +355,7 @@ TrackerView = Ext.extend( Ext.Container,
                 stripeRows: true,
                 autoExpandColumn: 'maincol' }
         ]});
-        TrackerView.superclass.constructor.call( this, config );
+        this.superclass().constructor.call( this, config );
 
         this.gridPanel = Ext.getCmp('tracker-grid-panel');
         this.gridPanel.getSelectionModel().addListener( 'selectionchange', this.onSelectionChanged, this );

@@ -134,7 +134,7 @@ Ext.namespace( 'Transmission' );
             that = this;
             mySession = config.session;
 
-            Transmission.Prefs.superclass.constructor.call( this, config );
+            this.superclass().constructor.call( this, config );
             this.addEvents( 'onPrefsChanged' );
 
             addToPrefs( getLocalPrefs( ) );

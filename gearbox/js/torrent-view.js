@@ -353,7 +353,7 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
     refresh: function() {
         var selected = this.getSelectedRecords();
-        this.constructor.superclass.refresh.call(this);
+        this.superclass().refresh.call(this);
         this.select( selected );
     },
 
@@ -369,13 +369,13 @@ TorrentView = Ext.extend( Ext.list.ListView,
             multiSelect: true
         } );
 
-        TorrentView.superclass.constructor.call( this, config );
+        this.superclass().constructor.call(this, config);
         this.addListener( 'resize', function(){this.refresh();}, this );
     },
 
     clearSelections: function()
     {
-        TorrentView.superclass.clearSelections.call( this, arguments );
+        this.superclass().clearSelections.call(this, arguments);
     }
 });
 

@@ -252,7 +252,7 @@ Transmission.Details = Ext.extend( Ext.Window, {
     {
         clearInterval( this.timer );
         Torrent.store.removeListener( 'update', this.onTorrentUpdated, this );
-        Transmission.Details.superclass.destroy.call( this );
+        this.superclass().destroy.call(this);
     },
 
     constructor: function( config_in )
@@ -272,7 +272,7 @@ Transmission.Details = Ext.extend( Ext.Window, {
             items: this.createWorkArea( record )
         } );
 
-        Transmission.Details.superclass.constructor.call( this, config );
+        this.superclass().constructor.call(this, config);
         Torrent.store.addListener( 'update', this.onTorrentUpdated, this );
         var ids = [ this.torrentId ];
         this.timer = setInterval( function() { that.mySession.updateExtraStats( ids ); }, 5000 );

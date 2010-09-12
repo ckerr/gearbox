@@ -492,7 +492,7 @@ Ext.namespace( 'Transmission' );
         close: function( )
         {
             myPrefs.removeListener( 'onPrefsChanged', onPrefsChanged );    
-            Transmission.PrefsDialog.superclass.close.call( this );
+            this.superclass().close.call( this );
         },
 
         constructor: function( config_in )
@@ -507,7 +507,7 @@ Ext.namespace( 'Transmission' );
                 title: 'Preferences',
                 items: createWorkArea( myPrefs )
             } );
-            Transmission.PrefsDialog.superclass.constructor.call( this, config );
+            this.superclass().constructor.call( this, config );
             myPrefs.addListener( 'onPrefsChanged', onPrefsChanged );    
             onPrefsChanged( [ 'peer-port-random-on-start',
                               'rename-partial-files',

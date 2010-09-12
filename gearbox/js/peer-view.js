@@ -141,7 +141,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
             autoFill: true
         } );
 
-        PeerView.superclass.constructor.call( this, config );
+        this.superclass().constructor.call( this, config );
 
         if( Ext.isArray( config.record.data.peers ) )
              this.store.loadData( config.record.data, true );
@@ -152,7 +152,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
     destroy: function( )
     {
         Torrent.store.removeListener( 'update', this.onTorrentUpdated, this );
-        PeerView.superclass.destroy.call( this );
+        this.superclass().destroy.call( this );
     }
 });
 

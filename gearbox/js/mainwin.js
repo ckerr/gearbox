@@ -322,7 +322,6 @@ Ext.namespace( 'Transmission' );
     function onStoreChangedIdle( e )
     {
         var store = Torrent.store;
-        var selectedRecords = torrentView.getSelectedRecords();
         store.suspendEvents(false);
 
         updateActionSensitivity();
@@ -332,7 +331,6 @@ Ext.namespace( 'Transmission' );
 
         store.resumeEvents();
         store.fireEvent('datachanged', store);
-        torrentView.select(selectedRecords);
     }
 
     function onStoreChanged( e )
@@ -615,7 +613,7 @@ Ext.namespace( 'Transmission' );
                 items: [ createToolbar(myPrefs), createFilterbar(myPrefs), createTorrentList(myPrefs), createStatusbar(myPrefs) ]
             };
             Ext.applyIf( config, config_in );
-            Transmission.MainWin.superclass.constructor.call( this, config );
+            this.superclass().constructor.call(this, config);
 
             this.addEvents( 'onFilterClicked' );
             this.addEvents( 'onStatsClicked' );

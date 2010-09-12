@@ -71,7 +71,7 @@ Ext.namespace( 'Transmission' );
         close: function( )
         {
             mySession.removeListener( 'onStatsChanged', onStatsChanged );    
-            Transmission.StatsDialog.superclass.close.call( this );
+            this.superclass().close.call(this);
         },
 
         constructor: function( config )
@@ -95,7 +95,7 @@ Ext.namespace( 'Transmission' );
                              { disabled: true, id: 'cumulative-duration', text: 'None', fieldLabel: 'Duration' } ] }
                         ]
             } );
-            Transmission.StatsDialog.superclass.constructor.call( this, config );
+            this.superclass().constructor.call(this, config);
             mySession = config.session;
             mySession.addListener( 'onStatsChanged', onStatsChanged );    
             this.addListener( 'afterRender', initStats );
