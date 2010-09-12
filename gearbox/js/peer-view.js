@@ -68,7 +68,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
     renderEncrypted: function( value, metaData, record, rowIndex, colIndex, store )
     {
         if( value )
-            return ['<img src="', Transmission.imgRoot, '/16x16/emblems/emblem-encrypted.png"/>' ].join('');
+            return ['<img src="', Transmission.imgRoot, '/16x16/emblems/emblem-encrypted.png" width="16" height="16"/>' ].join('');
         return '';
     },
 
