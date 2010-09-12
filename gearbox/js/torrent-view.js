@@ -351,6 +351,12 @@ TorrentView = Ext.extend( Ext.list.ListView,
         this.refresh();
     },
 
+    refresh: function() {
+        var selected = this.getSelectedRecords();
+        this.constructor.superclass.refresh.call(this);
+        this.select( selected );
+    },
+
     constructor: function( config_in )
     {
         var me = this;
