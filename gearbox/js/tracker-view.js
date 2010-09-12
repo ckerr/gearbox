@@ -65,7 +65,7 @@ TrackerView = Ext.extend( Ext.Container,
         //
         strings.push( '<div style="display:table-cell"/>' );
         strings.push( record.data.isBackup ? '<i>' : '<b>' );
-        strings.push( record.data.uri.domain, ':', record.data.uri.port );
+        strings.push( record.data.uri.host, ':', record.data.uri.port );
         strings.push( record.data.isBackup ? '</i>' : '</b>' );
 
         // announce & scrape info
