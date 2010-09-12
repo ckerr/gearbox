@@ -453,8 +453,10 @@ Ext.namespace( 'Transmission' );
         if(!store || store.isDummy)
             return;
 
-        store.filterBy(filterFunc,this);
+        var selected = torrentView.getSelectedRecords();
+        Torrent.store.filterBy( filterFunc, this );
         updateTorrentCount( );
+        reSelect( selected );
     }
 
     function resort(store)
@@ -464,6 +466,7 @@ Ext.namespace( 'Transmission' );
 
         var fieldName;
         var desc = myPrefs.getBool('sort-reversed');
+        var selected = torrentView.getSelectedRecords();
 
         switch( myPrefs.get('sort-mode') ) {
             case 'activity':  fieldName = 'rateXfer';     desc=!desc; break;
@@ -479,6 +482,22 @@ Ext.namespace( 'Transmission' );
         var dir = desc ? 'DESC' : 'ASC';
         store.sort( fieldName, dir );
         store.setDefaultSort( fieldName, dir );
+        reSelect( selected );
+    }
+
+    function reSelect( records )
+    {
+        if( records.length < 1 )
+            return;
+
+        var newRecords = torrentView.getRecords( torrentView.getNodes() );
+        var s = [];
+
+        for( var i=0, n=records.length; i<n; ++i )
+            if( newRecords.indexOf( records[i] ) != -1 )
+                s.push( records[i] );
+
+        torrentView.select( s );
     }
 
     function onPrefsChanged( keys )
