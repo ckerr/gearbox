@@ -183,10 +183,10 @@ Ext.namespace( 'Transmission' );
             id: 'mainwin-toolbar',
             defaults: { scale: scale, xtype: 'button', iconAlign: 'top' },
             items: [
-                { icon: imgBase+'add.png', tooltip: 'Open a torrent', handler: function() { that.fireEvent('onOpenClicked') } },
-                { id:'toolbar-close-button', icon: imgBase+'close.png', tooltip: 'Close selected torrents', handler: function() { closeSelectedTorrents(false); } },
                 { id:'toolbar-start-button', icon: imgBase+'play.png', tooltip: 'Start selected torrents', handler: startSelectedTorrents },
-                { id:'toolbar-stop-button', icon: imgBase+'pause.png', tooltip: 'Pause selected torrents', handler: stopSelectedTorrents }
+                { id:'toolbar-stop-button', icon: imgBase+'pause.png', tooltip: 'Pause selected torrents', handler: stopSelectedTorrents },
+                { icon: imgBase+'add.png', tooltip: 'Open a torrent', handler: function() { that.fireEvent('onOpenClicked') } },
+                { id:'toolbar-close-button', icon: imgBase+'close.png', tooltip: 'Close selected torrents', handler: function() { closeSelectedTorrents(false); } }
             ]
         } );
     }
