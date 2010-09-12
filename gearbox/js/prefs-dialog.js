@@ -484,7 +484,7 @@ Ext.namespace( 'Transmission' );
                      createSpeedTab( prefs ),
                      createPrivacyTab( ),
                      createNetworkTab( ) ];
-        return new Ext.TabPanel( { activeTab: 0, height: 333, autoWidth: true, items: tabs } );
+        return new Ext.TabPanel( { activeTab: 0, height: 353, autoWidth: true, items: tabs } );
     }
 
     Transmission.PrefsDialog = Ext.extend( Ext.Window, {
@@ -500,8 +500,8 @@ Ext.namespace( 'Transmission' );
             that = this;
             myPrefs = config_in.prefs;
             var config = Ext.apply( { }, config_in, {
-                width: 433,
-                height: 380,
+                width: 320,
+                height: 400,
                 layout: 'fit',
                 cls: 'hig-dialog',
                 title: 'Preferences',
