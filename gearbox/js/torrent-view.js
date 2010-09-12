@@ -351,10 +351,25 @@ TorrentView = Ext.extend( Ext.list.ListView,
         this.refresh();
     },
 
-    refresh: function() {
+    onUpdate: function( ds, record )
+    {
+        this.constructor.superclass.onUpdate.call(this);
+        // stripe rows
+        var index = this.store.indexOf(record);
+        if( index > -1 && index % 2 != 0 )
+            this.all.item(index).addClass( 'x-list-alt' );
+    },
+
+    refresh: function()
+    {
         var selected = this.getSelectedRecords();
         this.constructor.superclass.refresh.call(this);
         this.select( selected );
+
+        // stripe rows
+        var nodes = this.getNodes();
+        for( var i=1, n=nodes.length; i<n; i += 2 )
+            Ext.fly( nodes[i] ).addClass( 'x-list-alt' );
     },
 
     constructor: function( config_in )

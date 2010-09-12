@@ -1592,8 +1592,12 @@ body.x-body-masked .x-window-plain .x-window-mc {
     font:normal 11px arial, tahoma, helvetica, sans-serif;
 }
 
+.x-list-alt {
+    background-color:#f6f6f6;
+}
+
 .x-list-over {
-    background-color:#eee;
+    background-color:#e6e6e6;
 }
 
 .x-list-selected {
