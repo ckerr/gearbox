@@ -187,7 +187,7 @@ TrackerView = Ext.extend( Ext.Container,
 
     onPrefsChanged: function( keys )
     {
-        for( var i=0, n=keys.length; i<n; ++i )
+        for( var i=keys.length; i--; )
         {
             var key = keys[i];
 
@@ -277,15 +277,16 @@ TrackerView = Ext.extend( Ext.Container,
     onRemoveClicked: function( )
     {
         var records = this.gridPanel.getSelectionModel().getSelections();
-        var urls = new Array( records.length );
-        for( var i=0, n=records.length; i<n; ++i )
+        var n = records.length;
+        var urls = new Array( n );
+        for( var i=n; i--; )
             urls[i] = records[i].data.announce;
         this.session.removeTrackers( this.torrentId, urls );
     },
 
     onRecordsLoaded: function( store, records, options )
     {
-        for( var i=0, n=records.length; i<n; ++i )
+        for( var i=records.length; i--; )
         {
             var data = records[i].data;
             data.uri = data.uri || parseUri(data.announce);

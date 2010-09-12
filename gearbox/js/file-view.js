@@ -46,9 +46,10 @@ FileView = Ext.extend( Ext.Container,
             return record.data.wanted ? this.Yes : this.No;
 
         var wanted;
-        for( var i=0, n=record.data.children.length; i<n; ++i )
+        var children = record.data.children;
+        for( var i=children.length; i--; )
         {
-            var child = this.store.getById( record.data.children[i] );
+            var child = this.store.getById( children[i] );
             var childWanted = this.isSubtreeWanted( child );
 
             if( i === 0 )
@@ -70,7 +71,7 @@ FileView = Ext.extend( Ext.Container,
         else
         {
             var children = record.data.children;
-            for( var i=0, n=children.length; i<n; ++i )
+            for( var i=children.length; i--; )
                 this.getDescendantLeaves( this.store.getById( children[i] ), fileIndices );
         }
     },
@@ -102,9 +103,10 @@ FileView = Ext.extend( Ext.Container,
             return record.data.priority;
 
         var priority;
-        for( var i=0, n=record.data.children.length; i<n; ++i )
+        var children = record.data.children;
+        for( var i=children.length; i--; )
         {
-            var child = this.store.getById( record.data.children[i] );
+            var child = this.store.getById( children[i] );
             var childPriority = this.getPriority( child );
 
             if( i === 0 )
@@ -211,16 +213,18 @@ FileView = Ext.extend( Ext.Container,
     getSize: function( record )
     {
         var ret = { size:0, bytesCompleted:0 };
-        if( record.data._is_leaf )
+        var d = record.data;
+        if( d._is_leaf )
         {
-            ret.size = record.data.size;
-            ret.bytesCompleted = record.data.bytesCompleted;
+            ret.size = d.size;
+            ret.bytesCompleted = d.bytesCompleted;
         }
         else
         {
-            for( var i=0, n=record.data.children.length; i<n; ++i )
+            var children = d.children;
+            for( var i=children.length; i--; )
             {
-                var child = this.store.getById( record.data.children[i] );
+                var child = this.store.getById( children[i] );
                 var s = this.getSize( child );
                 ret.size += s.size;
                 ret.bytesCompleted += s.bytesCompleted;
@@ -353,15 +357,16 @@ FileView = Ext.extend( Ext.Container,
     {
         var stats = torrent.getFileStats();
 
-        for( var i=0, n=stats.length; i<n; ++i )
+        for( var i=stats.length; i--; )
         {
             var record = this.store.getById( i );
             if( record != null )
             {
+                var s = stats[i];
                 record.beginEdit();
-                record.set( 'wanted', stats[i].wanted );
-                record.set( 'priority', stats[i].priority );
-                record.set( 'bytesCompleted', stats[i].bytesCompleted );
+                record.set( 'wanted', s.wanted );
+                record.set( 'priority', s.priority );
+                record.set( 'bytesCompleted', s.bytesCompleted );
                 record.endEdit();
             }
         }
@@ -373,7 +378,7 @@ FileView = Ext.extend( Ext.Container,
     {
         var records = this.store.getRange( );
 
-        for( var i=0, n=records.length; i<n; ++i )
+        for( var i=records.length; i--; )
         {
             var record = records[i];
             if( record.data._is_leaf )

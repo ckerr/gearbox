@@ -37,7 +37,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
         var peerStore = this.store;
         var peers = record.data.peers;
         var newPeers = [ ];
-        for( var i=0, n=peers.length; i<n; ++i )
+        for(var i=peers.length; i--; )
         {
             var peer = peers[i];
 
@@ -60,7 +60,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
 
         // removed peers...
         var oldPeers = peerStore.getRange( );
-        for( var i=0, n=oldPeers.length; i<n; ++i )
+        for( var i=oldPeers.length; i--; )
             if( newPeers.indexOf( oldPeers[i].data.address ) == -1 )
                 peerStore.remove( oldPeers[i] );
     },

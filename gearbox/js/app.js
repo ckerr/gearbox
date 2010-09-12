@@ -48,7 +48,7 @@ Ext.onReady(function()
 
         // updated torrents...
         var torrents = args.torrents;
-        for( var i=0, n=torrents.length; i<n; ++i ) {
+        for( var i=torrents.length; i--; ) {
             var torrent = torrents[i];
             var r = store.getById( torrent.id );
             if( r ) {
@@ -70,7 +70,7 @@ Ext.onReady(function()
         // removed torrents...
         var removed = args.removed;
         if( removed )
-            for( var i=0, n=removed.length; i<n; ++i )
+            for( var i=removed.length; i--; )
                 store.remove( store.getById( removed[i] ) );
 
         config.mainwin.setTorrentStore( store );

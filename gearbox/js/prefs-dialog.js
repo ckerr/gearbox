@@ -242,7 +242,7 @@ Ext.namespace( 'Transmission' );
 
     function onPrefsChanged( keys )
     {
-        for( var i=0, n=keys.length; i<n; ++i )
+        for(var i=keys.length; i--; )
         {
             var key = keys[i];
             var e = Ext.getCmp( key );

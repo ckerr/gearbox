@@ -59,7 +59,7 @@ Ext.namespace( 'Transmission' );
     {
         var n = records.length;
         var ids = new Array( n );
-        for( var i=0; i<n; ++i )
+        for( var i=n; i--; )
             ids[i] = records[i].getId( );
         return ids;
     }
@@ -85,7 +85,7 @@ Ext.namespace( 'Transmission' );
             return;
 
         var ids = new Array( n );
-        for( var i=0; i<n; ++i )
+        for( var i=n; i--; )
         {
             var tor = records[i];
 
@@ -293,13 +293,13 @@ Ext.namespace( 'Transmission' );
         var records = torrentView.getSelectedRecords();
         var selectedCount = records.length;
         var selectedPausedCount = 0;
-        for( var i=0; i<selectedCount; ++i )
+        for( var i=selectedCount; i--; )
             if( records[i].isPaused( ) )
                 ++selectedPausedCount;
 
         var allCount = records.length;
         var pausedCount = 0;
-        for( var i=0; i<allCount; ++i )
+        for( var i=allCount; i--; )
             if( records[i].isPaused( ) )
                 ++pausedCount;
 
@@ -376,17 +376,15 @@ Ext.namespace( 'Transmission' );
     {
         var hash = { };
         var allrecs = getAllRecordsUnfiltered();
-        for( var i=0; i<allrecs.length; ++i ) {
+        for( var i=allrecs.length; i--; ) {
             var trackers = allrecs[i].data.trackers;
-            for( var j=0; j<trackers.length; ++j ) {
+            for( var j=trackers.length; j--; ) {
                 var tracker = trackers[j];
                 hash[tracker.readableHost] = tracker.host;
             }
         }
 
-        var keys = [ ];
-        for( var key in hash )
-            keys.push( key );
+        var keys = Object.keys(hash);
         keys.sort( );
 
         // if the list of trackers has changed update the "trackers" button's menu
@@ -439,8 +437,9 @@ Ext.namespace( 'Transmission' );
         if( tracker === 'all' )
             return true;
 
-        for( var i=0, n=rec.data.trackers.length; i<n; ++i )
-            if( rec.data.trackers[i].announce.indexOf( tracker ) >= 0 )
+        var trackers = rec.data.trackers;
+        for(var i=trackers.length; i--; )
+            if( trackers[i].announce.indexOf( tracker ) >= 0 )
                 return true;
 
         return false;
@@ -489,7 +488,7 @@ Ext.namespace( 'Transmission' );
         var doLayout = false;
         var doTurtleTooltip = false;
 
-        for( var i=0, n=keys.length; i<n; ++i )
+        for( var i=keys.length; i--; )
         {
             var key = keys[i];
 

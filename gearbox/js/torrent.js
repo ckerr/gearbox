@@ -97,7 +97,7 @@ Torrent.Record.prototype.set = function(key,val){
                 break;
             case 'trackers': {
                 var trackers = this.data.trackers;
-                for(var i=0; i<trackers.length; ++i) {
+                for(var i=trackers.length; i--; ) {
                     var t = trackers[i];
                     t.uri = parseUri(t.announce);
                     t.host = getHost(t.uri);
@@ -129,13 +129,13 @@ Torrent.store.getUnfilteredCount = function(){
 
 // create the derived fields when necessary
 Torrent.store.addListener( 'add', function( store, records, index ) {
-    for( var i=0, n=records.length; i<n; ++i ) {
+    for(var i=records.length; i--; ) {
         var d = records[i].data;
         d.collatedName = Ext.util.Format.lowercase(d.name.trim());
         d.rateXfer = (d.rateUpload||0) + (d.rateDownload||0);
         d.state = d.error ? -1 : d.status;
         var trackers = d.trackers;
-        for(var j=0; j<trackers.length; ++j) {
+        for(var j=trackers.length; j--; ) {
             var t = trackers[j];
             t.uri = parseUri(t.announce);
             t.host = getHost(t.uri);
