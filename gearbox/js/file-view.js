@@ -179,6 +179,7 @@ FileView = Ext.extend( Ext.Container,
                                 _parentObj: _parent,
                                 _is_leaf: isLeaf,
                                 icon: isLeaf ? Transmission.FileIcon.getIcon( name, Transmission.FileIcon.SMALL ) : folderIcon,
+                                iconSize: Transmission.FileIcon.SMALL,
                                 wanted: false,
                                 priority: 0 };
                     data.splice( l.index, 0, row );
@@ -237,7 +238,10 @@ FileView = Ext.extend( Ext.Container,
 
     nameRenderer: function( value, metaData, record, rowIndex, colIndex, store )
     {
-        return [ '<img src="', record.data.icon, '"/> ', record.data.name, ' (', Transmission.fmt.size( this.getSize( record ).size ), ')' ].join('');
+        return [ '<img src="', record.data.icon, '"',
+                     ' width="',record.data.iconSize,'"',
+                     ' height="',record.data.iconSize,'"/> ',
+                 record.data.name, ' (', Transmission.fmt.size( this.getSize( record ).size ), ')' ].join('');
     },
 
     progressRenderer: function( value, metaData, record, rowIndex, colIndex, store )
@@ -304,6 +308,7 @@ FileView = Ext.extend( Ext.Container,
             {name: 'children', type: 'auto'},
             {name: 'have', type: 'int'},
             {name: 'icon', type: 'string'},
+            {name: 'iconSize', type: 'int'},
             {name: 'bytesCompleted', type: 'int'},
             {name: 'wanted', type: 'int'},
             {name: 'priority', type: 'int'},
@@ -341,7 +346,7 @@ FileView = Ext.extend( Ext.Container,
         store.addListener( 'load', this.onStoreLoaded, this );
 
         var config = Ext.apply( {}, config_in, { layout : 'fit', items : grid } );
-        this.superclass().call(this, config);
+        this.superclass().constructor.call(this, config);
     },
 
     refresh: function( torrent )
