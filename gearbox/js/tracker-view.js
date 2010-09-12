@@ -44,6 +44,11 @@ TrackerView = Ext.extend( Ext.Container,
         return Transmission.fmt.timeInterval( seconds );
     },
 
+    renderIcon: function( value, metadata, record, rowIndex, colIndex, store )
+    {
+        return [ '<img style="height: 16px; width: 16px;" src="http://', value, '/favicon.ico" height="16" width="16" />' ].join('');
+    },
+
     renderTracker: function( value, metadata, record, rowIndex, colIndex, store )
     {
         var key;
@@ -58,15 +63,14 @@ TrackerView = Ext.extend( Ext.Container,
         var success_markup_begin = '<span style="color:#008B00">';
         var success_markup_end = '</span>';
 
-        strings.push( '<div style="display:table; margin: 2px;">');
-
-        strings.push( '<img style="display:table-cell; margin-left: 4px; margin-right: 8px;" src="http://', record.data.host, '/favicon.ico" width="16" height="16"/>' );
         // hostname
         //
-        strings.push( '<div style="display:table-cell"/>' );
+        strings.push( '<div style="overflow:hidden;">' );
+        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
         strings.push( record.data.isBackup ? '<i>' : '<b>' );
         strings.push( record.data.uri.domain, ':', record.data.uri.port );
         strings.push( record.data.isBackup ? '</i>' : '</b>' );
+        strings.push( '</div>' );
 
         // announce & scrape info
         if( !d.isBackup )
@@ -74,7 +78,8 @@ TrackerView = Ext.extend( Ext.Container,
             if( d.hasAnnounced )
             {
                 var tstr =  this.timeToStringRounded( now - d.lastAnnounceTime );
-                strings.push( '<br/>' );
+
+                strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
                 if( d.lastAnnounceSucceeded )
                 {
                     strings.push( 'Got a list of ',
@@ -93,26 +98,36 @@ TrackerView = Ext.extend( Ext.Container,
                                   err_markup_begin, '"', d.lastAnnounceResult, '"', err_markup_end,
                                   ' ', tstr, ' ago' );
                 }
+                strings.push( '</div>' );
             }
 
             switch( d.announceState )
             {
                 case this.TRACKER_INACTIVE:
-                    if( !d.hasAnnounced )
-                        strings.push( '<br/>', 'No updates scheduled' );
+                    if( !d.hasAnnounced ) {
+                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
+                        strings.push( 'No updates scheduled' );
+                        strings.push( '</div>' );
+                    }
                     break;
 
                 case this.TRACKER_WAITING:
-                    strings.push( '<br/>', 'Asking for more peers in ', this.timeToStringRounded( d.nextAnnounceTime - now ) );;
+                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
+                    strings.push( 'Asking for more peers in ', this.timeToStringRounded( d.nextAnnounceTime - now ) );;
+                    strings.push( '</div>' );
                     break;
 
                 case this.TRACKER_QUEUED:
-                    strings.push( '<br/>', 'Queued to ask for more peers' );
+                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
+                    strings.push( 'Queued to ask for more peers' );
+                    strings.push( '</div>' );
                     break;
 
                 case this.TRACKER_ACTIVE:
-                    strings.push( '<br/>', 'Asking for more peers now...',
+                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
+                    strings.push( 'Asking for more peers now...',
                                   '<small>', this.timeToStringRounded( now - d.lastAnnounceStartTime ), '</small>' );
+                    strings.push( '</div>' );
                     break;
             }
 
@@ -120,9 +135,9 @@ TrackerView = Ext.extend( Ext.Container,
             {
                 if( d.hasScraped )
                 {
-                    strings.push( '<br/>' );
                     var tstr = this.timeToStringRounded( now - d.lastScrapeTime );
 
+                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
                     if( d.lastScrapeSucceeded )
                     {
                         strings.push( 'Tracker had ',
@@ -137,6 +152,7 @@ TrackerView = Ext.extend( Ext.Container,
                                       err_markup_begin, '"', d.lastScrapeResult, '"', err_markup_end,
                                       ' ', tstr, ' ago' );
                     }
+                    strings.push( '</div>' );
                 }
 
                 switch( d.scrapeState )
@@ -145,23 +161,28 @@ TrackerView = Ext.extend( Ext.Container,
                         break;
 
                     case this.TRACKER_WAITING:
-                        strings.push( '<br/>', 'Asking for peer counts in ', this.timeToStringRounded( d.nextScrapeTime - now ) );
+                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
+                        strings.push( 'Asking for peer counts in ', this.timeToStringRounded( d.nextScrapeTime - now ) );
+                        strings.push( '</div>' );
                         break;
 
                     case this.TRACKER_QUEUED:
-                        strings.push( '<br/>', 'Queued to ask for peer counts' );
+                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
+                        strings.push( 'Queued to ask for peer counts' );
+                        strings.push( '</div>' );
                         break;
 
                     case this.TRACKER_ACTIVE:
-                        strings.push( '<br/>', 'Asking for peer counts now... ',
+                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
+                        strings.push( 'Asking for peer counts now... ',
                                       '<small>', this.timeToStringRounded( now - d.lastScrapeStartTime ), '</small>' );
+                        strings.push( '</div>' );
                         break;
                 }
             }
         }
 
         strings.push( '</div>' ); // layout: table cell
-        strings.push( '</div>' ); // layout: table
         return strings.join('');
     },
 
@@ -307,6 +328,7 @@ TrackerView = Ext.extend( Ext.Container,
             {name: 'hasAnnounced', type: 'bool'},
             {name: 'hasScraped', type: 'bool'},
             {name: 'host', type: 'string'},
+            {name: 'id', type: 'int'},
             {name: 'isBackup', type: 'bool'},
             {name: 'lastAnnouncePeerCount', type: 'int'},
             {name: 'lastAnnounceResult', type: 'string'},
@@ -330,7 +352,6 @@ TrackerView = Ext.extend( Ext.Container,
         ]);
 
         var reader = new Ext.data.JsonReader({
-                idProperty: 'announce',
                 root: 'trackerStats',
                 fields: record }, record );
 
@@ -347,7 +368,9 @@ TrackerView = Ext.extend( Ext.Container,
                 { xtype: 'checkbox', boxLabel: 'Show more details', id: 'show-tracker-scrapes', listeners: { check: { scope: this, fn: this.onShowScrapesChecked } } },
                 { xtype: 'checkbox', boxLabel: 'Show backup trackers', id: 'show-backup-trackers', listeners: { check: { scope: this, fn: this.onShowBackupsChecked }}}]},
             { region: 'center', xtype: 'grid', layout: 'fit', id: 'tracker-grid-panel',
-                columns: [ { id: 'maincol', header: 'Foo', dataIndex: 'announce', renderer: { fn: this.renderTracker, scope: this } } ],
+                columns: [
+                    { id: 'favcol', header: 'Bar', dataIndex: 'host', width: 24, renderer: { fn: this.renderIcon, scope: this } },
+                    { id: 'maincol', header: 'Foo', dataIndex: 'id', renderer: { fn: this.renderTracker, scope: this } } ],
                 store: this.store,
                 hideHeaders: true,
                 hideLabel: true,
