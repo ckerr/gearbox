@@ -390,6 +390,9 @@ Ext.namespace( 'Transmission' );
         if( this.trackersStr != trackersStr )
         {
             this.trackersStr = trackersStr;
+            var menu = Ext.getCmp('filterbar-tracker').menu;
+
+            menu.removeAll();
 
             var rows = [ ];
             rows.push( { handler: filterTrackerHandler, text: 'All Trackers', id: filterTrackerPrefix+'all' } );
@@ -403,10 +406,7 @@ Ext.namespace( 'Transmission' );
                              id: filterTrackerPrefix+domain } );
             }
 
-            var e = Ext.getCmp('filterbar-tracker');
-            var oldMenu = e.menu;
-            e.menu = new Ext.menu.Menu( rows );
-            if( oldMenu ) delete oldMenu;
+            menu.add( rows );
         }
     }
 
