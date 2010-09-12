@@ -192,52 +192,72 @@ TorrentView = Ext.extend( Ext.list.ListView,
     {
         var str;
 
-        if( tor.error && ( tor.error.length > 0 ) )
+        if( tor.error && ( tor.errorString.length > 0 ) )
         {
-            str = tor.error;
-        }
-        else switch( tor.status )
-        {
-            case Torrent.STATUS_STOPPED:
-            case Torrent.STATUS_CHECK_WAIT:
-            case Torrent.STATUS_CHECK:
-                str = this.getShortStatusString( rec, tor );
-                break;
-
-            case Torrent.STATUS_DOWNLOAD:
+            str = '<div style="color:red">';
+            switch( tor.error )
             {
-                var isMagnet = tor.metadataPercentDone < 1;
-                var dnPeers = tor.peersSendingToUs;
-                var upPeers = tor.peersGettingFromUs;
-                var dnWeb = tor.webseedsSendingToUs;
-
-                if( isMagnet )
-                    str = String.format( 'Downloading metadata from {0} ({1}% done)',
-                            Ext.util.Format.plural( tor.peersSendingToUs, 'peer', 'peers' ),
-                            Transmission.fmt.percentString( 100.0 * tor.metadataPercentComplete ) );
-                else
-                    str = String.format( 'Downloading from {0} of {1}',
-                            dnWeb + tor.peersSendingToUs,
-                            Ext.util.Format.plural( dnWeb + tor.peersConnected, 'connected peer' ) );
-                break;
+                case Torrent.STAT_TRACKER_WARNING:
+                    str = [ str, 'Tracker gave a warning: ' ].join('');
+                    break;
+                case Torrent.STAT_TRACKER_ERROR:
+                    str = [ str, 'Tracker gave a warning: ' ].join('');
+                    break;
+                case Torrent.STAT_LOCAL_ERROR:
+                    str = [ str, 'Tracker gave a warning: ' ].join('');
+                    break;
+                default:
+                    str = '';
+                    break;
             }
+            if( str.length > 0 )
+                str = [ str, tor.errorString, '</div>' ].join('');
+        }
+        else
+        {
+            switch( tor.status )
+            {
+                case Torrent.STATUS_STOPPED:
+                case Torrent.STATUS_CHECK_WAIT:
+                case Torrent.STATUS_CHECK:
+                    str = this.getShortStatusString( rec, tor );
+                    break;
 
-            case Torrent.STATUS_SEED:
-                str = String.format( 'Seeding to {0} of {1}',
-                    tor.peersGettingFromUs,
-                    Ext.util.Format.plural( tor.peersConnected, 'connected peer', 'connected peers' ) );
-                break;
+                case Torrent.STATUS_DOWNLOAD:
+                    {
+                        var isMagnet = tor.metadataPercentDone < 1;
+                        var dnPeers = tor.peersSendingToUs;
+                        var upPeers = tor.peersGettingFromUs;
+                        var dnWeb = tor.webseedsSendingToUs;
 
-            default:
-                str = "Error";
-                break;
+                        if( isMagnet )
+                            str = String.format( 'Downloading metadata from {0} ({1}% done)',
+                                    Ext.util.Format.plural( tor.peersSendingToUs, 'peer', 'peers' ),
+                                    Transmission.fmt.percentString( 100.0 * tor.metadataPercentComplete ) );
+                        else
+                            str = String.format( 'Downloading from {0} of {1}',
+                                    dnWeb + tor.peersSendingToUs,
+                                    Ext.util.Format.plural( dnWeb + tor.peersConnected, 'connected peer' ) );
+                        break;
+                    }
+
+                case Torrent.STATUS_SEED:
+                    str = String.format( 'Seeding to {0} of {1}',
+                            tor.peersGettingFromUs,
+                            Ext.util.Format.plural( tor.peersConnected, 'connected peer', 'connected peers' ) );
+                    break;
+
+                default:
+                    str = "Error";
+                    break;
+            }
+            if( rec.isReadyToTransfer( ) ) {
+                var s = this.shortTransferString( tor );
+                if( s.length > 0 )
+                    str = [ str, '-', s ].join(' ');
+        }
         }
 
-        if( rec.isReadyToTransfer( ) ) {
-            var s = this.shortTransferString( tor );
-            if( s.length > 0 )
-                str = [ str, '-', s ].join(' ');
-        }
 
         return str;
     },
