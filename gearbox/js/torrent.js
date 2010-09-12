@@ -29,6 +29,7 @@ Torrent.fields = [
         { name: 'rateXfer',                 type: 'float',    group: Torrent.DERIVED }, /* Bps */
         { name: 'downloadDir',              type: 'string',   group: Torrent.STAT },
         { name: 'status',                   type: 'int',      group: Torrent.STAT },
+        { name: 'state',                    type: 'int',      group: Torrent.DERIVED },
         { name: 'name',                     type: 'string',   group: Torrent.INFO },
         { name: 'collatedName',             type: 'string',   group: Torrent.DERIVED },
         { name: 'error',                    type: 'int',      group: Torrent.STAT },
@@ -104,6 +105,10 @@ Torrent.Record.prototype.set = function(key,val){
                 }
                 break;
             }
+            case 'error':
+            case 'status':
+                this.set('state', this.data.error ? -1 : this.data.status );
+                break;
             default:
                 break;
         }
@@ -128,6 +133,7 @@ Torrent.store.addListener( 'add', function( store, records, index ) {
         var d = records[i].data;
         d.collatedName = Ext.util.Format.lowercase(d.name.trim());
         d.rateXfer = (d.rateUpload||0) + (d.rateDownload||0);
+        d.state = d.error ? -1 : d.status;
         var trackers = d.trackers;
         for(var j=0; j<trackers.length; ++j) {
             var t = trackers[j];

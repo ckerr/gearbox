@@ -100,10 +100,10 @@ Transmission.Details = Ext.extend( Ext.Window, {
         // REMAINING TIME    
         if( rec.isDone( ) )
             text = na;
-        else if( rec.hasETA( ) )
+        else if( !rec.hasETA( ) )
             text = 'Unknown';
         else
-            text = Transmission.fmt.timeInterval( rec.runningTime( ) );
+            text = Transmission.fmt.timeInterval( rec.getETA( ) );
         this.remainingTimeLabel.setValue( text );
 
         // LAST ACTIVITY    
@@ -141,7 +141,6 @@ Transmission.Details = Ext.extend( Ext.Window, {
     createInfoTab: function( )
     {
         var idSuffix = '-' + Math.floor( Math.random() * 10000000 );
-        var activityLabelId       = 'details-activity-label' + idSuffix;
         var sizeLabelId           = 'details-size-label' + idSuffix;
         var haveLabelId           = 'details-have-label' + idSuffix;
         var availabilityLabelId   = 'details-availability-label' + idSuffix;
@@ -153,32 +152,33 @@ Transmission.Details = Ext.extend( Ext.Window, {
         var remainingTimeLabelId  = 'details-remaining-time-label' + idSuffix;
         var lastActivityLabelId   = 'details-last-activity-label' + idSuffix;
         var errorLabelId          = 'details-error-label' + idSuffix;
-        var detailsLabelId        = 'details-details-label' + idSuffix;
         var locationLabelId       = 'details-location-label' + idSuffix;
         var hashLabelId           = 'details-hash-label' + idSuffix;
         var privacyLabelId        = 'details-privacy-label' + idSuffix;
         var originLabelId         = 'details-origin-label' + idSuffix;
         var commentLabelId        = 'details-comment-label' + idSuffix;
 
-        var panel = new Ext.FormPanel( { title: 'Info', bodyCssClass: 'hig-body', autoScroll: true, items: [
-            { xtype: 'displayfield', id: activityLabelId, hideLabel: true, style: 'font-weight:bold;font-size:1.2em;', value: 'Activity' },
-            { xtype: 'displayfield', id: sizeLabelId, fieldLabel: 'Torrent-size' },
-            { xtype: 'displayfield', id: haveLabelId, fieldLabel: 'Have' },
-            { xtype: 'displayfield', id: availabilityLabelId, fieldLabel: 'Availability' },
-            { xtype: 'displayfield', id: downloadedLabelId, fieldLabel: 'Downloaded' },
-            { xtype: 'displayfield', id: uploadedLabelId,  fieldLabel: 'Uploaded' },
-            { xtype: 'displayfield', id: ratioLabelId, fieldLabel: 'Ratio' },
-            { xtype: 'displayfield', id: stateLabelId,  fieldLabel: 'State' },
-            { xtype: 'displayfield', id: runningTimeLabelId, fieldLabel: 'Running Time' },
-            { xtype: 'displayfield', id: remainingTimeLabelId, fieldLabel: 'Remaining Time' },
-            { xtype: 'displayfield', id: lastActivityLabelId, fieldLabel: 'Last Activity' },
-            { xtype: 'displayfield', id: errorLabelId, fieldLabel: 'Error' },
-            { xtype: 'displayfield', id: detailsLabelId, hideLabel: true, style: 'font-weight:bold;font-size:1.2em;', value: 'Details' },
-            { xtype: 'displayfield', id: locationLabelId, fieldLabel: 'Location' },
-            { xtype: 'displayfield', id: hashLabelId, fieldLabel: 'Hash' },
-            { xtype: 'displayfield', id: privacyLabelId, fieldLabel: 'Privacy' },
-            { xtype: 'displayfield', id: originLabelId, fieldLabel: 'Origin' },
-            { xtype: 'displayfield', id: commentLabelId, fieldLabel: 'Comment' }
+        var panel = new Ext.FormPanel( { title: 'Info', bodyCssClass: 'hig-body', autoScroll: true,  items: [
+            { xtype: 'fieldset', title: 'Activity', cls: 'hig-fieldset', autoWidth: true, items: [
+                { xtype: 'displayfield', id: sizeLabelId, fieldLabel: 'Torrent-size' },
+                { xtype: 'displayfield', id: haveLabelId, fieldLabel: 'Have' },
+                { xtype: 'displayfield', id: availabilityLabelId, fieldLabel: 'Availability' },
+                { xtype: 'displayfield', id: downloadedLabelId, fieldLabel: 'Downloaded' },
+                { xtype: 'displayfield', id: uploadedLabelId,  fieldLabel: 'Uploaded' },
+                { xtype: 'displayfield', id: ratioLabelId, fieldLabel: 'Ratio' },
+                { xtype: 'displayfield', id: stateLabelId,  fieldLabel: 'State' },
+                { xtype: 'displayfield', id: runningTimeLabelId, fieldLabel: 'Running Time' },
+                { xtype: 'displayfield', id: remainingTimeLabelId, fieldLabel: 'Remaining Time' },
+                { xtype: 'displayfield', id: lastActivityLabelId, fieldLabel: 'Last Activity' },
+                { xtype: 'displayfield', id: errorLabelId, fieldLabel: 'Error' }
+            ] },
+            { xtype: 'fieldset', title: 'Details', cls: 'hig-fieldset', autoWidth: true, items: [
+                { xtype: 'displayfield', id: locationLabelId, fieldLabel: 'Location' },
+                { xtype: 'displayfield', id: hashLabelId, fieldLabel: 'Hash' },
+                { xtype: 'displayfield', id: privacyLabelId, fieldLabel: 'Privacy' },
+                { xtype: 'displayfield', id: originLabelId, fieldLabel: 'Origin' },
+                { xtype: 'displayfield', id: commentLabelId, fieldLabel: 'Comment' }
+            ] }
         ]});
 
         this.sizeLabel          = Ext.getCmp( sizeLabelId );

@@ -24,6 +24,11 @@ Ext.namespace( 'Transmission' );
     {
     }
 
+    function initStats( )
+    {
+        onStatsChanged( mySession.stats );
+    }
+
     function onStatsChanged( o )
     {
         var sub = o['current-stats'];
@@ -93,6 +98,7 @@ Ext.namespace( 'Transmission' );
             Transmission.StatsDialog.superclass.constructor.call( this, config );
             mySession = config.session;
             mySession.addListener( 'onStatsChanged', onStatsChanged );    
+            this.addListener( 'afterRender', initStats );
         }
     });
 }());

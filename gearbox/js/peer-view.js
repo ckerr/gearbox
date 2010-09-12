@@ -90,7 +90,12 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
         this.torrentId = config_in.record.getId( );
 
         var record = Ext.data.Record.create([
-            { name: 'address', type: 'string' },
+            { name: 'address', type: 'string', sortType: function( value ) {
+                var a = value.split('.');
+                var r = 0;
+                for( var i = a.length; i > 0; --i )
+                    r += a[i-1] * Math.pow( 10, 3*(4-i) );
+                return r; } },
             { name: 'clientName', type: 'string' },
             { name: 'clientIsChoked', type: 'boolean' },
             { name: 'clientIsInterested', type: 'boolean' },
@@ -110,6 +115,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
         var reader = new Ext.data.JsonReader( { idProperty: 'address', root: 'peers', fields: record } );
 
         var store = new Ext.data.Store( { reader: reader } );
+        store.setDefaultSort( 'address' );
 
         var colModel = new Ext.grid.ColumnModel( {
             defaults: { sortable: true },
@@ -119,7 +125,7 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
                 { dataIndex: 'rateToClient', width: 60, align: 'right', header: 'Down', renderer: this.renderSpeedBps },
                 { dataIndex: 'progress', width: 60, align: 'right', header: '%', renderer: this.renderPercent },
                 { dataIndex: 'flagStr', width: 80, header: 'Status' },
-                { dataIndex: 'address', width: 150, align: 'right', header: 'Address' },
+                { dataIndex: 'address', width: 150, header: 'Address' },
                 { dataIndex: 'clientName', header: 'Client', id: 'client' }
             ]
         });

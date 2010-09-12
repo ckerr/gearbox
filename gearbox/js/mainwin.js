@@ -280,9 +280,9 @@ Ext.namespace( 'Transmission' );
             ' ', ' ', // these two buttons are pretty small on a cell phone.. add a little extra space between them
             { style: 'border-radius:5px; border: 1px solid #999;', xtype: 'button', id:'turtle-button', cls: 'x-btn-icon turtle-btn', enableToggle: true, listeners: { toggle: { scope: this, fn: onTurtleToggled } } },
             '->',
-            { id: 'statusbarUpSpeed', xtype: 'label', text: '↑ {0}{1}' },
+            { id: 'statusbarDownSpeed', xtype: 'label', text: '↓ {0}{1}' },
             ' ', '-', ' ',
-            { id: 'statusbarDownSpeed', xtype: 'label', text: '↓ {0}{1}' }
+            { id: 'statusbarUpSpeed', xtype: 'label', text: '↑ {0}{1}' }
         ]});
     }
 
