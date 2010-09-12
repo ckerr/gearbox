@@ -73,8 +73,6 @@ Ext.onReady(function()
             for( var i=0, n=removed.length; i<n; ++i )
                 store.remove( store.getById( removed[i] ) );
 
-        // if the torrent view isn't bound to the store yet, do so now
-        if( Transmission.torrentView.getStore() != store )
-            Transmission.torrentView.bindStore( store );
+        config.mainwin.setTorrentStore( store );
     });
 });

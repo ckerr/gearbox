@@ -319,18 +319,24 @@ Ext.namespace( 'Transmission' );
 
     var storeChangedTimer = null;
 
+    function refreshStore(store)
+    {
+        if(store && !store.isDummy)
+        {
+            store.suspendEvents(false);
+
+            updateActionSensitivity();
+            rebuildTrackerFilter();
+            resort(store);
+            refilter(store);
+
+            store.resumeEvents();
+            store.fireEvent('datachanged', store);
+        }
+    }
     function onStoreChangedIdle( e )
     {
-        var store = Torrent.store;
-        store.suspendEvents(false);
-
-        updateActionSensitivity();
-        rebuildTrackerFilter();
-        resort();
-        refilter();
-
-        store.resumeEvents();
-        store.fireEvent('datachanged', store);
+        refreshStore(torrentView.getStore());
     }
 
     function onStoreChanged( e )
@@ -351,7 +357,8 @@ Ext.namespace( 'Transmission' );
         // so let's not bind to it until after we get that first batch of torrents
         // from the server...
         var dummyStore = new Ext.data.Store({ autoDestroy: true });
-        var view = new TorrentView({ flex: 1, id:'torrent-list-view', store:dummyStore });//, store: Torrent.store, } );
+        dummyStore.isDummy = true;
+        var view = new TorrentView({ flex: 1, id:'torrent-list-view', store:dummyStore });
        
         torrentView = view;
         torrentView.addListener( 'selectionchange', onSelectionChanged );
@@ -360,7 +367,6 @@ Ext.namespace( 'Transmission' );
         });
         Torrent.store.addListener( 'update', onStoreChanged );
         Torrent.store.addListener( 'add', onRowsAdded );
-        Transmission.torrentView = view;
         return torrentView;
     }
 
@@ -443,14 +449,20 @@ Ext.namespace( 'Transmission' );
     {
         return filterByStatus(rec) && filterByTracker(rec);
     }
-    function refilter( )
+    function refilter(store)
     {
-        Torrent.store.filterBy( filterFunc, this );
+        if(!store || store.isDummy)
+            return;
+
+        store.filterBy(filterFunc,this);
         updateTorrentCount( );
     }
 
-    function resort( )
+    function resort(store)
     {
+        if(!store || store.isDummy)
+            return;
+
         var fieldName;
         var desc = myPrefs.getBool('sort-reversed');
 
@@ -466,8 +478,8 @@ Ext.namespace( 'Transmission' );
         }
 
         var dir = desc ? 'DESC' : 'ASC';
-        Torrent.store.sort( fieldName, dir );
-        Torrent.store.setDefaultSort( fieldName, dir );
+        store.sort( fieldName, dir );
+        store.setDefaultSort( fieldName, dir );
     }
 
     function onPrefsChanged( keys )
@@ -549,12 +561,9 @@ Ext.namespace( 'Transmission' );
             }
         }
 
-        if( doSort )
-            resort( );
-        if( doFilter )
-            refilter( );
-        if( doLayout )
-            that.doLayout( );
+        if(doSort) resort(torrentView.getStore());
+        if(doFilter) refilter(torrentView.getStore());
+        if(doLayout) that.doLayout();
 
         if( doTurtleTooltip ) {
             var s;
@@ -601,6 +610,13 @@ Ext.namespace( 'Transmission' );
     }
 
     Transmission.MainWin = Ext.extend( Ext.Viewport, {
+
+        setTorrentStore: function(store){
+            if(torrentView.getStore() != store) {
+                refreshStore(store);
+                torrentView.bindStore(store);
+            }
+        },
 
         constructor: function( config_in )
         {
