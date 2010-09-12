@@ -351,6 +351,8 @@ TorrentView = Ext.extend( Ext.list.ListView,
         this.refresh();
     },
 
+    // FIXME(Ext) this is to work around an Ext.ListView bug that loses selection when ListView.refresh() is called.
+    // When we upgrade to future versions of Ext, we should test and see if this can be removed.
     refresh: function() {
         var selected = this.getSelectedRecords();
         this.superclass().refresh.call(this);
