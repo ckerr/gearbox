@@ -271,7 +271,7 @@ Ext.namespace( 'Transmission' );
             '-',
             { xtype: 'menucheckitem', text: 'Compact View', id: 'compact-view', listeners: { checkchange: checkboxHandler } },
             '-',
-            { text: 'Transmission Homepage', handler: function(){ window.open('http://www.transmissionbt.com/'); } },
+            { text: 'Transmission Website', handler: function(){ window.open('http://www.transmissionbt.com/'); } },
             { text: 'Donate', handler: function(){ window.open('http://www.transmissionbt.com/donate.php'); } }
         ]});
 
