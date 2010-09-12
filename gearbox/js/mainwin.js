@@ -177,24 +177,16 @@ Ext.namespace( 'Transmission' );
 
     function createToolbar( prefs )
     {
-        var imgBase = Transmission.imgRoot + '/24x24'
+        var imgBase = Transmission.imgRoot + '/toolbar/';
 
         return new Ext.Toolbar( {
             id: 'mainwin-toolbar',
             defaults: { scale: scale, xtype: 'button', iconAlign: 'top' },
             items: [
-                { icon: imgBase+'/actions/document-open.png', tooltip: 'Open a torrent', text: 'Open', handler: function() { that.fireEvent('onOpenClicked') } },
-                { id:'toolbar-close-button', icon: imgBase+'/actions/window-close.png', tooltip: 'Close selected torrents', text: 'Close', handler: function() { closeSelectedTorrents(false); } },
-                '-',
-                { id:'toolbar-start-button', icon: imgBase+'/actions/media-playback-start.png', tooltip: 'Start selected torrents', text: 'Start', handler: startSelectedTorrents },
-                { id:'toolbar-stop-button', icon: imgBase+'/actions/media-playback-pause.png', tooltip: 'Pause selected torrents', text: 'Stop', handler: stopSelectedTorrents },
-                '-',
-                { icon: imgBase+'/actions/edit-select-all.png', tooltip: 'Select all torrents', text: 'Select All', handler: onSelectAllClicked },
-                '->',
-                { id:'toolbar-details-button', icon: imgBase+'/status/dialog-information.png', text: 'Info', tooltip: 'Get details about the selected torrent', handler: function(){ that.fireEvent('onDetailsClicked', { record: torrentView.getSelectedRecords()[0] }); } },
-                { icon: imgBase+'/apps/utilities-system-monitor.png', text: 'Stats', tooltip: 'Statistics dialog', handler: function(){ that.fireEvent('onStatsClicked') } },
-                { icon: imgBase+'/categories/preferences-desktop.png', text: 'Settings', tooltip: 'Settings dialog', handler: function(){ that.fireEvent('onPrefsClicked') } }
-                
+                { icon: imgBase+'add.png', tooltip: 'Open a torrent', handler: function() { that.fireEvent('onOpenClicked') } },
+                { id:'toolbar-close-button', icon: imgBase+'close.png', tooltip: 'Close selected torrents', handler: function() { closeSelectedTorrents(false); } },
+                { id:'toolbar-start-button', icon: imgBase+'play.png', tooltip: 'Start selected torrents', handler: startSelectedTorrents },
+                { id:'toolbar-stop-button', icon: imgBase+'pause.png', tooltip: 'Pause selected torrents', handler: stopSelectedTorrents }
             ]
         } );
     }
@@ -233,8 +225,6 @@ Ext.namespace( 'Transmission' );
     function createFilterbar( prefs )
     {
         var viewMenu = new Ext.menu.Menu( { defaultType: 'menucheckitem', items: [
-            { text: 'Compact View', id: 'compact-view', listeners: { checkchange: checkboxHandler } },
-            '-',
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Activity',  id: menuSortModePrefix+'activity' },
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Age',       id: menuSortModePrefix+'age' },
             { group: 'sort-mode', handler: sortMenuHandler, text: 'Sort by Name',      id: menuSortModePrefix+'name' },
@@ -250,7 +240,7 @@ Ext.namespace( 'Transmission' );
         var iconPrefix = Transmission.imgRoot+'/16x16';
         var filterbarVisible = prefs.getBool( 'show-filterbar' );
         return new Ext.Toolbar( { hidden: !filterbarVisible, id: 'mainwin-filterbar', items: [
-            { xtype: 'button', text: 'View', menu: viewMenu },
+            { xtype: 'button', text: 'Sort', menu: viewMenu },
             { xtype: 'button', id: 'filterbar-status', menu: [
                 { handler: filterStatusHandler, text: 'All',         id: filterStatusPrefix+'all' },
                 '-',
@@ -279,14 +269,16 @@ Ext.namespace( 'Transmission' );
             { id: 'menu-reannounce', text: 'Ask Tracker for More Peers', handler: reannounceSelectedTorrents },
             { id: 'menu-verify', text: 'Verify Local Data', handler: verifySelectedTorrents },
             '-',
+            { xtype: 'menucheckitem', text: 'Compact View', id: 'compact-view', listeners: { checkchange: checkboxHandler } },
+            '-',
             { text: 'Transmission Homepage', handler: function(){ window.open('http://www.transmissionbt.com/'); } },
             { text: 'Donate', handler: function(){ window.open('http://www.transmissionbt.com/donate.php'); } }
         ]});
 
         return new Ext.Toolbar( { id: 'mainwin-statusbar', items: [
-            { menu: actionMenu, icon: Transmission.imgRoot + '/ActionHover.png' },
+            { style: 'border-radius:5px; border: 1px solid #999', menu: actionMenu, icon: Transmission.imgRoot + '/action.png' },
             ' ', ' ', // these two buttons are pretty small on a cell phone.. add a little extra space between them
-            { xtype: 'button', id:'turtle-button', cls: 'x-btn-icon turtle-btn', enableToggle: true, listeners: { toggle: { scope: this, fn: onTurtleToggled } } },
+            { style: 'border-radius:5px; border: 1px solid #999;', xtype: 'button', id:'turtle-button', cls: 'x-btn-icon turtle-btn', enableToggle: true, listeners: { toggle: { scope: this, fn: onTurtleToggled } } },
             '->',
             { id: 'statusbarUpSpeed', xtype: 'label', text: '↑ {0}{1}' },
             ' ', '-', ' ',
@@ -314,7 +306,7 @@ Ext.namespace( 'Transmission' );
         Ext.getCmp( 'toolbar-stop-button' ).setDisabled( selectedPausedCount == selectedCount );
         Ext.getCmp( 'toolbar-close-button' ).setDisabled( selectedCount == 0 );
         Ext.getCmp( 'toolbar-start-button' ).setDisabled( selectedPausedCount == 0 );
-        Ext.getCmp( 'toolbar-details-button' ).setDisabled( selectedCount != 1 );
+        //Ext.getCmp( 'toolbar-details-button' ).setDisabled( selectedCount != 1 );
 
         Ext.getCmp( 'menu-verify').setDisabled( selectedCount == 0 );
         Ext.getCmp( 'menu-reannounce').setDisabled( selectedPausedCount == selectedCount );
@@ -325,30 +317,29 @@ Ext.namespace( 'Transmission' );
         updateActionSensitivity( );
     }
 
-    var isStoreUpdatePending = false;
+    var storeChangedTimer = null;
 
-    function onStoreChangedIdle( )
+    function onStoreChangedIdle( e )
     {
         var store = Torrent.store;
+        var selectedRecords = torrentView.getSelectedRecords();
         store.suspendEvents(false);
 
-        updateActionSensitivity( );
-        rebuildTrackerFilter( );
-        resort( );
-        refilter( );
-        isStoreUpdatePending = false;
+        updateActionSensitivity();
+        rebuildTrackerFilter();
+        resort();
+        refilter();
 
         store.resumeEvents();
         store.fireEvent('datachanged', store);
+        torrentView.select(selectedRecords);
     }
 
-    function onStoreChanged( )
+    function onStoreChanged( e )
     {
-        if( !isStoreUpdatePending )
-        {
-            isStoreUpdatePending = true;
-            onStoreChangedIdle.defer( 250, this );
-        }
+        if( storeChangedTimer )
+            clearTimeout( storeChangedTimer );
+        storeChangedTimer = onStoreChangedIdle.defer(500,[]);
     }
 
     function onRowsAdded( )
@@ -366,7 +357,7 @@ Ext.namespace( 'Transmission' );
        
         torrentView = view;
         torrentView.addListener( 'selectionchange', onSelectionChanged );
-        torrentView.addListener('rowdblclick', function(grid,index,e){
+        torrentView.addListener('dblclick', function(view,index,node,e){
             that.fireEvent('onDetailsClicked', { record: Torrent.store.getAt(index) } );
         });
         Torrent.store.addListener( 'update', onStoreChanged );

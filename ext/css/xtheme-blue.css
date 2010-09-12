@@ -404,8 +404,12 @@ ul.x-tab-strip-bottom{
 	background-image: url(../images/default/button/group-tb.gif);
 }.x-toolbar{
 	border-color:#a9bfd3;
-    background-color:#d0def0;
-    background-image:url(../images/default/toolbar/bg.gif);
+    background-color:#dde;
+    border-style: none;
+    background-image: none;
+    background: -webkit-gradient(linear,left top, left bottom,
+        color-stop(0,#eee), color-stop(0.5,#ddd), color-stop(1,#eee));
+    background: -moz-linear-gradient(top,#eee 0%,#ddd 50%,#eee 100%);
 }
 
 .x-toolbar td,.x-toolbar span,.x-toolbar input,.x-toolbar div,.x-toolbar select,.x-toolbar label{

@@ -365,6 +365,11 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
         TorrentView.superclass.constructor.call( this, config );
         this.addListener( 'resize', function(){this.refresh();}, this );
+    },
+
+    clearSelections: function()
+    {
+        TorrentView.superclass.clearSelections.call( this, arguments );
     }
 });
 
