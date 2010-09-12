@@ -372,7 +372,6 @@ TorrentView = Ext.extend( Ext.list.ListView,
         } );
 
         this.superclass().constructor.call(this, config);
-        this.addListener( 'resize', function(){this.refresh();}, this );
     }
 });
 
