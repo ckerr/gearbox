@@ -491,7 +491,6 @@ Ext.namespace( 'Transmission' );
             return;
 
         var newRecords = torrentView.getRecords( torrentView.getNodes() );
-        var ids = [];
         var s = [];
 
         for( var i=0, n=records.length; i<n; ++i )
