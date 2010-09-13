@@ -358,9 +358,9 @@ TrackerView = Ext.extend( Ext.Container,
         var imgDir = Transmission.imgRoot + '/16x16/actions';
         var config = Ext.apply( {}, config_in, { layout : 'border', items: [
             { region: 'east', xtype: 'container', layout: { type: 'vbox', padding: '5', align: 'stretch' }, width: 40, items: [
-                { xtype: 'button', id: 'add-tracker-button', tooltip: 'Add a Tracker', icon: imgDir+'/list-add.png', margin: { bottom: 30 } },
-                { xtype: 'button', id: 'edit-tracker-button', tooltip: 'Edit a Tracker', icon: imgDir+'/document-properties.png' },
-                { xtype: 'button', id: 'remove-tracker-button', tooltip: 'Remove a Tracker', icon: imgDir+'/list-remove.png' }]},
+                { xtype: 'button', id: 'add-tracker-button', text: 'Add', tooltip: 'Add a Tracker', margin: { bottom: 30 } },
+                { xtype: 'button', id: 'edit-tracker-button', text: 'Edit', tooltip: 'Edit the selected Tracker'  },
+                { xtype: 'button', id: 'remove-tracker-button', text: 'Remove', tooltip: 'Remove the selected Tracker' }]},
             { region: 'south', xtype: 'container', layout: { type: 'vbox', padding: '5', align: 'stretch' }, height: 50, items: [
                 { xtype: 'checkbox', boxLabel: 'Show more details', id: 'show-tracker-scrapes', listeners: { check: { scope: this, fn: this.onShowScrapesChecked } } },
                 { xtype: 'checkbox', boxLabel: 'Show backup trackers', id: 'show-backup-trackers', listeners: { check: { scope: this, fn: this.onShowBackupsChecked }}}]},
