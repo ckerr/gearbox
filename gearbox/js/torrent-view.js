@@ -48,13 +48,14 @@ TorrentView = Ext.extend( Ext.list.ListView,
             isSeed = rec.isSeed(),
             seedRatio = rec.getSeedRatio(),
             hasSeedRatio = seedRatio > 0,
+            fmt = Transmission.fmt,
             str;
 
         if( isMagnet ) // magnet link with no metadata
         {
             // {0} is the percentage of torrent metadata downloaded
             str = String.format( "Magnetized transfer - retrieving metadata {0}%)",
-                                 Transmission.fmt.percentString( tor.metadataPercentDone() * 100.0 ) );
+                                 fmt.percentString( tor.metadataPercentDone() * 100.0 ) );
         }
         else if( !isDone ) // downloading
         {
@@ -62,9 +63,9 @@ TorrentView = Ext.extend( Ext.list.ListView,
             // {1} is how much we'll have when done,
             // {2} is a percentage of the two
             str = String.format( "{0} of {1} ({2}%)",
-                    Transmission.fmt.size( rec.haveTotal( ) ),
-                    Transmission.fmt.size( rec.sizeWhenDone( ) ),
-                    Transmission.fmt.percentString( rec.percentDone() * 100.0 ) );
+                    fmt.size( rec.haveTotal( ) ),
+                    fmt.size( rec.sizeWhenDone( ) ),
+                    fmt.percentString( rec.percentDone() * 100.0 ) );
         }
         else if( !isSeed ) // partial seed
         {
@@ -77,12 +78,12 @@ TorrentView = Ext.extend( Ext.list.ListView,
                 // {4} is our upload-to-download ratio
                 // {5} is the ratio we want to reach before we stop uploading
                 str = String.format( "{0} of {1} ({2}%), uploaded {3} (Ratio: {4} Goal: {5})",
-                        Transmission.fmt.size( rec.haveTotal() ),
-                        Transmission.fmt.size( rec.totalSize() ),
-                        Transmission.fmt.percentString( rec.percentComplete( ) ),
-                        Transmission.fmt.size( rec.uploadedEver( ) ),
-                        Transmission.fmt.ratioString( rec.uploadRatio() ),
-                        Transmission.fmt.ratioString( seedRatio ) );
+                        fmt.size( rec.haveTotal() ),
+                        fmt.size( rec.totalSize() ),
+                        fmt.percentString( rec.percentComplete( ) ),
+                        fmt.size( rec.uploadedEver( ) ),
+                        fmt.ratioString( rec.uploadRatio() ),
+                        fmt.ratioString( seedRatio ) );
             }
             else
             {
@@ -92,11 +93,11 @@ TorrentView = Ext.extend( Ext.list.ListView,
                 // {3} is how much we've uploaded,
                 // {4} is our upload-to-download ratio
                 str = String.format( "{0} of {1} ({2}%), uploaded {3} (Ratio: {4})",
-                        Transmission.fmt.size( rec.haveTotal ),
-                        Transmission.fmt.size( rec.totalSize( ) ),
-                        Transmission.fmt.percentString( rec.percentComplete( ) ),
-                        Transmission.fmt.size( rec.uploadedEver( ) ),
-                        Transmission.fmt.ratioString( rec.uploadRatio( ) ) );
+                        fmt.size( rec.haveTotal ),
+                        fmt.size( rec.totalSize( ) ),
+                        fmt.percentString( rec.percentComplete( ) ),
+                        fmt.size( rec.uploadedEver( ) ),
+                        fmt.ratioString( rec.uploadRatio( ) ) );
             }
         }
         else // seeding
@@ -108,10 +109,10 @@ TorrentView = Ext.extend( Ext.list.ListView,
                 // {2} is our upload-to-download ratio,
                 // {3} is the ratio we want to reach before we stop uploading
                 str = String.format( "{0}, uploaded {1} (Ratio: {2} Goal: {3})",
-                        Transmission.fmt.size( rec.haveTotal( ) ),
-                        Transmission.fmt.size( rec.uploadedEver( ) ),
-                        Transmission.fmt.ratioString( rec.uploadRatio( ) ),
-                        Transmission.fmt.ratioString( seedRatio ) );
+                        fmt.size( rec.haveTotal( ) ),
+                        fmt.size( rec.uploadedEver( ) ),
+                        fmt.ratioString( rec.uploadRatio( ) ),
+                        fmt.ratioString( seedRatio ) );
             }
             else // seeding w/o a ratio
             {
@@ -119,9 +120,9 @@ TorrentView = Ext.extend( Ext.list.ListView,
                 // {1} is how much we've uploaded,
                 // {2} is our upload-to-download ratio
                 str = String.format( "{0}, uploaded {1} (Ratio: {2})",
-                        Transmission.fmt.size( rec.haveTotal( ) ),
-                        Transmission.fmt.size( rec.uploadedEver() ),
-                        Transmission.fmt.ratioString( rec.uploadRatio() ) );
+                        fmt.size( rec.haveTotal( ) ),
+                        fmt.size( rec.uploadedEver() ),
+                        fmt.ratioString( rec.uploadRatio() ) );
             }
         }
 
@@ -131,7 +132,7 @@ TorrentView = Ext.extend( Ext.list.ListView,
             str += ' - ';
 
             if( rec.hasETA() )
-                str += String.format( '{0} left', Transmission.fmt.timeInterval( rec.getETA( ) ) );
+                str += String.format( '{0} left', fmt.timeInterval( rec.getETA( ) ) );
             else
                 str += 'Remaining time unknown';
         }

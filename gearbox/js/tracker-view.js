@@ -62,13 +62,12 @@ TrackerView = Ext.extend( Ext.Container,
             success_markup_end = '</span>';
 
         // hostname
-        //
-        strings.push( '<div style="overflow:hidden;">' );
-        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
-        strings.push( record.data.isBackup ? '<i>' : '<b>' );
-        strings.push( record.data.uri.host, ':', record.data.uri.port );
-        strings.push( record.data.isBackup ? '</i>' : '</b>' );
-        strings.push( '</div>' );
+        strings.push( '<div style="overflow:hidden;">',
+                      '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                      record.data.isBackup ? '<i>' : '<b>',
+                      record.data.uri.host, ':', record.data.uri.port,
+                      record.data.isBackup ? '</i>' : '</b>',
+                      '</div>' );
 
         // announce & scrape info
         if( !d.isBackup )
@@ -103,29 +102,29 @@ TrackerView = Ext.extend( Ext.Container,
             {
                 case this.TRACKER_INACTIVE:
                     if( !d.hasAnnounced ) {
-                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
-                        strings.push( 'No updates scheduled' );
-                        strings.push( '</div>' );
+                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                                      'No updates scheduled',
+                                      '</div>' );
                     }
                     break;
 
                 case this.TRACKER_WAITING:
-                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
-                    strings.push( 'Asking for more peers in ', this.timeToStringRounded( d.nextAnnounceTime - now ) );;
-                    strings.push( '</div>' );
+                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                                  'Asking for more peers in ', this.timeToStringRounded( d.nextAnnounceTime - now ),
+                                  '</div>' );
                     break;
 
                 case this.TRACKER_QUEUED:
-                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
-                    strings.push( 'Queued to ask for more peers' );
-                    strings.push( '</div>' );
+                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                                  'Queued to ask for more peers',
+                                  '</div>' );
                     break;
 
                 case this.TRACKER_ACTIVE:
-                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
-                    strings.push( 'Asking for more peers now...',
-                                  '<small>', this.timeToStringRounded( now - d.lastAnnounceStartTime ), '</small>' );
-                    strings.push( '</div>' );
+                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                                  'Asking for more peers now...',
+                                  '<small>', this.timeToStringRounded( now - d.lastAnnounceStartTime ), '</small>',
+                                  '</div>' );
                     break;
             }
 
@@ -159,22 +158,22 @@ TrackerView = Ext.extend( Ext.Container,
                         break;
 
                     case this.TRACKER_WAITING:
-                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
-                        strings.push( 'Asking for peer counts in ', this.timeToStringRounded( d.nextScrapeTime - now ) );
-                        strings.push( '</div>' );
+                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                                      'Asking for peer counts in ', this.timeToStringRounded( d.nextScrapeTime - now ),
+                                      '</div>' );
                         break;
 
                     case this.TRACKER_QUEUED:
-                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
-                        strings.push( 'Queued to ask for peer counts' );
-                        strings.push( '</div>' );
+                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                                      'Queued to ask for peer counts',
+                                      '</div>' );
                         break;
 
                     case this.TRACKER_ACTIVE:
-                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' );
-                        strings.push( 'Asking for peer counts now... ',
-                                      '<small>', this.timeToStringRounded( now - d.lastScrapeStartTime ), '</small>' );
-                        strings.push( '</div>' );
+                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                                      'Asking for peer counts now... ',
+                                      '<small>', this.timeToStringRounded( now - d.lastScrapeStartTime ), '</small>',
+                                      '</div>' );
                         break;
                 }
             }

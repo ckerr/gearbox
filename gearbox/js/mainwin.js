@@ -316,6 +316,11 @@ Ext.namespace( 'Transmission' );
         onStoreChanged( );
     }
 
+    function onDoubleClick( view, index, node, e )
+    {
+        that.fireEvent( 'onDetailsClicked', { record: torrentView.getStore().getAt(index) } );
+    }
+
     function createTorrentList( )
     {
         // loading Torrent.store initially causes a *lot* of load on TorrentView,
@@ -324,15 +329,10 @@ Ext.namespace( 'Transmission' );
         var dummyStore = new Ext.data.Store({ autoDestroy: true });
         dummyStore.isDummy = true;
         var view = new TorrentView({ flex: 1, id:'torrent-list-view', store:dummyStore });
-       
         torrentView = view;
-        torrentView.addListener( 'selectionchange', onSelectionChanged );
-        torrentView.addListener('dblclick', function(view,index,node,e){
-            that.fireEvent('onDetailsClicked', { record: Torrent.store.getAt(index) } );
-        });
-        Torrent.store.addListener( 'update', onStoreChanged );
-        Torrent.store.addListener( 'add', onRowsAdded );
-        return torrentView;
+        view.addListener('selectionchange', onSelectionChanged);
+        view.addListener('dblclick', onDoubleClick);
+        return view;
     }
 
     var trackersStr = '';
@@ -452,11 +452,15 @@ Ext.namespace( 'Transmission' );
             return;
 
         var newRecords = torrentView.getRecords( torrentView.getNodes() ),
-            s = [];
+            s = [],
+            i = records.length,
+            rec;
 
-        for( var i=0, n=records.length; i<n; ++i )
-            if( newRecords.indexOf( records[i] ) != -1 )
-                s.push( records[i] );
+        while( i-- ) {
+            rec = records[i];
+            if( newRecords.indexOf( rec ) != -1 )
+                s.push( rec );
+        }
 
         torrentView.select( s );
     }
@@ -466,9 +470,10 @@ Ext.namespace( 'Transmission' );
         var doSort = false,
             doFilter = false,
             doLayout = false,
-            doTurtleTooltip = false;
+            doTurtleTooltip = false,
+            i = keys.length;
 
-        for( var i=keys.length; i--; )
+        while( i-- )
         {
             var key = keys[i];
 
@@ -524,7 +529,6 @@ Ext.namespace( 'Transmission' );
                     var v = myPrefs.get( key ),
                         e = Ext.getCmp( 'filterbar-status' );
                     e.setText( Ext.util.Format.capitalize( v ) );
-                    // FIXME: icon
                     doFilter = true;
                     break;
                 }
@@ -559,8 +563,9 @@ Ext.namespace( 'Transmission' );
 
     function updateTorrentCount( )
     {
-        var count = Torrent.store.getCount(),
-            total = Torrent.store.getUnfilteredCount(),
+        var store = Torrent.store,
+            count = store.getCount(),
+            total = store.getUnfilteredCount(),
             key = 'statusbarTorrentCountLabel',
             str = Ext.util.Format.plural( total, 'Torrent' );
 
@@ -594,6 +599,8 @@ Ext.namespace( 'Transmission' );
             if(torrentView.getStore() != store) {
                 refreshStore(store);
                 torrentView.bindStore(store);
+                store.addListener('update', onStoreChanged);
+                store.addListener('add', onRowsAdded);
             }
         },
 
