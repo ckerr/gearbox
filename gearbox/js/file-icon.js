@@ -17,17 +17,17 @@ Ext.namespace( 'Transmission' );
 
 Transmission.FileIcon = (function(){
 
-    var FILETYPE_UNKNOWN = 0;
-    var FILETYPE_DISK    = 1;
-    var FILETYPE_TEXT    = 2;
-    var FILETYPE_IMAGE   = 3;
-    var FILETYPE_VIDEO   = 4;
-    var FILETYPE_ARCHIVE = 5;
-    var FILETYPE_AUDIO   = 6;
-    var FILETYPE_APP     = 7;
-    var FILETYPE_FOLDER  = 8;
+    var FILETYPE_UNKNOWN = 0,
+        FILETYPE_DISK    = 1,
+        FILETYPE_TEXT    = 2,
+        FILETYPE_IMAGE   = 3,
+        FILETYPE_VIDEO   = 4,
+        FILETYPE_ARCHIVE = 5,
+        FILETYPE_AUDIO   = 6,
+        FILETYPE_APP     = 7,
+        FILETYPE_FOLDER  = 8,
 
-    var type2img =  [ '{imgroot}/{size}/mimetypes/unknown.png',
+        type2img =  [ '{imgroot}/{size}/mimetypes/unknown.png',
                       '{imgroot}/{size}/devices/media-optical.png',
                       '{imgroot}/{size}/mimetypes/text-x-generic.png',
                       '{imgroot}/{size}/mimetypes/image-x-generic.png',
@@ -39,8 +39,8 @@ Transmission.FileIcon = (function(){
 
     function getIconURL( type, iconSize )
     {
-        var imgroot = Transmission.imgRoot;
-        var size = '' + iconSize + 'x' + iconSize;
+        var imgroot = Transmission.imgRoot,
+            size = '' + iconSize + 'x' + iconSize;
         return type2img[type].replace('{imgroot}',imgroot).replace('{size}',size);
     };
 
@@ -132,8 +132,8 @@ Transmission.FileIcon = (function(){
         SMALL: 16,
         LARGE: 32,
         getIcon: function( filename, iconSize ) {
-            var suffix = filename.slice( filename.lastIndexOf('.') + 1 );
-            var type = suffix2type[suffix];
+            var suffix = filename.slice( filename.lastIndexOf('.') + 1 ),
+                type = suffix2type[suffix];
             return getIconURL( type ? type : FILETYPE_UNKNOWN, iconSize );
         },
         getFolderIcon: function( iconSize ) {

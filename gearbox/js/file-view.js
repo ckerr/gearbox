@@ -145,25 +145,22 @@ FileView = Ext.extend( Ext.Container,
             return null;
 
         // parse the files array
-        var tmp = { children: [ ] };
-        var files = record.getFiles( );
-        var branchIds = { };
-        var data = [ ];
-        var _id = -1;
-        var folderIcon = Transmission.FileIcon.getFolderIcon( Transmission.FileIcon.SMALL );
+        var files = record.getFiles( ),
+            data = [ ],
+            _id = -1,
+            folderIcon = Transmission.FileIcon.getFolderIcon( Transmission.FileIcon.SMALL );
 
         for( var i=0, n=files.length; i<n; ++i )
         {
-            var myparent = tmp;
-            var tokens = files[i].name.split( '/' );
-            var path = '';
-            var _parent = null;
+            var tokens = files[i].name.split( '/' ),
+                path = '',
+                _parent = null;
 
             for( var j=0, jn=tokens.length; j<jn; ++j )
             {
-                var name = tokens[j];
-                var collatedName = name.toUpperCase();
-                var isLeaf = j + 1 == jn;
+                var name = tokens[j],
+                    collatedName = name.toUpperCase(),
+                    isLeaf = j + 1 == jn;
 
                 path += '/' + name;
                 var l = data.lowerBound( path, this.compareStringToPropertyPath );

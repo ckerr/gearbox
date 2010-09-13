@@ -72,8 +72,8 @@ Transmission.Controller = Ext.extend( Ext.util.Observable,
     },
 
     constructor : function(config){
-        var me = this;
         var mainwin = config.mainwin;
+
         this.prefs = config.prefs;
         this.session = config.session;
         this.superclass().constructor.call( this, config );

@@ -33,10 +33,11 @@ PeerView = Ext.extend( Ext.grid.GridPanel,
         if( !Ext.isArray( record.data.peers ) )
             return;
 
-        var addme = { peers: [ ] };
-        var peerStore = this.store;
-        var peers = record.data.peers;
-        var newPeers = [ ];
+        var addme = { peers: [ ] },
+            peerStore = this.store,
+            peers = record.data.peers,
+            newPeers = [ ];
+
         for(var i=peers.length; i--; )
         {
             var peer = peers[i];

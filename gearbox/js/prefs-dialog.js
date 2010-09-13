@@ -17,10 +17,10 @@ Ext.namespace( 'Transmission' );
 
 (function()
 {
-    var myPrefs = null;
-    var that = null;
-    var pendingSpinners = { };
-    var numFieldWidth = 80;
+    var myPrefs = null,
+        that = null,
+        pendingSpinners = { },
+        numFieldWidth = 80;
 
     function textfieldHandler( e )
     {
@@ -267,9 +267,9 @@ Ext.namespace( 'Transmission' );
 
     function createSpeedTab( prefs )
     {
-        var upLabel = String.format( 'Limit upload speed ({0})', Transmission.fmt.speedUnitStr );
-        var dnLabel = String.format( 'Limit download speed ({0})', Transmission.fmt.speedUnitStr );
-        var timeStore = buildTimeList( );
+        var upLabel = String.format( 'Limit upload speed ({0})', Transmission.fmt.speedUnitStr ),
+            dnLabel = String.format( 'Limit download speed ({0})', Transmission.fmt.speedUnitStr ),
+            timeStore = buildTimeList( );
 
         return new Ext.FormPanel( {
             title: 'Speed',

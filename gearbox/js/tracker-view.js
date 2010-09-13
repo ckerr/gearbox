@@ -51,17 +51,15 @@ TrackerView = Ext.extend( Ext.Container,
 
     renderTracker: function( value, metadata, record, rowIndex, colIndex, store )
     {
-        var key;
-        var str;
-        var d = record.data;
-        var strings = [ ];
-        var now = new Date().getTime() / 1000;
-        var err_markup_begin = '<span style="color:red">';
-        var err_markup_end = '</span>';
-        var timeout_markup_begin = '<span style="color:#224466">';
-        var timeout_markup_end = '</span>';
-        var success_markup_begin = '<span style="color:#008B00">';
-        var success_markup_end = '</span>';
+        var d = record.data,
+            strings = [ ],
+            now = new Date().getTime() / 1000,
+            err_markup_begin = '<span style="color:red">',
+            err_markup_end = '</span>',
+            timeout_markup_begin = '<span style="color:#224466">',
+            timeout_markup_end = '</span>',
+            success_markup_begin = '<span style="color:#008B00">',
+            success_markup_end = '</span>';
 
         // hostname
         //
@@ -296,10 +294,10 @@ TrackerView = Ext.extend( Ext.Container,
 
     onRemoveClicked: function( )
     {
-        var records = this.gridPanel.getSelectionModel().getSelections();
-        var n = records.length;
-        var urls = new Array( n );
-        for( var i=n; i--; )
+        var records = this.gridPanel.getSelectionModel().getSelections(),
+            i = records.length,
+            urls = new Array( i );
+        while( i-- )
             urls[i] = records[i].data.announce;
         this.session.removeTrackers( this.torrentId, urls );
     },
@@ -316,7 +314,6 @@ TrackerView = Ext.extend( Ext.Container,
 
     constructor: function( config_in )
     {
-        var me = this;
         this.torrentId = config_in.record.getId();
         this.prefs = config_in.prefs;
         this.session = config_in.session;

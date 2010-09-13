@@ -69,9 +69,9 @@ function getHost( uri )
 
 function getNameFromHost( domain )
 {
-    var pos = domain.lastIndexOf('.');
-    var name = pos==-1 ? domain : domain.slice(0,pos);
-    return Ext.util.Format.capitalize( name );
+    var pos = domain.lastIndexOf('.'),
+        name = pos==-1 ? domain : domain.slice(0,pos);
+    return Ext.util.Format.capitalize(name);
 }
 
 /**

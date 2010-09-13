@@ -17,26 +17,24 @@ Ext.namespace( 'Transmission' );
 
 Transmission.fmt = (function()
 {
-    var speed_K = 1024;
-    var speed_B_str = 'B';
-    var speed_K_str = 'KB/s';
-    var speed_M_str = 'MB/s';
-    var speed_G_str = 'GB/s';
-    var speed_T_str = 'TB/s';
+    var speed_K = 1024,
+        speed_K_str = 'KB/s',
+        speed_M_str = 'MB/s',
+        speed_G_str = 'GB/s',
 
-    var size_K = 1024;
-    var size_B_str = 'B';
-    var size_K_str = 'KB';
-    var size_M_str = 'MB';
-    var size_G_str = 'GB';
-    var size_T_str = 'TB';
+        size_K = 1024,
+        size_B_str = 'B',
+        size_K_str = 'KB',
+        size_M_str = 'MB',
+        size_G_str = 'GB',
+        size_T_str = 'TB',
 
-    var mem_K = 1024;
-    var mem_B_str = 'B';
-    var mem_K_str = 'KB';
-    var mem_M_str = 'MB';
-    var mem_G_str = 'GB';
-    var mem_T_str = 'TB';
+        mem_K = 1024,
+        mem_B_str = 'B',
+        mem_K_str = 'KB',
+        mem_M_str = 'MB',
+        mem_G_str = 'GB',
+        mem_T_str = 'TB';
 
     return {
 
@@ -73,10 +71,10 @@ Transmission.fmt = (function()
         mem: function( bytes )
         {
             if( bytes < mem_K )
-                return bytes + ' ' + mem_B_str;
+                return [ bytes, mem_B_str ].join(' ');
 
-            var convertedSize;
-            var unit;
+            var convertedSize,
+                unit;
 
             if( bytes < Math.pow( mem_K, 2 ) )
             {
@@ -115,10 +113,10 @@ Transmission.fmt = (function()
                 return 'None';
 
             if( bytes < size_K )
-                return bytes + ' ' + size_B_str;
+                return [ bytes, size_B_str ].join(' ');
 
-            var convertedSize;
-            var unit;
+            var convertedSize,
+                unit;
 
             if( bytes < Math.pow( size_K, 2 ) )
             {
@@ -182,11 +180,11 @@ Transmission.fmt = (function()
 
         timeInterval: function( seconds )
         {
-            var result;
-            var days = Math.floor(seconds / 86400);
-            var hours = Math.floor((seconds % 86400) / 3600);
-            var minutes = Math.floor((seconds % 3600) / 60);
-            var seconds = Math.floor((seconds % 3600) % 60);
+            var result,
+                days = Math.floor(seconds / 86400),
+                hours = Math.floor((seconds % 86400) / 3600),
+                minutes = Math.floor((seconds % 3600) / 60),
+                seconds = Math.floor((seconds % 3600) % 60);
 
             if (days > 0 && hours == 0)
                 result = Ext.util.Format.plural(days, 'day');
@@ -208,33 +206,29 @@ Transmission.fmt = (function()
 
         timestamp: function( seconds )
         {
-            var myDate = new Date(seconds*1000);
-            var now = new Date();
+            var myDate = new Date(seconds*1000),
+                date,
+                time,
+                now = new Date(),
+                sameYear = now.getFullYear() == myDate.getFullYear(),
+                sameMonth = now.getMonth() == myDate.getMonth(),
+                dateDiff = now.getDate() - myDate.getDate();
 
-            var date = "";
-            var time = "";
-
-            var sameYear = now.getFullYear() == myDate.getFullYear();
-            var sameMonth = now.getMonth() == myDate.getMonth();
-
-            var dateDiff = now.getDate() - myDate.getDate();
             if(sameYear && sameMonth && Math.abs(dateDiff) <= 1){
-                if(dateDiff == 0){
+                if(dateDiff == 0)
                     date = "Today";
-                }
-                else if(dateDiff == 1){
+                else if(dateDiff == 1)
                     date = "Yesterday";
-                }
-                else{
+                else
                     date = "Tomorrow";
-                }
             }
             else{
                 date = myDate.toDateString();
             }
 
-            var hours = myDate.getHours();
-            var period = "AM";
+            var hours = myDate.getHours(),
+                period = "AM";
+
             if(hours > 12){
                 hours = hours - 12;
                 period = "PM";

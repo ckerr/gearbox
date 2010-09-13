@@ -18,11 +18,11 @@ Ext.namespace( 'Transmission' );
 (function()
 {
     // private variables...
-    var myPrefs;
-    var mySession;
-    var that;
-    var scale = 'medium';
-    var torrentView = null;
+    var myPrefs,
+        mySession,
+        that,
+        scale = 'medium',
+        torrentView = null;
 
     function getAllRecordsUnfiltered( )
     {
@@ -30,36 +30,15 @@ Ext.namespace( 'Transmission' );
         return r.getRange();
     }
 
-    function onSelectAllClicked( )
-    {
-        var n = torrentView.getStore().getCount();
-
-        if( n > 0 )
-        {
-            // if "select all" was clicked when they're already all clicked,
-            // deselect them all instead.
-            if( n == torrentView.getSelectionCount() )
-                torrentView.clearSelections(false);
-            else
-                torrentView.selectRange( 0, n );
-        }
-    }
-
     function onTurtleToggled( btn, pressed )
     {
         mySession.set({ 'alt-speed-enabled': pressed });
     }
 
-    function onDeselectAllClicked( )
-    {
-        torrentView.clearSelections( false );
-    }
-
     function getIdsFromRecords( records )
     {
-        var n = records.length;
-        var ids = new Array( n );
-        for( var i=n; i--; )
+        var i=records.length, ids=new Array(i);
+        while(i--)
             ids[i] = records[i].getId( );
         return ids;
     }
@@ -67,24 +46,21 @@ Ext.namespace( 'Transmission' );
     {
         return getIdsFromRecords( torrentView.getSelectedRecords( ) );
     }
-    function getAllIds( )
-    {
-        return getIdsFromRecords( torrentView.getStore().getRange() );
-    }
 
     function closeSelectedTorrents( deleteFiles )
     {
-        var connected = 0;
-        var incomplete = 0;
-        var primary_text;
-        var secondary_text;
+        var connected = 0,
+            incomplete = 0,
+            primary_text,
+            secondary_text,
+            ids,
+            records = torrentView.getSelectedRecords(),
+            n = records.length;
 
-        var records = torrentView.getSelectedRecords( );
-        var n = records.length;
         if( !n )
             return;
 
-        var ids = new Array( n );
+        ids = new Array( n );
         for( var i=n; i--; )
         {
             var tor = records[i];
@@ -153,8 +129,6 @@ Ext.namespace( 'Transmission' );
         Ext.MessageBox.confirm( 'Confirm', body, function(b,t) { if (b=='yes') mySession.removeTorrents(ids,deleteFiles); } );
     }
 
-    function startAllTorrents( )           { mySession.startTorrents      ( getAllIds() ); }
-    function stopAllTorrents( )            { mySession.stopTorrents       ( getAllIds() ); }
     function startSelectedTorrents( )      { mySession.startTorrents      ( getSelectedIds() ); }
     function stopSelectedTorrents( )       { mySession.stopTorrents       ( getSelectedIds() ); }
     function verifySelectedTorrents( )     { mySession.verifyTorrents     ( getSelectedIds() ); }
@@ -290,23 +264,18 @@ Ext.namespace( 'Transmission' );
     {
         // FIXME: this should be on a timer -- it's called too often
 
-        var records = torrentView.getSelectedRecords();
-        var selectedCount = records.length;
-        var selectedPausedCount = 0;
+        var records = torrentView.getSelectedRecords(),
+            selectedCount = records.length,
+            selectedPausedCount = 0,
+            i;
+
         for( var i=selectedCount; i--; )
             if( records[i].isPaused( ) )
                 ++selectedPausedCount;
 
-        var allCount = records.length;
-        var pausedCount = 0;
-        for( var i=allCount; i--; )
-            if( records[i].isPaused( ) )
-                ++pausedCount;
-
         Ext.getCmp( 'toolbar-stop-button' ).setDisabled( selectedPausedCount == selectedCount );
         Ext.getCmp( 'toolbar-close-button' ).setDisabled( selectedCount == 0 );
         Ext.getCmp( 'toolbar-start-button' ).setDisabled( selectedPausedCount == 0 );
-        //Ext.getCmp( 'toolbar-details-button' ).setDisabled( selectedCount != 1 );
 
         Ext.getCmp( 'menu-verify').setDisabled( selectedCount == 0 );
         Ext.getCmp( 'menu-reannounce').setDisabled( selectedPausedCount == selectedCount );
@@ -464,9 +433,9 @@ Ext.namespace( 'Transmission' );
         if(!store || store.isDummy)
             return;
 
-        var fieldName;
-        var desc = myPrefs.getBool('sort-reversed');
-        var selected = torrentView.getSelectedRecords();
+        var fieldName,
+            desc = myPrefs.getBool('sort-reversed'),
+            selected = torrentView.getSelectedRecords();
 
         switch( myPrefs.get('sort-mode') ) {
             case 'activity':  fieldName = 'rateXfer';     desc=!desc; break;
@@ -502,10 +471,10 @@ Ext.namespace( 'Transmission' );
 
     function onPrefsChanged( keys )
     {
-        var doSort = false;
-        var doFilter = false;
-        var doLayout = false;
-        var doTurtleTooltip = false;
+        var doSort = false,
+            doFilter = false,
+            doLayout = false,
+            doTurtleTooltip = false;
 
         for( var i=keys.length; i--; )
         {
@@ -584,10 +553,10 @@ Ext.namespace( 'Transmission' );
         if(doLayout) that.doLayout();
 
         if( doTurtleTooltip ) {
-            var s;
-            var enabled = myPrefs.getBool( 'alt-speed-enabled' );
-            var up = Transmission.fmt.speed( myPrefs.getNumber( 'alt-speed-up' ) );
-            var dn = Transmission.fmt.speed( myPrefs.getNumber( 'alt-speed-down' ) );
+            var s,
+                enabled = myPrefs.getBool( 'alt-speed-enabled' ),
+                up = Transmission.fmt.speed( myPrefs.getNumber( 'alt-speed-up' ) ),
+                dn = Transmission.fmt.speed( myPrefs.getNumber( 'alt-speed-down' ) );
             if( enabled )
                 s = String.format( "Click to disable Temporary Speed Limits<br/>({0} down, {1} up)", dn, up );
             else
@@ -598,14 +567,14 @@ Ext.namespace( 'Transmission' );
 
     function updateTorrentCount( )
     {
-        var count = Torrent.store.getCount();
-        var total = Torrent.store.getUnfilteredCount();
+        var count = Torrent.store.getCount(),
+            total = Torrent.store.getUnfilteredCount(),
+            key = 'statusbarTorrentCountLabel',
+            str = Ext.util.Format.plural( total, 'Torrent' );
 
-        var str = Ext.util.Format.plural( total, 'Torrent' );
         if( count < total )
             str = [ count, 'of', str ].join(' ');
 
-        var key = 'statusbarTorrentCountLabel';
         Ext.getCmp( key ).setText( str );
     }
 
@@ -613,8 +582,8 @@ Ext.namespace( 'Transmission' );
     {
         updateTorrentCount( );
 
-        var key = 'statusbarDownSpeed';
-        var str = Transmission.fmt.speed( o.downloadSpeed ) + ' Down';
+        var key = 'statusbarDownSpeed',
+            str = Transmission.fmt.speed( o.downloadSpeed ) + ' Down';
         Ext.getCmp( key ).update( str );
 
         key = 'statusbarUpSpeed';

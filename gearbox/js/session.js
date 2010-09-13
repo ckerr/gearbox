@@ -18,11 +18,11 @@ Ext.namespace( 'Transmission' );
 (function()
 {
     // private constants...
-    var that;
-    var ROOT = '/transmission/rpc';
-    var SESSION_ID_KEY = 'X-Transmission-Session-Id';
-    var TAG_SOME_TORRENTS = 1;
-    var TAG_ALL_TORRENTS = 2;
+    var that,
+        ROOT = '/transmission/rpc',
+        SESSION_ID_KEY = 'X-Transmission-Session-Id',
+        TAG_SOME_TORRENTS = 1,
+        TAG_ALL_TORRENTS = 2;
 
     // private variables...
     var sessionIdValue = '';
@@ -224,15 +224,15 @@ Ext.namespace( 'Transmission' );
 
         setFilePriorities: function( torrentId, fileIdArray, priority )
         {
-            var key;
+            var key,
+                idArray = [ torrentId ],
+                args = { ids: idArray };
             switch( priority ) {
                 case Torrent.PRIORITY_LOW: key = 'priority-low'; break;
                 case Torrent.PRIORITY_HIGH: key = 'priority-high'; break;
                 default: key = 'priority-normal'; break;
             }
 
-            var idArray = [ torrentId ];
-            var args = { ids: idArray };
             args[key] = fileIdArray;
             var req = { method: 'torrent-set', arguments: args };
             sendRequest( that, req, function( o ) { this.updateExtraStats( idArray ); } );

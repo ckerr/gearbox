@@ -42,12 +42,12 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
     getProgressString: function( rec, tor )
     {
-        var isMagnet = rec.isMagnet( );
-        var isDone = rec.isDone( );
-        var isSeed = rec.isSeed( );
-        var seedRatio = rec.getSeedRatio( );
-        var hasSeedRatio = seedRatio > 0;
-        var str;
+        var isMagnet = rec.isMagnet(),
+            isDone = rec.isDone(),
+            isSeed = rec.isSeed(),
+            seedRatio = rec.getSeedRatio(),
+            hasSeedRatio = seedRatio > 0,
+            str;
 
         if( isMagnet ) // magnet link with no metadata
         {
@@ -140,11 +140,11 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
     shortTransferString: function( tor )
     {
-        var str;
-        var isMagnet = tor.metadataPercentDone < 1;
-        var haveDown = !isMagnet && (tor.peersSendingToUs>0);
-        var haveUp = !isMagnet && (tor.peersGettingFromUs>0);
-        var downStr, upStr;
+        var str,
+            isMagnet = tor.metadataPercentDone < 1,
+            haveDown = !isMagnet && (tor.peersSendingToUs>0),
+            haveUp = !isMagnet && (tor.peersGettingFromUs>0),
+            downStr, upStr;
 
         if( haveDown )
             downStr = Transmission.fmt.speedBps( tor.rateDownload );
@@ -206,18 +206,17 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
             case Torrent.STATUS_DOWNLOAD:
             {
-                var isMagnet = tor.metadataPercentDone < 1;
-                var dnPeers = tor.peersSendingToUs;
-                var upPeers = tor.peersGettingFromUs;
-                var dnWeb = tor.webseedsSendingToUs;
+                var isMagnet = tor.metadataPercentDone < 1,
+                    dnPeers = tor.peersSendingToUs,
+                    dnWeb = tor.webseedsSendingToUs;
 
                 if( isMagnet )
                     str = String.format( 'Downloading metadata from {0} ({1}% done)',
-                            Ext.util.Format.plural( tor.peersSendingToUs, 'peer', 'peers' ),
+                            Ext.util.Format.plural( dnPeer, 'peer', 'peers' ),
                             Transmission.fmt.percentString( 100.0 * tor.metadataPercentComplete ) );
                 else
                     str = String.format( 'Downloading from {0} of {1}',
-                            dnWeb + tor.peersSendingToUs,
+                            dnWeb + dnPeers,
                             Ext.util.Format.plural( dnWeb + tor.peersConnected, 'connected peer' ) );
                 break;
             }
@@ -244,11 +243,10 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
     generateProgressbarHtml: function( percentDone/*[0..1]*/, compact, record )
     {
-        var tor = record.data;
-        var pct = Math.floor( 100 * percentDone );
-        var pctStr = compact ? [ pct, '%' ].join('') : '';
-        var cls = 'torrent_progress_bar ';
-        var text = [];
+        var pct = Math.floor( 100 * percentDone ),
+            pctStr = compact ? [ pct, '%' ].join('') : '',
+            cls = 'torrent_progress_bar ',
+            text = [];
 
         switch( record.activity( ) )
         {
@@ -299,21 +297,22 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
     renderTorrent: function( record )
     {
-        var tor = record.data;
-        var icon = this.getIcon( tor );
-        var isPaused = record.isPaused( );
-        var strings = [];
-        var percentDone;
-        var opacity = isPaused ? '0.55' : '1';
+        var tor = record.data,
+            icon = this.getIcon( tor ),
+            isPaused = record.isPaused( ),
+            strings = [],
+            percentDone,
+            progressbarHtml,
+            opacity = isPaused ? '0.55' : '1';
 
         if( !record.isSeeding( ) )
             percentDone = record.isMagnet( ) ? tor.metadataPercentComplete : record.percentDone( );
         else {
-            var seedRatio = record.getSeedRatio( );
-            percentDone = seedRatio > 0 ? Math.min( record.uploadRatio( ) / seedRatio, 1 ) : 1;
+            var i = record.getSeedRatio( );
+            percentDone = i>0 ? Math.min( record.uploadRatio()/i, 1 ) : 1;
         }
 
-        var progressbarHtml = this.generateProgressbarHtml( percentDone, this.isCompact, record );
+        progressbarHtml = this.generateProgressbarHtml( percentDone, this.isCompact, record );
 
         if( this.isCompact )
         {
@@ -329,8 +328,8 @@ TorrentView = Ext.extend( Ext.list.ListView,
         }
         else
         {
-            var statusStr = this.getStatusString( record, tor );
-            var progressStr = this.getProgressString( record, tor );
+            var statusStr = this.getStatusString( record, tor ),
+                progressStr = this.getProgressString( record, tor );
 
             strings.push( '<img style="opacity:',opacity,';padding-top:10px;float:left;width:',this.iconSize,'px; height:',this.iconSize,'px;" src="',icon,'"/>',
                           '<div style="opacity:',opacity,';padding-left:8px;overflow:hidden;">',
@@ -364,12 +363,14 @@ TorrentView = Ext.extend( Ext.list.ListView,
     // When we upgrade to future versions of Ext, we should test and see if this can be removed.
     refresh: function()
     {
-        var selected = this.getSelectedRecords();
+        var selected = this.getSelectedRecords(),
+            nodes;
+
         this.superclass().refresh.call(this);
         this.select( selected );
 
         // stripe rows
-        var nodes = this.getNodes();
+        nodes = this.getNodes();
         for( var i=1, n=nodes.length; i<n; i += 2 )
             Ext.fly( nodes[i] ).addClass( 'x-list-alt' );
     },

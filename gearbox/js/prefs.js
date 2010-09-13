@@ -18,12 +18,11 @@ Ext.namespace( 'Transmission' );
 (function()
 {
     // private variables...
-    var prefs = { };
-    var noSave = 0;
-    var that;
-    var mySession;
-
-    var localDefaults = { 'compact-view': false,
+    var prefs = { },
+        noSave = 0,
+        that,
+        mySession,
+        localDefaults = { 'compact-view': false,
                           'filter-mode': 'all',
                           'filter-tracker': 'all',
                           'filter-text': '',
@@ -49,8 +48,8 @@ Ext.namespace( 'Transmission' );
 
     function saveChanges( changed )
     {
-        var remoteArgs = { };
-        var haveRemoteArgs = false;
+        var remoteArgs = { },
+            haveRemoteArgs = false;
 
         for( var key in changed )
         {
@@ -68,9 +67,9 @@ Ext.namespace( 'Transmission' );
 
     function addToPrefs( o )
     {
-        var changedList = [ ];
-        var changedObj = { };
-        var changedIsEmpty = true;
+        var changedList = [ ],
+            changedObj = { },
+            changedIsEmpty = true;
 
         for( var key in o )
         {

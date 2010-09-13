@@ -24,11 +24,11 @@ Transmission.Details = Ext.extend( Ext.Window, {
 
     refresh: function( record )
     {
-        var text;
-        var rec = record;
-        var tor = record.data;
-        var na = 'N/A';
-        var none = 'None';
+        var text,
+            rec = record,
+            tor = record.data,
+            na = 'N/A',
+            none = 'None';
 
         this.fileTab.refresh( record );
         this.trackerTab.refresh( record );
@@ -44,11 +44,11 @@ Transmission.Details = Ext.extend( Ext.Window, {
         text = '';
         if( !rec.isMagnet( ) )
         {
-            var sizeWhenDone = rec.sizeWhenDone( );
-            var leftUntilDone = rec.leftUntilDone( );
-            var unchecked = rec.haveUnchecked( );
-            var valid = rec.haveValid( );
-            var d = 100.0 * ( sizeWhenDone ? ( sizeWhenDone - leftUntilDone ) / sizeWhenDone : 1 );
+            var sizeWhenDone = rec.sizeWhenDone( ),
+                leftUntilDone = rec.leftUntilDone( ),
+                unchecked = rec.haveUnchecked( ),
+                valid = rec.haveValid( ),
+                d = 100.0 * ( sizeWhenDone ? ( sizeWhenDone - leftUntilDone ) / sizeWhenDone : 1 );
 
             text = String.format( '{0} ({1}%)',
                     Transmission.fmt.size( valid + unchecked ),
@@ -68,10 +68,10 @@ Transmission.Details = Ext.extend( Ext.Window, {
         this.availabilityLabel.setValue( text );
         
         // DOWNLOADED
-        var d = rec.downloadedEver( );
-        var c = rec.corruptEver( );
-        var dstr = Transmission.fmt.size( d );
-        var cstr = Transmission.fmt.size( c );
+        var d = rec.downloadedEver( ),
+            c = rec.corruptEver( ),
+            dstr = Transmission.fmt.size( d ),
+            cstr = Transmission.fmt.size( c );
         if( c )
             text = String.format( '{0} (+{1} corrupt)', dstr, cstr );
         else
@@ -140,23 +140,23 @@ Transmission.Details = Ext.extend( Ext.Window, {
 
     createInfoTab: function( )
     {
-        var idSuffix = '-' + Math.floor( Math.random() * 10000000 );
-        var sizeLabelId           = 'details-size-label' + idSuffix;
-        var haveLabelId           = 'details-have-label' + idSuffix;
-        var availabilityLabelId   = 'details-availability-label' + idSuffix;
-        var downloadedLabelId     = 'details-downloaded-label' + idSuffix;
-        var uploadedLabelId       = 'details-uploaded-label' + idSuffix;
-        var ratioLabelId          = 'details-ratio-label' + idSuffix;
-        var stateLabelId          = 'details-state-label' + idSuffix;
-        var runningTimeLabelId    = 'details-running-time-label' + idSuffix;
-        var remainingTimeLabelId  = 'details-remaining-time-label' + idSuffix;
-        var lastActivityLabelId   = 'details-last-activity-label' + idSuffix;
-        var errorLabelId          = 'details-error-label' + idSuffix;
-        var locationLabelId       = 'details-location-label' + idSuffix;
-        var hashLabelId           = 'details-hash-label' + idSuffix;
-        var privacyLabelId        = 'details-privacy-label' + idSuffix;
-        var originLabelId         = 'details-origin-label' + idSuffix;
-        var commentLabelId        = 'details-comment-label' + idSuffix;
+        var idSuffix = '-' + Math.floor( Math.random() * 10000000 ),
+            sizeLabelId           = 'details-size-label' + idSuffix,
+            haveLabelId           = 'details-have-label' + idSuffix,
+            availabilityLabelId   = 'details-availability-label' + idSuffix,
+            downloadedLabelId     = 'details-downloaded-label' + idSuffix,
+            uploadedLabelId       = 'details-uploaded-label' + idSuffix,
+            ratioLabelId          = 'details-ratio-label' + idSuffix,
+            stateLabelId          = 'details-state-label' + idSuffix,
+            runningTimeLabelId    = 'details-running-time-label' + idSuffix,
+            remainingTimeLabelId  = 'details-remaining-time-label' + idSuffix,
+            lastActivityLabelId   = 'details-last-activity-label' + idSuffix,
+            errorLabelId          = 'details-error-label' + idSuffix,
+            locationLabelId       = 'details-location-label' + idSuffix,
+            hashLabelId           = 'details-hash-label' + idSuffix,
+            privacyLabelId        = 'details-privacy-label' + idSuffix,
+            originLabelId         = 'details-origin-label' + idSuffix,
+            commentLabelId        = 'details-comment-label' + idSuffix;
 
         var panel = new Ext.FormPanel( { title: 'Info', bodyCssClass: 'hig-body', autoScroll: true,  items: [
             { xtype: 'fieldset', title: 'Activity', cls: 'hig-fieldset', autoWidth: true, items: [

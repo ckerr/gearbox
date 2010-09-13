@@ -42,15 +42,15 @@ Ext.onReady(function()
 
     config.session.addListener( 'onTorrentsChanged', function( args )
     {
-        var newIds = [ ];
-        var addme = { torrents: [ ] };
-        var store = Torrent.store;
+        var newIds = [ ],
+            addme = { torrents: [ ] },
+            store = Torrent.store,
+            torrents = args.torrents;
 
         // updated torrents...
-        var torrents = args.torrents;
         for( var i=torrents.length; i--; ) {
-            var torrent = torrents[i];
-            var r = store.getById( torrent.id );
+            var torrent = torrents[i],
+                r = store.getById( torrent.id );
             if( r ) {
                 r.beginEdit();
                 Ext.iterate( torrent, function(key,value) { r.set( key, value ); } );
