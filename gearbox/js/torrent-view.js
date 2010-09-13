@@ -285,7 +285,7 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
         if( pct == 100 )
         {
-            text.push( '<div class="',cls,'" style="text-align:center; border:1px solid #ddd; position:relative; ' );
+            text.push( '<div class="',cls,'" style="text-align:center; border:1px solid #ddd; position:relative;' );
 
             if( compact )
                 text.push( 'width:40px;float:right; margin-left:8px;">' );
@@ -296,17 +296,16 @@ TorrentView = Ext.extend( Ext.list.ListView,
         }
         else
         {
-            text.push( '<div style="text-align:center; border:1px solid #ddd; position:relative; ' );
+            text.push( '<div style="text-align:center; border:1px solid #ddd; position:relative;' );
 
             if( compact )
                 text.push( 'width:40px;float:right; margin-left:8px;">' );
             else
                 text.push( '">' );
 
-            text.push( '<div style="width:',pct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
-                         '<div class="',cls,'"; style="width:',(pct?Math.floor(100*(100.0/pct)):0),'%">',pctStr,'</div>',
-                       '</div>',
-                       '<div class="',cls,' remain">',pctStr,'</div>',
+            text.push( '<div class="',cls,' remain">&nbsp;</div>',
+                       '<div class="',cls,'" style="width:',pct,'%; position:absolute; top:0; left:0;">&nbsp;</div>',
+                       '<div style="width:100%;position:absolute;top:0;left:0;">',pctStr,'</div>',
                        '</div>' );
         }
 
