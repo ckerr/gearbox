@@ -131,7 +131,7 @@ Ext.namespace( 'Transmission' );
                          {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 300, // FIXME auto width messing up firefox
+                            width: 280, // FIXME auto width messing up firefox
                             items: [
                                 {
                                     xtype: 'displayfield',
@@ -158,7 +158,7 @@ Ext.namespace( 'Transmission' );
                          {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 300, // FIXME auto width messing up firefox
+                            width: 280, // FIXME auto width messing up firefox
                             items: [
                                 {
                                     xtype: 'displayfield',
@@ -184,7 +184,7 @@ Ext.namespace( 'Transmission' );
                         {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 300, // FIXME auto width messing up firefox
+                            width: 280, // FIXME auto width messing up firefox
                             items: [
                                 {
                                     xtype: 'checkbox',
@@ -205,7 +205,7 @@ Ext.namespace( 'Transmission' );
                         {
                             xtype: 'compositefield',
                             hideLabel: true,
-                            width: 300, // FIXME auto width messing up firefox
+                            width: 280, // FIXME auto width messing up firefox
                             items: [
                                 {
                                     xtype: 'checkbox',
