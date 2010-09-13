@@ -246,7 +246,7 @@ Ext.namespace( 'Transmission' );
         {
             var key = keys[i];
             var e = Ext.getCmp( key );
-            if( e != null) switch( e.xtype )
+            if( e ) switch( e.xtype )
             {
                 case 'checkbox': 
                     e.setValue( myPrefs.getBool(key) );

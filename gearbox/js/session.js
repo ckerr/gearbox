@@ -74,7 +74,7 @@ Ext.namespace( 'Transmission' );
     }
 
     function toggleRefresh( scope, ev, enabled ) {
-        if( enabled && ev.timer === null ) {
+        if( enabled && !ev.timer ) {
             ev.timer = setInterval( function(){ ev.callback(scope); }, ev.interval );
             ev.callback( scope );
         } else {
@@ -124,7 +124,7 @@ Ext.namespace( 'Transmission' );
         addListener: function( key, func )
         {
             var ev = events[key];
-            if( ev !== undefined ) {
+            if( ev ) {
                 ev.name = key;
                 if( !ev.listenerCount++ )
                     toggleRefresh( this, ev, true );
@@ -189,7 +189,7 @@ Ext.namespace( 'Transmission' );
         {
             var args = { fields: getStatKeys().concat(getInfoKeys()) },
                 req = { method: 'torrent-get', 'arguments': args };
-            if( ids===null || ids===undefined || !ids.length )
+            if( !ids || !ids.length )
                 req.tag = TAG_ALL_TORRENTS;
             else {
                 req.tag = TAG_SOME_TORRENTS;
