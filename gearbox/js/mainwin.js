@@ -345,7 +345,9 @@ Ext.namespace( 'Transmission' );
 
     function rebuildTrackerFilter( )
     {
-        var hash = { },
+        var key,
+            keys,
+            hash = { },
             allrecs = getAllRecordsUnfiltered();
 
         for( var i=allrecs.length; i--; ) {
@@ -356,7 +358,9 @@ Ext.namespace( 'Transmission' );
             }
         }
 
-        var keys = Object.keys(hash);
+        keys = [ ];
+        for(key in hash)
+            keys.push(key);
         keys.sort( );
 
         // if the list of trackers has changed update the "trackers" button's menu
