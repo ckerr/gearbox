@@ -194,24 +194,21 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
         if( tor.error && ( tor.errorString.length > 0 ) )
         {
-            str = '<div style="color:red">';
             switch( tor.error )
             {
                 case Torrent.STAT_TRACKER_WARNING:
-                    str = [ str, 'Tracker gave a warning: ' ].join('');
+                    str = String.format( '<div style="color:red;">Tracker gave a warning: {0}</div>', tor.errorString );
                     break;
                 case Torrent.STAT_TRACKER_ERROR:
-                    str = [ str, 'Tracker gave a warning: ' ].join('');
+                    str = String.format( '<div style="color:red;">Tracker gave an error: {0}</div>', tor.errorString );
                     break;
                 case Torrent.STAT_LOCAL_ERROR:
-                    str = [ str, 'Tracker gave a warning: ' ].join('');
+                    str = String.format( '<div style="color:red;">Error: {0}</div>', tor.errorString );
                     break;
                 default:
                     str = '';
                     break;
             }
-            if( str.length > 0 )
-                str = [ str, tor.errorString, '</div>' ].join('');
         }
         else
         {
@@ -255,9 +252,8 @@ TorrentView = Ext.extend( Ext.list.ListView,
                 var s = this.shortTransferString( tor );
                 if( s.length > 0 )
                     str = [ str, '-', s ].join(' ');
+            }
         }
-        }
-
 
         return str;
     },
