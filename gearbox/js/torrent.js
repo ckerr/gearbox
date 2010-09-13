@@ -129,6 +129,26 @@ Torrent.store.getUnfilteredCount = function(){
     return (this.snapshot || this).getCount();
 }
 
+/** Returns an object mapping end-user readable keys to full hostname values */
+Torrent.store.getAllTrackers = function(){
+    var i,
+        j,
+        t,
+        trackers,
+        hash = { },
+        allrecs = this.snapshot || this.data;
+
+    for( i=allrecs.length; i--; ) {
+        trackers = allrecs.itemAt(i).data.trackers;
+        for( j=trackers.length; j--; ) {
+            t = trackers[j];
+            hash[t.readableHost] = t.host;
+        }
+    }
+
+    return hash;
+}
+
 // create the derived fields when necessary
 Torrent.store.addListener( 'add', function( store, records, index ) {
     for(var i=records.length; i--; ) {

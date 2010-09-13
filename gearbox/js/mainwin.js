@@ -24,12 +24,6 @@ Ext.namespace( 'Transmission' );
         scale = 'medium',
         torrentView = null;
 
-    function getAllRecordsUnfiltered( )
-    {
-        var r = torrentView.getStore().queryBy( function(){return true;} );
-        return r.getRange();
-    }
-
     function onTurtleToggled( btn, pressed )
     {
         mySession.set({ 'alt-speed-enabled': pressed });
@@ -346,19 +340,9 @@ Ext.namespace( 'Transmission' );
     function rebuildTrackerFilter( )
     {
         var key,
-            keys,
-            hash = { },
-            allrecs = getAllRecordsUnfiltered();
+            hash = Torrent.store.getAllTrackers(),
+            keys = [ ];
 
-        for( var i=allrecs.length; i--; ) {
-            var trackers = allrecs[i].data.trackers;
-            for( var j=trackers.length; j--; ) {
-                var tracker = trackers[j];
-                hash[tracker.readableHost] = tracker.host;
-            }
-        }
-
-        keys = [ ];
         for(key in hash)
             keys.push(key);
         keys.sort( );
