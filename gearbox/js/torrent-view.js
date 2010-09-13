@@ -32,10 +32,11 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
     getIcon: function( tor )
     {
-        if( tor.files.length == 0 )
+        var files = tor.files;
+        if( files.length === 0 )
             return Transmission.FileIcon.getGenericIcon( this.iconSize );
-        else if( tor.files.length == 1 )
-            return Transmission.FileIcon.getIcon( tor.files[0].name, this.iconSize );
+        else if( files.length === 1 )
+            return Transmission.FileIcon.getIcon( files[0].name, this.iconSize );
         else
             return Transmission.FileIcon.getFolderIcon( this.iconSize );
     },
@@ -317,7 +318,6 @@ TorrentView = Ext.extend( Ext.list.ListView,
         if( this.isCompact )
         {
             var shortStatus = this.getShortStatusString( record, tor );
-
 
             strings.push( '<img style="opacity:',opacity,';float:left; padding-right:10px; width:', this.iconSize, 'px; height:', this.iconSize, 'px;" src="', icon, '"/>',
                           '<div style="opacity:',opacity,';float:right;">',

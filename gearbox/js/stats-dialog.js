@@ -20,10 +20,6 @@ Ext.namespace( 'Transmission' );
     var mySession = null;
     var that = null;
 
-    function addToPrefs( o )
-    {
-    }
-
     function initStats( )
     {
         onStatsChanged( mySession.stats );

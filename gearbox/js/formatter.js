@@ -109,7 +109,7 @@ Transmission.fmt = (function()
          */
         size: function( bytes )
         {
-            if( bytes == 0 )
+            if( !bytes )
                 return 'None';
 
             if( bytes < size_K )
@@ -158,7 +158,7 @@ Transmission.fmt = (function()
         {
             var speed = KBps;
 
-            if (speed == undefined)
+            if (!speed)
                 speed = 0;
 
             if (speed <= 999.95) // 0 KBps to 999.9 K
@@ -183,18 +183,19 @@ Transmission.fmt = (function()
             var result,
                 days = Math.floor(seconds / 86400),
                 hours = Math.floor((seconds % 86400) / 3600),
-                minutes = Math.floor((seconds % 3600) / 60),
-                seconds = Math.floor((seconds % 3600) % 60);
+                minutes = Math.floor((seconds % 3600) / 60);
 
-            if (days > 0 && hours == 0)
+            seconds = Math.floor((seconds % 3600) % 60);
+
+            if (days > 0 && hours === 0)
                 result = Ext.util.Format.plural(days, 'day');
             else if (days > 0 && hours > 0)
                 result = Ext.util.Format.plural(days, 'day') + ', ' + Ext.util.Format.plural(hours, 'hr');
-            else if (hours > 0 && minutes == 0)
+            else if (hours > 0 && minutes === 0)
                 result = Ext.util.Format.plural(hours, 'hr');
             else if (hours > 0 && minutes > 0)
                 result = Ext.util.Format.plural(hours, 'hr') + ', ' + Ext.util.Format.plural(minutes, 'min');
-            else if (minutes > 0 && seconds == 0)
+            else if (minutes > 0 && seconds === 0)
                 result = Ext.util.Format.plural(minutes, 'min');
             else if (minutes > 0 && seconds > 0)
                 result = Ext.util.Format.plural(minutes, 'min') + ', ' + Ext.util.Format.plural(seconds, 'sec');
@@ -215,7 +216,7 @@ Transmission.fmt = (function()
                 dateDiff = now.getDate() - myDate.getDate();
 
             if(sameYear && sameMonth && Math.abs(dateDiff) <= 1){
-                if(dateDiff == 0)
+                if(dateDiff === 0)
                     date = "Today";
                 else if(dateDiff == 1)
                     date = "Yesterday";
@@ -233,7 +234,7 @@ Transmission.fmt = (function()
                 hours = hours - 12;
                 period = "PM";
             }
-            if(hours == 0){
+            if(hours === 0){
                 hours = 12;
             }
             if(hours < 10){
@@ -252,5 +253,5 @@ Transmission.fmt = (function()
 
             return [date, time, period].join(' ');
         }
-    }
+    };
 })();

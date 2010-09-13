@@ -201,7 +201,7 @@ FileView = Ext.extend( Ext.Container,
     onStoreLoaded: function( store, records, options )
     {
         var record = Torrent.store.getById( this.torrentId );
-        if( record != null )
+        if( record !== null )
             this.refresh( record );
 
         store.expandNode( store.getAt( 0 ) );
@@ -234,7 +234,7 @@ FileView = Ext.extend( Ext.Container,
     getProgress: function( record )
     {
         var s = this.getSize( record );
-        return s.size > 0 ? s.bytesCompleted / s.size : 1
+        return s.size > 0 ? s.bytesCompleted / s.size : 1;
     },
 
     nameRenderer: function( value, metaData, record, rowIndex, colIndex, store )
@@ -357,7 +357,7 @@ FileView = Ext.extend( Ext.Container,
         for( var i=stats.length; i--; )
         {
             var record = this.store.getById( i );
-            if( record != null )
+            if( record !== null )
             {
                 var s = stats[i];
                 record.beginEdit();

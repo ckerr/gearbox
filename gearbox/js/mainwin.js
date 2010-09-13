@@ -159,7 +159,7 @@ Ext.namespace( 'Transmission' );
             items: [
                 { id:'toolbar-start-button', icon: imgBase+'play.png', tooltip: 'Start selected torrents', handler: startSelectedTorrents },
                 { id:'toolbar-stop-button', icon: imgBase+'pause.png', tooltip: 'Pause selected torrents', handler: stopSelectedTorrents },
-                { icon: imgBase+'add.png', tooltip: 'Open a torrent', handler: function() { that.fireEvent('onOpenClicked') } },
+                { icon: imgBase+'add.png', tooltip: 'Open a torrent', handler: function() { that.fireEvent('onOpenClicked'); } },
                 { id:'toolbar-close-button', icon: imgBase+'close.png', tooltip: 'Close selected torrents', handler: function() { closeSelectedTorrents(false); } }
             ]
         } );
@@ -176,8 +176,9 @@ Ext.namespace( 'Transmission' );
 
     function updateTrackerMenuButton( )
     {
-        var e = Ext.getCmp('filterbar-tracker');
-        var host = myPrefs.get('filter-tracker');
+        var e = Ext.getCmp('filterbar-tracker'),
+            host = myPrefs.get('filter-tracker');
+
         if( host === 'all' )
         {
             e.setIcon( null );
@@ -211,8 +212,9 @@ Ext.namespace( 'Transmission' );
             { text: 'Reverse Sort Order', id: 'sort-reversed', listeners: { checkchange: checkboxHandler } }
         ]});
 
-        var iconPrefix = Transmission.imgRoot+'/16x16';
-        var filterbarVisible = prefs.getBool( 'show-filterbar' );
+        var iconPrefix = Transmission.imgRoot+'/16x16',
+            filterbarVisible = prefs.getBool( 'show-filterbar' );
+
         return new Ext.Toolbar( { hidden: !filterbarVisible, id: 'mainwin-filterbar', items: [
             { xtype: 'button', text: 'Sort', menu: viewMenu },
             { xtype: 'button', id: 'filterbar-status', menu: [
@@ -237,8 +239,8 @@ Ext.namespace( 'Transmission' );
     function createStatusbar( prefs )
     {
         var actionMenu = new Ext.menu.Menu( { items: [
-            { text: 'Session Statistics', handler: function(){ that.fireEvent('onStatsClicked') } },
-            { text: 'Edit Preferences', handler: function(){ that.fireEvent('onPrefsClicked') } },
+            { text: 'Session Statistics', handler: function(){ that.fireEvent('onStatsClicked'); } },
+            { text: 'Edit Preferences', handler: function(){ that.fireEvent('onPrefsClicked'); } },
             '-',
             { id: 'menu-reannounce', text: 'Ask Tracker for More Peers', handler: reannounceSelectedTorrents },
             { id: 'menu-verify', text: 'Verify Local Data', handler: verifySelectedTorrents },
@@ -269,15 +271,15 @@ Ext.namespace( 'Transmission' );
             selectedPausedCount = 0,
             i;
 
-        for( var i=selectedCount; i--; )
+        for( i=selectedCount; i--; )
             if( records[i].isPaused( ) )
                 ++selectedPausedCount;
 
         Ext.getCmp( 'toolbar-stop-button' ).setDisabled( selectedPausedCount == selectedCount );
-        Ext.getCmp( 'toolbar-close-button' ).setDisabled( selectedCount == 0 );
-        Ext.getCmp( 'toolbar-start-button' ).setDisabled( selectedPausedCount == 0 );
+        Ext.getCmp( 'toolbar-close-button' ).setDisabled( selectedCount === 0 );
+        Ext.getCmp( 'toolbar-start-button' ).setDisabled( selectedPausedCount === 0 );
 
-        Ext.getCmp( 'menu-verify').setDisabled( selectedCount == 0 );
+        Ext.getCmp( 'menu-verify').setDisabled( selectedCount === 0 );
         Ext.getCmp( 'menu-reannounce').setDisabled( selectedPausedCount == selectedCount );
     }
 
@@ -343,8 +345,9 @@ Ext.namespace( 'Transmission' );
 
     function rebuildTrackerFilter( )
     {
-        var hash = { };
-        var allrecs = getAllRecordsUnfiltered();
+        var hash = { },
+            allrecs = getAllRecordsUnfiltered();
+
         for( var i=allrecs.length; i--; ) {
             var trackers = allrecs[i].data.trackers;
             for( var j=trackers.length; j--; ) {
@@ -361,16 +364,17 @@ Ext.namespace( 'Transmission' );
         if( trackersStr != str )
         {
             trackersStr = str;
-            var menu = Ext.getCmp('filterbar-tracker').menu;
+
+            var menu = Ext.getCmp('filterbar-tracker').menu,
+                rows = [ ];
 
             menu.removeAll();
 
-            var rows = [ ];
             rows.push( { handler: filterTrackerHandler, text: 'All Trackers', id: filterTrackerPrefix+'all' } );
             rows.push( '-' );
             for( var i=0, n=keys.length; i<n; ++i ) {
-                var name = keys[i];
-                var domain = hash[name];
+                var name = keys[i],
+                    domain = hash[name];
                 rows.push( { handler: filterTrackerHandler,
                              text: name,
                              icon: String.format( 'http://{0}/favicon.ico', domain ),
@@ -383,8 +387,8 @@ Ext.namespace( 'Transmission' );
 
     function filterByStatus( rec )
     {
-        var accepts;
-        var mode = myPrefs.get('filter-mode');
+        var accepts,
+            mode = myPrefs.get('filter-mode');
 
         switch( mode ) {
             case 'active':      accepts = rec.isActive(); break;
@@ -459,8 +463,8 @@ Ext.namespace( 'Transmission' );
         if( records.length < 1 )
             return;
 
-        var newRecords = torrentView.getRecords( torrentView.getNodes() );
-        var s = [];
+        var newRecords = torrentView.getRecords( torrentView.getNodes() ),
+            s = [];
 
         for( var i=0, n=records.length; i<n; ++i )
             if( newRecords.indexOf( records[i] ) != -1 )
@@ -515,8 +519,8 @@ Ext.namespace( 'Transmission' );
                 }
 
                 case 'sort-mode': {
-                    var v = myPrefs.get( key );
-                    var e = Ext.getCmp(menuSortModePrefix+v);
+                    var v = myPrefs.get( key ),
+                        e = Ext.getCmp(menuSortModePrefix+v);
                     if( !e ) e = Ext.getCmp(menuSortModePrefix+'name');
                     e.setChecked(true);
                     doSort = true;
@@ -529,8 +533,8 @@ Ext.namespace( 'Transmission' );
                     break;
 
                 case 'filter-mode': {
-                    var v = myPrefs.get( key );
-                    var e = Ext.getCmp( 'filterbar-status' );
+                    var v = myPrefs.get( key ),
+                        e = Ext.getCmp( 'filterbar-status' );
                     e.setText( Ext.util.Format.capitalize( v ) );
                     // FIXME: icon
                     doFilter = true;

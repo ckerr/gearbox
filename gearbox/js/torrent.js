@@ -96,9 +96,11 @@ Torrent.Record.prototype.set = function(key,val){
                 this.set('rateXfer', this.data.rateUpload + this.data.rateDownload);
                 break;
             case 'trackers': {
-                var trackers = this.data.trackers;
-                for(var i=trackers.length; i--; ) {
-                    var t = trackers[i];
+                var t,
+                    trackers = this.data.trackers,
+                    i = trackers.length;
+                while( i-- ) {
+                    t = trackers[i];
                     t.uri = parseUri(t.announce);
                     t.host = getHost(t.uri);
                     t.readableHost = getNameFromHost(t.host);
@@ -130,13 +132,15 @@ Torrent.store.getUnfilteredCount = function(){
 // create the derived fields when necessary
 Torrent.store.addListener( 'add', function( store, records, index ) {
     for(var i=records.length; i--; ) {
-        var d = records[i].data;
+        var d = records[i].data,
+            trackers = d.trackers,
+            j = trackers.length,
+            t;
         d.collatedName = Ext.util.Format.lowercase(d.name.trim());
         d.rateXfer = (d.rateUpload||0) + (d.rateDownload||0);
         d.state = d.error ? -1 : d.status;
-        var trackers = d.trackers;
-        for(var j=trackers.length; j--; ) {
-            var t = trackers[j];
+        while( j-- ) {
+            t = trackers[j];
             t.uri = parseUri(t.announce);
             t.host = getHost(t.uri);
             t.readableHost = getNameFromHost(t.host);
@@ -146,14 +150,18 @@ Torrent.store.addListener( 'add', function( store, records, index ) {
 
 Torrent.buildKeyArray = function( mode )
 {
-    var a = [ ];
-    var f = Torrent.fields;
+    var f,
+        keys = [ ],
+        fields = Torrent.fields,
+        i = fields.length;
 
-    for( var i=0, n=f.length; i<n; ++i )
-        if( ( mode == f[i].group ) || ( f[i].name == 'id' ) )
-            a.push( f[i].name );
+    while(i--) {
+        f = fields[i];
+        if(( f.group==mode ) || (f.name=='id'))
+            keys.push(f.name);
+    }
 
-    return a;
+    return keys;
 };
 
 Torrent.keys = [ ];

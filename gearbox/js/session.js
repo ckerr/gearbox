@@ -17,15 +17,12 @@ Ext.namespace( 'Transmission' );
 
 (function()
 {
-    // private constants...
     var that,
         ROOT = '/transmission/rpc',
         SESSION_ID_KEY = 'X-Transmission-Session-Id',
         TAG_SOME_TORRENTS = 1,
-        TAG_ALL_TORRENTS = 2;
-
-    // private variables...
-    var sessionIdValue = '';
+        TAG_ALL_TORRENTS = 2,
+        sessionIdValue = '';
 
     function onAjaxResponse( options, success, response )
     {
@@ -35,7 +32,7 @@ Ext.namespace( 'Transmission' );
             options.scope.sessionIdValue = response.getResponseHeader( 'X-Transmission-Session-Id' );
             sendRequest( options.scope, options.jsonData, options.mySuccessCallback );
         }
-    };
+    }
 
     function sendRequest( scope, data, successCallback )
     {
@@ -51,7 +48,7 @@ Ext.namespace( 'Transmission' );
         options.headers[SESSION_ID_KEY] = scope.sessionIdValue;
 
         Ext.Ajax.request( options );
-    };
+    }
 
     function refreshSession( scope )
     {
@@ -59,7 +56,7 @@ Ext.namespace( 'Transmission' );
             scope.sessionState = o['arguments'];
             scope.fireEvent( 'onSessionChanged', scope.sessionState );
         } );
-    };
+    }
 
     function refreshStats( scope )
     {
@@ -71,19 +68,13 @@ Ext.namespace( 'Transmission' );
 
     function refreshTorrents( scope )
     {
-        sendRequest( scope, { method: 'torrent-get', arguments: { ids: 'recently-active', fields: getStatKeys() } }, function( o ) {
-            scope.fireEvent( 'onTorrentsChanged', o.arguments );
+        sendRequest( scope, { method: 'torrent-get', 'arguments': { ids: 'recently-active', fields: getStatKeys() } }, function( o ) {
+            scope.fireEvent( 'onTorrentsChanged', o['arguments'] );
         } );
     }
 
-    var events = {
-        onSessionChanged:  { timer: null, listenerCount: 0, interval: 20000, callback: refreshSession },
-        onStatsChanged:    { timer: null, listenerCount: 0, interval: 10000, callback: refreshStats },
-        onTorrentsChanged: { timer: null, listenerCount: 0, interval:  5000, callback: refreshTorrents },
-    };
-
     function toggleRefresh( scope, ev, enabled ) {
-        if( enabled && ev.timer == null ) {
+        if( enabled && ev.timer === null ) {
             ev.timer = setInterval( function(){ ev.callback(scope); }, ev.interval );
             ev.callback( scope );
         } else {
@@ -112,6 +103,12 @@ Ext.namespace( 'Transmission' );
         return Torrent.getInfoKeys( );
     }
 
+    var events = {
+        onSessionChanged:  { timer: null, listenerCount: 0, interval: 20000, callback: refreshSession },
+        onStatsChanged:    { timer: null, listenerCount: 0, interval: 10000, callback: refreshStats },
+        onTorrentsChanged: { timer: null, listenerCount: 0, interval:  5000, callback: refreshTorrents }
+    };
+
     Transmission.Session = Ext.extend( Ext.util.Observable, {
         sessionState: { },
 
@@ -121,13 +118,13 @@ Ext.namespace( 'Transmission' );
             for( var name in events )
                 this.addEvents( name );
             this.listeners = config.listeners;
-            this.superclass().constructor.call(this, config)
+            this.superclass().constructor.call(this, config);
         },
 
         addListener: function( key, func )
         {
             var ev = events[key];
-            if( ev != undefined ) {
+            if( ev !== undefined ) {
                 ev.name = key;
                 if( !ev.listenerCount++ )
                     toggleRefresh( this, ev, true );
@@ -147,7 +144,7 @@ Ext.namespace( 'Transmission' );
 
         set: function( args )
         {
-            sendRequest( that, { method: 'session-set', arguments: args }, function( o ) {
+            sendRequest( that, { method: 'session-set', 'arguments': args }, function( o ) {
                 var ev = events.onSessionChanged;
                 if( ev.listenerCount > 0 )
                     invokeNowAndResetTimer( ev );
@@ -163,7 +160,7 @@ Ext.namespace( 'Transmission' );
 
         verbTorrents: function( idArray, method )
         {
-            sendRequest( that, { method: method, arguments: { ids: idArray } }, function(o) {
+            sendRequest( that, { method: method, 'arguments': { ids: idArray } }, function(o) {
                 that.updateTorrents( );
             } );
         },
@@ -176,9 +173,9 @@ Ext.namespace( 'Transmission' );
         removeTorrents: function( ids, deleteFiles )
         {
             var args = { };
-            args['ids'] = ids;
+            args.ids = ids;
             args['delete-local-data'] = deleteFiles || false;
-            sendRequest( that, { method: 'torrent-remove', arguments: args }, function( o ) {
+            sendRequest( that, { method: 'torrent-remove', 'arguments': args }, function( o ) {
                 that.updateTorrents( that );
             });
         },
@@ -190,43 +187,47 @@ Ext.namespace( 'Transmission' );
 
         initTorrents: function( ids )
         {
-            var args = { fields: getStatKeys().concat(getInfoKeys()) };
-            var req = { method: 'torrent-get', arguments: args };
-            if( ids==null || ids==undefined || !ids.length )
+            var args = { fields: getStatKeys().concat(getInfoKeys()) },
+                req = { method: 'torrent-get', 'arguments': args };
+            if( ids===null || ids===undefined || !ids.length )
                 req.tag = TAG_ALL_TORRENTS;
             else {
                 req.tag = TAG_SOME_TORRENTS;
                 args.ids = ids;
             }
-            req.arguments = args;
+            req['arguments'] = args;
             sendRequest( that, req, function( o ) {
-                this.fireEvent( 'onTorrentsChanged', o.arguments );
+                this.fireEvent( 'onTorrentsChanged', o['arguments'] );
             } );
         },
 
         updateExtraStats: function( idArray )
         {
-            var args = { fields: getStatKeys().concat(getExtraStatKeys()), ids: idArray };
-            var req = { method: 'torrent-get', arguments: args };
+            var args = { fields: getStatKeys().concat(getExtraStatKeys()), ids: idArray },
+                req = { method: 'torrent-get', 'arguments': args };
             sendRequest( that, req, function( o ) {
-                this.fireEvent( 'onTorrentsChanged', o.arguments );
+                this.fireEvent( 'onTorrentsChanged', o['arguments'] );
             } );
         },
 
         setFilesWanted: function( torrentId, fileIdArray, isWanted )
         {
-            var idArray = [ torrentId ];
-            var args = { ids: idArray };
+            var req,
+                idArray = [ torrentId ],
+                args = { ids: idArray };
+
             args[isWanted ? 'files-wanted' : 'files-unwanted'] = fileIdArray;
-            var req = { method: 'torrent-set', arguments: args };
+            req = { method: 'torrent-set', 'arguments': args };
             sendRequest( that, req, function( o ) { this.updateExtraStats( idArray ); } );
         },
 
         setFilePriorities: function( torrentId, fileIdArray, priority )
         {
-            var key,
+            var req,
+                key,
                 idArray = [ torrentId ],
                 args = { ids: idArray };
+
             switch( priority ) {
                 case Torrent.PRIORITY_LOW: key = 'priority-low'; break;
                 case Torrent.PRIORITY_HIGH: key = 'priority-high'; break;
@@ -234,25 +235,25 @@ Ext.namespace( 'Transmission' );
             }
 
             args[key] = fileIdArray;
-            var req = { method: 'torrent-set', arguments: args };
+            req = { method: 'torrent-set', 'arguments': args };
             sendRequest( that, req, function( o ) { this.updateExtraStats( idArray ); } );
         },
 
         removeTrackers: function( torrentId, announceUrlArray )
         {
-            var req = { method: 'torrent-set', arguments: { ids: [ torrentId ], trackerRemove: announceUrlArray } };
+            var req = { method: 'torrent-set', 'arguments': { ids: [ torrentId ], trackerRemove: announceUrlArray } };
             sendRequest( that, req, function() { this.updateExtraStats( [ torrentId ] ); } );
         },
 
         addTrackers: function( torrentId, announceUrlArray )
         {
-            var req = { method: 'torrent-set', arguments: { ids: [ torrentId ], trackerAdd: announceUrlArray } };
+            var req = { method: 'torrent-set', 'arguments': { ids: [ torrentId ], trackerAdd: announceUrlArray } };
             sendRequest( that, req, function() { this.updateExtraStats( [ torrentId ] ); } );
         },
 
         replaceTracker: function( torrentId, oldUrl, newUrl )
         {
-            var req = { method: 'torrent-set', arguments: { ids: [ torrentId ], trackerReplace: [ oldUrl, newUrl ] } };
+            var req = { method: 'torrent-set', 'arguments': { ids: [ torrentId ], trackerReplace: [ oldUrl, newUrl ] } };
             sendRequest( that, req, function() { this.updateExtraStats( [ torrentId ] ); } );
         }
     });
