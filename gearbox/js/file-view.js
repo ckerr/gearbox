@@ -363,6 +363,7 @@ FileView = Ext.extend( Ext.Container,
                 record.set( 'wanted', s.wanted );
                 record.set( 'priority', s.priority );
                 record.set( 'bytesCompleted', s.bytesCompleted );
+                record.set( 'progress', this.getProgress( record ) );
                 record.endEdit();
             }
         }
