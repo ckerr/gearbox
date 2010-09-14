@@ -194,50 +194,66 @@ TorrentView = Ext.extend( Ext.list.ListView,
     {
         var str;
 
-        if( tor.error && ( tor.error.length > 0 ) )
+        if( tor.error && ( tor.errorString.length > 0 ) )
         {
-            str = tor.error;
-        }
-        else switch( tor.status )
-        {
-            case Torrent.STATUS_STOPPED:
-            case Torrent.STATUS_CHECK_WAIT:
-            case Torrent.STATUS_CHECK:
-                str = this.getShortStatusString( rec, tor );
-                break;
-
-            case Torrent.STATUS_DOWNLOAD:
+            switch( tor.error )
             {
-                var isMagnet = tor.metadataPercentDone < 1,
-                    dnPeers = tor.peersSendingToUs,
-                    dnWeb = tor.webseedsSendingToUs;
+                case Torrent.STAT_TRACKER_WARNING:
+                    str = String.format( '<div style="color:red;">Tracker gave a warning: {0}</div>', tor.errorString );
+                    break;
+                case Torrent.STAT_TRACKER_ERROR:
+                    str = String.format( '<div style="color:red;">Tracker gave an error: {0}</div>', tor.errorString );
+                    break;
+                case Torrent.STAT_LOCAL_ERROR:
+                    str = String.format( '<div style="color:red;">Error: {0}</div>', tor.errorString );
+                    break;
+                default:
+                    str = '';
+                    break;
+            }
+        }
+        else
+        {
+            switch( tor.status )
+            {
+                case Torrent.STATUS_STOPPED:
+                case Torrent.STATUS_CHECK_WAIT:
+                case Torrent.STATUS_CHECK:
+                    str = this.getShortStatusString( rec, tor );
+                    break;
 
-                if( isMagnet )
-                    str = String.format( 'Downloading metadata from {0} ({1}% done)',
-                            Ext.util.Format.plural( dnPeer, 'peer', 'peers' ),
+                case Torrent.STATUS_DOWNLOAD:
+                    var isMagnet = tor.metadataPercentDone < 1,
+                        dnPeers = tor.peersSendingToUs,
+                        upPeers = tor.peersGettingFromUs,
+                        dnWeb = tor.webseedsSendingToUs;
+
+                    if( isMagnet )
+                        str = String.format( 'Downloading metadata from {0} ({1}% done)',
+                            Ext.util.Format.plural( tor.peersSendingToUs, 'peer', 'peers' ),
                             Transmission.fmt.percentString( 100.0 * tor.metadataPercentComplete ) );
-                else
-                    str = String.format( 'Downloading from {0} of {1}',
-                            dnWeb + dnPeers,
+                    else
+                        str = String.format( 'Downloading from {0} of {1}',
+                            dnWeb + tor.peersSendingToUs,
                             Ext.util.Format.plural( dnWeb + tor.peersConnected, 'connected peer' ) );
-                break;
+                    break;
+
+                case Torrent.STATUS_SEED:
+                    str = String.format( 'Seeding to {0} of {1}',
+                        tor.peersGettingFromUs,
+                        Ext.util.Format.plural( tor.peersConnected, 'connected peer' ) );
+                    break;
+
+                default:
+                    str = "Error";
+                    break;
             }
 
-            case Torrent.STATUS_SEED:
-                str = String.format( 'Seeding to {0} of {1}',
-                    tor.peersGettingFromUs,
-                    Ext.util.Format.plural( tor.peersConnected, 'connected peer', 'connected peers' ) );
-                break;
-
-            default:
-                str = "Error";
-                break;
-        }
-
-        if( rec.isReadyToTransfer( ) ) {
-            var s = this.shortTransferString( tor );
-            if( s.length > 0 )
-                str = [ str, '-', s ].join(' ');
+            if( rec.isReadyToTransfer( ) ) {
+                var s = this.shortTransferString( tor );
+                if( s.length > 0 )
+                    str = [ str, '-', s ].join(' ');
+            }
         }
 
         return str;
@@ -269,7 +285,7 @@ TorrentView = Ext.extend( Ext.list.ListView,
 
         if( pct == 100 )
         {
-            text.push( '<div class="',cls,'" style="text-align:center; border:1px solid #ddd; position:relative; ' );
+            text.push( '<div class="',cls,'" style="text-align:center; border:1px solid #ddd; position:relative;' );
 
             if( compact )
                 text.push( 'width:40px;float:right; margin-left:8px;">' );
@@ -280,17 +296,16 @@ TorrentView = Ext.extend( Ext.list.ListView,
         }
         else
         {
-            text.push( '<div style="text-align:center; border:1px solid #ddd; position:relative; ' );
+            text.push( '<div style="text-align:center; border:1px solid #ddd; position:relative;' );
 
             if( compact )
                 text.push( 'width:40px;float:right; margin-left:8px;">' );
             else
                 text.push( '">' );
 
-            text.push( '<div style="width:',pct,'%; overflow:hidden; position:absolute; top:0; left:0;">',
-                         '<div class="',cls,'"; style="width:',(pct?Math.floor(100*(100.0/pct)):0),'%">',pctStr,'</div>',
-                       '</div>',
-                       '<div class="',cls,' remain">',pctStr,'</div>',
+            text.push( '<div class="',cls,' remain">&nbsp;</div>',
+                       '<div class="',cls,'" style="width:',pct,'%; position:absolute; top:0; left:0;">&nbsp;</div>',
+                       '<div style="width:100%;position:absolute;top:0;left:0;">',pctStr,'</div>',
                        '</div>' );
         }
 

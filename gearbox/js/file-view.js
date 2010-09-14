@@ -248,12 +248,11 @@ FileView = Ext.extend( Ext.Container,
     progressRenderer: function( value, metaData, record, rowIndex, colIndex, store )
     {
         var progress = Math.floor( 100 * record.data.progress );
-        var strings = [ '<div style="text-align:center;  border:1px solid #dddddd; position:relative; width:100%;">',
-                        '<div style="width:',progress,'%; overflow:hidden; position:absolute; top:0; left:0;">',
-                        '<div class="torrent_progress_bar download"; style="width:',(progress?Math.floor(100*(100.0/progress)):0),'%">',
-                        progress, '%', '</div>', '</div>',
-                        '<div class="torrent_progress_bar download remain">',
-                        progress, '%', '</div>', '</div>' ];
+        var strings = [ '<div style="text-align:center; border:1px solid #ddd; position:relative;">',
+                        '<div class="torrent_progress_bar download  remain">&nbsp;</div>',
+                        '<div class="torrent_progress_bar download" style="width:',progress,'%; position:absolute; top:0; left:0;">&nbsp;</div>',
+                        '<div style="width:100%;position:absolute;top:0;left:0;">',progress,'%</div>',
+                        '</div>' ];
         return strings.join('');
     },
 
