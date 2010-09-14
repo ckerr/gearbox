@@ -47,7 +47,7 @@ FileView = Ext.extend( Ext.Container,
 
         var wanted;
         var children = record.data.children;
-        for( var i=children.length; i--; )
+        for( var i=0, n=children.length; i<n; i++ )
         {
             var child = this.store.getById( children[i] );
             var childWanted = this.isSubtreeWanted( child );
@@ -71,7 +71,7 @@ FileView = Ext.extend( Ext.Container,
         else
         {
             var children = record.data.children;
-            for( var i=children.length; i--; )
+            for( var i=0, n=children.length; i<n; ++i )
                 this.getDescendantLeaves( this.store.getById( children[i] ), fileIndices );
         }
     },
@@ -104,7 +104,7 @@ FileView = Ext.extend( Ext.Container,
 
         var priority;
         var children = record.data.children;
-        for( var i=children.length; i--; )
+        for( var i=0, n=children.length; i<n; ++i )
         {
             var child = this.store.getById( children[i] );
             var childPriority = this.getPriority( child );
@@ -219,7 +219,7 @@ FileView = Ext.extend( Ext.Container,
         else
         {
             var children = d.children;
-            for( var i=children.length; i--; )
+            for( var i=0, n=children.length; i<n; ++i )
             {
                 var child = this.store.getById( children[i] );
                 var s = this.getSize( child );
@@ -353,7 +353,7 @@ FileView = Ext.extend( Ext.Container,
     {
         var stats = torrent.getFileStats();
 
-        for( var i=stats.length; i--; )
+        for( var i=0, n=stats.length; i<n; ++i )
         {
             var record = this.store.getById( i );
             if( record )
@@ -374,7 +374,7 @@ FileView = Ext.extend( Ext.Container,
     {
         var records = this.store.getRange( );
 
-        for( var i=records.length; i--; )
+        for( var i=0, n=records.length; i<n; ++i )
         {
             var record = records[i];
             if( record.data._is_leaf )
