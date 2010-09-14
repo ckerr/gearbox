@@ -222,7 +222,7 @@ Ext.namespace( 'Transmission' );
                 { handler: filterStatusHandler, text: 'Queued',      id: filterStatusPrefix+'queued' },
                 { handler: filterStatusHandler, text: 'Verifying',   id: filterStatusPrefix+'verifying', icon:iconPrefix+'/actions/view-refresh.png' },
                 { handler: filterStatusHandler, text: 'Error',       id: filterStatusPrefix+'error', icon:iconPrefix+'/status/error.png' } ] },
-            { xtype: 'button', id: 'filterbar-tracker', menu: [
+            { xtype: 'button', id: 'filterbar-tracker', listeners: { menushow: { fn:rebuildTrackerMenu } },menu: [
                 { handler: filterTrackerHandler, text: 'All Trackers', id: filterTrackerPrefix+'all' }
             ]},
             '->',
@@ -291,7 +291,6 @@ Ext.namespace( 'Transmission' );
             store.suspendEvents(false);
 
             updateActionSensitivity();
-            rebuildTrackerFilter();
             resort(store);
             refilter(store);
 
@@ -337,7 +336,7 @@ Ext.namespace( 'Transmission' );
 
     var trackersStr = '';
 
-    function rebuildTrackerFilter( )
+    function rebuildTrackerMenu( )
     {
         var key,
             hash = Torrent.store.getAllTrackers(),
