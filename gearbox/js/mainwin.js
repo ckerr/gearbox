@@ -246,9 +246,9 @@ Ext.namespace( 'Transmission' );
         ]});
 
         return new Ext.Toolbar( { id: 'mainwin-statusbar', items: [
-            { style: 'border-radius:5px; border: 1px solid #999', menu: actionMenu, icon: Transmission.imgRoot + '/action.png' },
+            { xtype: 'button', menu:actionMenu, cls: 'mainwin-statusbar-button', icon: Transmission.imgRoot + '/action.png' },
             ' ', ' ', // these two buttons are pretty small on a cell phone.. add a little extra space between them
-            { style: 'border-radius:5px; border: 1px solid #999;', xtype: 'button', id:'turtle-button', cls: 'x-btn-icon turtle-btn', enableToggle: true, listeners: { toggle: { scope: this, fn: onTurtleToggled } } },
+            { xtype: 'button', id:'turtle-button', cls: 'mainwin-statusbar-button x-btn-icon turtle-btn', enableToggle: true, listeners: { toggle: { scope: this, fn: onTurtleToggled } } },
             '->',
             { id: 'statusbarDownSpeed', xtype: 'label', text: '↓ {0}{1}' },
             ' ', '-', ' ',
