@@ -72,7 +72,7 @@ TrackerView = Ext.extend( Ext.Container,
         // announce & scrape info
         if( !d.isBackup )
         {
-            if( d.hasAnnounced )
+            if( d.hasAnnounced && ( d.announceState != this.TRACKER_INACTIVE ) )
             {
                 var tstr =  this.timeToStringRounded( now - d.lastAnnounceTime );
 
@@ -101,11 +101,9 @@ TrackerView = Ext.extend( Ext.Container,
             switch( d.announceState )
             {
                 case this.TRACKER_INACTIVE:
-                    if( !d.hasAnnounced ) {
-                        strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
-                                      'No updates scheduled',
-                                      '</div>' );
-                    }
+                    strings.push( '<div style="overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">',
+                                  'No updates scheduled',
+                                  '</div>' );
                     break;
 
                 case this.TRACKER_WAITING:
