@@ -579,11 +579,11 @@ Ext.namespace( 'Transmission' );
         updateTorrentCount( );
 
         var key = 'statusbarDownSpeed',
-            str = Transmission.fmt.speed( o.downloadSpeed ) + ' Down';
+            str = Transmission.fmt.speedBps( o.downloadSpeed ) + ' Down';
         Ext.getCmp( key ).update( str );
 
         key = 'statusbarUpSpeed';
-        str = Transmission.fmt.speed( o.uploadSpeed ) + ' Up';
+        str = Transmission.fmt.speedBps( o.uploadSpeed ) + ' Up';
         Ext.getCmp( key ).update( str );
     }
 
